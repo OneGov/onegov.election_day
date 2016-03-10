@@ -135,6 +135,7 @@ table {
 
     thead {
         background: none;
+
     }
 
     th {
@@ -175,6 +176,20 @@ table {
             width: 12.5%;
         }
     }
+
+    &.collapsible {
+        &.collapsed {
+            tr.sticky {
+                background-color: $white;
+            }
+        }
+
+        thead {
+            cursor: pointer;
+        }
+
+    }
+
 }
 
 /*
@@ -294,6 +309,40 @@ table {
 
     .fa-thumbs-down {
         color: $rejected-color;
+    }
+}
+
+/*
+    Bar Chart
+*/
+.bar-chart {
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+
+    text {
+        font: 14px sans-serif;
+        text-anchor: end;
+    }
+
+    .label text {
+        font: 12px sans-serif;
+
+        &.left {
+            fill: $white;
+        }
+
+        &.right {
+            fill: $aluminum;
+            text-anchor: start;
+        }
+    }
+
+    .bar {
+        fill: $aluminum;
+
+        &.active {
+            fill: $accepted-color;
+        }
     }
 }
 

@@ -1,6 +1,8 @@
 import textwrap
 
-from onegov.election_day.models import Principal
+from datetime import date
+from onegov.ballot import Election, Vote
+from onegov.election_day.models import Archive, Principal
 from onegov.election_day.models.principal import cantons
 
 
@@ -57,17 +59,81 @@ def test_municipalities():
     }
 
     assert principal.municipalities == {
+        2009: municipalities,
+        2010: municipalities,
+        2011: municipalities,
+        2012: municipalities,
         2013: municipalities,
         2014: municipalities,
         2015: municipalities,
         2016: municipalities,
     }
 
+    for year in range(2009, 2013):
+        assert not principal.is_year_available(year)
+    for year in range(2013, 2017):
+        assert principal.is_year_available(year)
+    for year in range(2009, 2017):
+        assert principal.is_year_available(year, map_required=False)
+
     for canton in cantons:
         principal = Principal(
             name=canton, canton=canton, logo=None, color=None
         )
 
+        assert principal.municipalities[2009]
+        assert principal.municipalities[2010]
+        assert principal.municipalities[2011]
+        assert principal.municipalities[2012]
         assert principal.municipalities[2013]
         assert principal.municipalities[2014]
         assert principal.municipalities[2015]
+
+
+def test_archive(session):
+    archive = Archive(session)
+
+    assert archive.for_date(2015).date == 2015
+
+    assert archive.get_years() == []
+    assert archive.latest() is None
+
+    for year in (2009, 2011, 2014, 2016):
+        session.add(
+            Election(
+                title="Election {}".format(year),
+                domain='federation',
+                type='majorz',
+                date=date(year, 1, 1),
+            )
+        )
+    for year in (2007, 2011, 2015, 2016):
+        session.add(
+            Vote(
+                title="Vote {}".format(year),
+                domain='federation',
+                date=date(year, 1, 1),
+            )
+        )
+
+    session.flush()
+
+    assert archive.get_years() == [2016, 2015, 2014, 2011, 2009, 2007]
+
+    assert archive.latest() == archive.for_date(2016).by_date()
+    assert archive.latest() == archive.for_date('2016').by_date()
+    assert archive.latest() == archive.for_date('2016-01-01').by_date()
+
+    assert archive.for_date('2016-02-02').by_date() is None
+
+    for year in (2009, 2011, 2014, 2016):
+        assert (
+            ('election', 'federation', date(year, 1, 1)),
+            [session.query(Election).filter_by(date=date(year, 1, 1)).one()]
+        ) in archive.for_date(year).by_date()
+
+    for year in (2007, 2011, 2015, 2016):
+        assert (
+            ('vote', 'federation', date(year, 1, 1)),
+            [session.query(Vote).filter_by(date=date(year, 1, 1)).one()]
+        ) in archive.for_date(year).by_date()

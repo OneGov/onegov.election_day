@@ -18,9 +18,8 @@ def election_day_password():
     return hash_password('hunter2')
 
 
-@pytest.yield_fixture(scope="function")
-def election_day_app(postgres_dsn, temporary_directory, election_day_password):
-
+def create_app(postgres_dsn, temporary_directory, election_day_password,
+               canton):
     config = setup()
     scan_morepath_modules(onegov.election_day.ElectionDayApp, config)
     config.commit()
@@ -42,9 +41,9 @@ def election_day_app(postgres_dsn, temporary_directory, election_day_password):
     app.filestorage.setcontents('principal.yml', textwrap.dedent("""
         name: Kanton Govikon
         logo: logo.jpg
-        canton: zg
+        canton: {}
         color: '#000'
-    """))
+    """.format(canton)))
 
     app.session().add(User(
         username='admin@example.org',
@@ -54,4 +53,30 @@ def election_day_app(postgres_dsn, temporary_directory, election_day_password):
 
     transaction.commit()
 
-    yield app
+    return app
+
+
+@pytest.yield_fixture(scope="function")
+def election_day_app(postgres_dsn, temporary_directory, election_day_password):
+
+    yield create_app(
+        postgres_dsn, temporary_directory, election_day_password, "zg"
+    )
+
+
+@pytest.yield_fixture(scope="function")
+def election_day_app_gr(postgres_dsn, temporary_directory,
+                        election_day_password):
+
+    yield create_app(
+        postgres_dsn, temporary_directory, election_day_password, "gr"
+    )
+
+
+@pytest.yield_fixture(scope="function")
+def election_day_app_sg(postgres_dsn, temporary_directory,
+                        election_day_password):
+
+    yield create_app(
+        postgres_dsn, temporary_directory, election_day_password, "sg"
+    )
