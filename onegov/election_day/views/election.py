@@ -57,21 +57,6 @@ def view_election(self, request):
         electoral = electoral.filter(ElectionResult.election_id == self.id)
         electoral = groupbylist(electoral, lambda x: x[0])
 
-    # List results
-    lists = []
-    if not majorz:
-        lists = session.query(
-            List.name,
-            List.votes,
-            List.number_of_mandates
-        )
-        lists = lists.order_by(
-            desc(List.number_of_mandates),
-            desc(List.votes),
-            List.name
-        )
-        lists = lists.filter(List.election_id == self.id)
-
     # List connections
     connections = []
     if not majorz:
@@ -137,7 +122,6 @@ def view_election(self, request):
         'has_results': True if self.results.first() else False,
         'candidates': candidates,
         'electoral': electoral,
-        'lists': lists,
         'connections': connections,
     }
 
