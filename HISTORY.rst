@@ -1,9 +1,71 @@
 Changelog
 ---------
+
+- Adds compatibility with Morepath 0.13.
+  [href]
+
+- Adds French translations.
+  [freinhard]
+
+- Adds Italian translations.
+  [msom]
+
+- Adds Romansh translations.
+  [msom]
+
+- Fixes javascript for form dependencies.
+  [msom]
+
+- Cleanup file/directory structure.
+  [msom]
+
+- Sorts the sublists by the ID of the list when displaying list connection
+  results of elections.
+  [msom]
+
+- Allows to import elections with the format used for the export.
+  [msom]
+
+- Allows to import votes with the format used for the export.
+  [msom]
+
+- Allows to import votes from Wabsti.
+  [msom]
+
+0.7.2 (2016-03-18)
+~~~~~~~~~~~~~~~~~~~
+
+- Hides candidates list for majorz elections.
+  [msom]
+
+- Hides lists for proporz elections.
+  [msom]
+
+- Removes color from list bar charts.
+  [msom]
+
+- Sorts lists by list id.
+  [msom]
+
+- Removes table collapsing for most tables.
+  [msom]
+
+- Adds a totals row at the top for tables with totals.
+  [msom]
+
+- Folds results to sections.
+  [msom]
+
+- Makes title font sizes smaller for mobile devices.
+  [msom]
+
+- Adds related links.
+  [msom]
+
 0.7.1 (2016-03-14)
 ~~~~~~~~~~~~~~~~~~~
 
- - Displays visual hints for collapsible tables.
+- Displays visual hints for collapsible tables.
    [msom]
 
 - Adds absolute majority for majorz elections.

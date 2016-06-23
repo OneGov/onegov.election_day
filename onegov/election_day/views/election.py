@@ -18,6 +18,13 @@ from sqlalchemy import desc
 from sqlalchemy.orm import object_session
 
 
+def to_int(value):
+    try:
+        return int(value)
+    except ValueError:
+        return value
+
+
 @ElectionDayApp.html(model=Election, template='election.pt', permission=Public)
 def view_election(self, request):
 
@@ -35,10 +42,11 @@ def view_election(self, request):
         Candidate.elected,
         Candidate.votes,
         List.name,
+        List.list_id
     )
     candidates = candidates.outerjoin(List)
     candidates = candidates.order_by(
-        List.name,
+        List.list_id,
         desc(Candidate.elected),
         desc(Candidate.votes),
         Candidate.family_name,
@@ -57,21 +65,6 @@ def view_election(self, request):
         )
         electoral = electoral.filter(ElectionResult.election_id == self.id)
         electoral = groupbylist(electoral, lambda x: x[0])
-
-    # List results
-    lists = []
-    if not majorz:
-        lists = session.query(
-            List.name,
-            List.votes,
-            List.number_of_mandates
-        )
-        lists = lists.order_by(
-            desc(List.number_of_mandates),
-            desc(List.votes),
-            List.name
-        )
-        lists = lists.filter(List.election_id == self.id)
 
     # List connections
     connections = []
@@ -106,7 +99,8 @@ def view_election(self, request):
         sublists = session.query(
             List.connection_id,
             List.name,
-            List.votes
+            List.votes,
+            List.list_id
         )
         sublists = sublists.filter(
             List.connection_id != None,
@@ -120,8 +114,12 @@ def view_election(self, request):
             subconnections = [(
                 child[1],
                 child[2],
-                [(l[1], l[2]) for l in sublists.get(str(child[3]), [])]
+                [(l[1], l[2]) for l in sorted(
+                    sublists.get(str(child[3]), []),
+                    key=lambda x: to_int(x[3])
+                )]
             ) for child in children.get(id, [])]
+
             connection = [
                 parent[1],
                 parent[2] or 0,
@@ -138,7 +136,6 @@ def view_election(self, request):
         'has_results': True if self.results.first() else False,
         'candidates': candidates,
         'electoral': electoral,
-        'lists': lists,
         'connections': connections,
     }
 
@@ -205,24 +202,15 @@ def view_election_lists(self, request):
 
     session = object_session(self)
 
-    lists = session.query(
-        List.name,
-        List.votes,
-        List.number_of_mandates
-    )
-    lists = lists.order_by(
-        desc(List.number_of_mandates),
-        desc(List.votes),
-        List.name
-    )
+    lists = session.query(List.name, List.votes)
+    lists = lists.order_by(desc(List.votes))
     lists = lists.filter(List.election_id == self.id)
 
     return {
         'results': [{
             'text': list[0],
             'value': list[1],
-            'secondary': list[2],
-            'class': 'active' if list[2] > 0 else 'inactive'
+            'class': 'inactive'
         } for list in lists.all()],
         'majority': None
     }

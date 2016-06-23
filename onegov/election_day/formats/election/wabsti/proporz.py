@@ -7,7 +7,7 @@ from onegov.ballot import (
     ListResult
 )
 from onegov.election_day import _
-from onegov.election_day.utils.csv import FileImportError, load_csv
+from onegov.election_day.formats import FileImportError, load_csv
 from sqlalchemy.orm import object_session
 from uuid import uuid4
 
@@ -50,7 +50,7 @@ def parse_election_result(line, errors, municipalities):
     try:
         municipality_id = int(line.einheit_bfs or 0)
     except ValueError:
-        errors.append(_("Invalid muncipality values"))
+        errors.append(_("Invalid municipality values"))
     else:
         if municipality_id not in municipalities:
             errors.append(_(
@@ -140,11 +140,11 @@ def parse_connection(line, errors):
         return id, connection, subconnection
 
 
-def import_wabsti_file_proporz(municipalities, election, file, mimetype,
-                               connections_file=None,
-                               connections_mimetype=None,
-                               elected_file=None, elected_mimetype=None,
-                               statistics_file=None, statistics_mimetype=None):
+def import_file(municipalities, election, file, mimetype,
+                connections_file=None,
+                connections_mimetype=None,
+                elected_file=None, elected_mimetype=None,
+                statistics_file=None, statistics_mimetype=None):
     errors = []
     candidates = {}
     lists = {}
@@ -261,7 +261,7 @@ def import_wabsti_file_proporz(municipalities, election, file, mimetype,
                     else:
                         errors.append(
                             FileImportError(
-                                error=_("Unkown candidate"),
+                                error=_("Unknown candidate"),
                                 line=line.rownumber
                             )
                         )
@@ -300,7 +300,7 @@ def import_wabsti_file_proporz(municipalities, election, file, mimetype,
                     else:
                         errors.append(
                             FileImportError(
-                                error=_("Unkown municipality"),
+                                error=_("Unknown municipality"),
                                 line=line.rownumber
                             )
                         )

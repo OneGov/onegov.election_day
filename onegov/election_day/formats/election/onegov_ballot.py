@@ -7,90 +7,65 @@ from onegov.ballot import (
     ListResult
 )
 from onegov.election_day import _
-from onegov.election_day.utils.csv import FileImportError, load_csv
+from onegov.election_day.formats import FileImportError, load_csv
 from sqlalchemy.orm import object_session
 from uuid import uuid4
 
 
-HEADERS_COMMON = [
-    # Municipality
-    'Anzahl Sitze',
-    'Wahlkreis-Nr',
-    'Stimmberechtigte',
-    'Wahlzettel',
-    'Ungültige Wahlzettel',
-    'Leere Wahlzettel',
-    'Leere Stimmen',
-    # Candidate
-    'Kandidaten-Nr',
-    'Name',
-    'Vorname',
-    # Election
-    'Anzahl Gemeinden',
-]
-
-HEADERS_MAJORZ = [
-    # Municipality
-    'Ungueltige Stimmen',
-    # Candidate
-    'Stimmen',
-]
-
-HEADERS_PROPORZ = [
-    # List
-    'Listen-Nr',
-    'Partei-ID',
-    'Parteibezeichnung',
-    'HLV-Nr',
-    'ULV-Nr',
-    'Anzahl Sitze Liste',
-    'Unveränderte Wahlzettel Liste',
-    'Veränderte Wahlzettel Liste',
-    'Kandidatenstimmen unveränderte Wahlzettel',
-    'Zusatzstimmen unveränderte Wahlzettel',
-    'Kandidatenstimmen veränderte Wahlzettel',
-    'Zusatzstimmen veränderte Wahlzettel',
-    # Candidate
-    'Gewählt',
-    'Stimmen unveränderte Wahlzettel',
-    'Stimmen veränderte Wahlzettel',
-    'Stimmen Total aus Wahlzettel',
+HEADERS = [
+    'election_absolute_majority',
+    'election_counted_municipalites',
+    'election_total_municipalites',
+    'municipality_bfs_number',
+    'municipality_elegible_voters',
+    'municipality_received_ballots',
+    'municipality_blank_ballots',
+    'municipality_invalid_ballots',
+    'municipality_blank_votes',
+    'municipality_invalid_votes',
+    'list_name',
+    'list_id',
+    'list_number_of_mandates',
+    'list_votes',
+    'list_connection',
+    'list_connection_parent',
+    'candidate_family_name',
+    'candidate_first_name',
+    'candidate_id',
+    'candidate_elected',
+    'candidate_votes',
 ]
 
 
 def parse_election(line, errors):
+    counted = 0
+    total = 0
+    absolute_majority = None
     try:
-        mandates = int(line.anzahl_sitze or 0)
-        numbers = line.anzahl_gemeinden.split(' von ')
-        if not len(numbers) == 2:
-            raise ValueError()
-        else:
-            counted = int(numbers[0])
-            total = int(numbers[1])
+        if line.election_absolute_majority:
+            absolute_majority = int(line.election_absolute_majority or 0)
+        counted = int(line.election_counted_municipalites or 0)
+        total = int(line.election_total_municipalites or 0)
     except ValueError:
         errors.append(_("Invalid election values"))
-    else:
-        return mandates, counted, total
+    return counted, total, absolute_majority
 
 
 def parse_election_result(line, errors, municipalities):
     try:
-        municipality_id = int(line.wahlkreis_nr or 0)
-        elegible_voters = int(line.stimmberechtigte or 0)
-        received_ballots = int(line.wahlzettel or 0)
-        blank_ballots = int(line.leere_wahlzettel or 0)
-        invalid_ballots = int(line.ungultige_wahlzettel or 0)
-        blank_votes = int(line.leere_stimmen or 0)
+        municipality_id = int(line.municipality_bfs_number or 0)
+        elegible_voters = int(line.municipality_elegible_voters or 0)
+        received_ballots = int(line.municipality_received_ballots or 0)
+        blank_ballots = int(line.municipality_blank_ballots or 0)
+        invalid_ballots = int(line.municipality_invalid_ballots or 0)
+        blank_votes = int(line.municipality_blank_votes or 0)
+        invalid_votes = int(line.municipality_invalid_votes or 0)
 
         if not elegible_voters:
             raise ValueError()
 
-        try:
-            invalid_votes = int(line.ungueltige_stimmen or 0)  # majorz
-        except AttributeError:
-            invalid_votes = 0  # proporz
     except ValueError:
-        errors.append(_("Invalid muncipality values"))
+        errors.append(_("Invalid municipality values"))
     else:
         if municipality_id not in municipalities:
             errors.append(_(
@@ -113,9 +88,9 @@ def parse_election_result(line, errors, municipalities):
 
 def parse_list(line, errors):
     try:
-        id = int(line.listen_nr or 0)
-        name = line.parteibezeichnung
-        mandates = int(line.anzahl_sitze_liste or 0)
+        id = int(line.list_id or 0)
+        name = line.list_name
+        mandates = int(line.list_number_of_mandates or 0)
     except ValueError:
         errors.append(_("Invalid list values"))
     else:
@@ -129,12 +104,7 @@ def parse_list(line, errors):
 
 def parse_list_result(line, errors):
     try:
-        votes = (
-            int(line.kandidatenstimmen_unveranderte_wahlzettel or 0) +
-            int(line.kandidatenstimmen_veranderte_wahlzettel or 0) +
-            int(line.zusatzstimmen_unveranderte_wahlzettel or 0) +
-            int(line.zusatzstimmen_veranderte_wahlzettel or 0)
-        )
+        votes = int(line.list_votes or 0)
     except ValueError:
         errors.append(_("Invalid list results"))
     else:
@@ -146,13 +116,11 @@ def parse_list_result(line, errors):
 
 def parse_candidate(line, errors):
     try:
-        id = int(line.kandidaten_nr or 0)
-        family_name = line.name
-        first_name = line.vorname
-        try:
-            elected = line.gewaehlt == 'Gewaehlt'
-        except AttributeError:
-            elected = line.gewahlt == 'Gewählt'
+        id = int(line.candidate_id or 0)
+        family_name = line.candidate_family_name
+        first_name = line.candidate_first_name
+        elected = line.candidate_elected == 'True'
+
     except ValueError:
         errors.append(_("Invalid candidate values"))
     else:
@@ -167,10 +135,7 @@ def parse_candidate(line, errors):
 
 def parse_candidate_result(line, errors):
     try:
-        try:
-            votes = int(line.stimmen or 0)  # majorz
-        except AttributeError:
-            votes = int(line.stimmen_total_aus_wahlzettel or 0)  # proporz
+        votes = int(line.candidate_votes or 0)
     except ValueError:
         errors.append(_("Invalid candidate results"))
     else:
@@ -181,9 +146,13 @@ def parse_candidate_result(line, errors):
 
 
 def parse_connection(line, errors):
+    subconnection_id = None
     try:
-        connection_id = line.hlv_nr
-        subconnection_id = line.ulv_nr
+        connection_id = line.list_connection
+        parent_connection_id = line.list_connection_parent
+        if parent_connection_id:
+            subconnection_id = connection_id
+            connection_id = parent_connection_id
     except ValueError:
         errors.append(_("Invalid list connection values"))
     else:
@@ -198,7 +167,7 @@ def parse_connection(line, errors):
         return connection, subconnection
 
 
-def import_sesam_file(municipalities, election, file, mimetype):
+def import_file(municipalities, election, file, mimetype):
     """ Tries to import the given file (sesam format).
 
     :return: A dictionary containing the status and a list of errors if any.
@@ -209,14 +178,7 @@ def import_sesam_file(municipalities, election, file, mimetype):
 
     """
     majorz = election.type == 'majorz'
-    if majorz:
-        csv, error = load_csv(
-            file, mimetype, expected_headers=HEADERS_COMMON + HEADERS_MAJORZ
-        )
-    else:
-        csv, error = load_csv(
-            file, mimetype, expected_headers=HEADERS_COMMON + HEADERS_PROPORZ
-        )
+    csv, error = load_csv(file, mimetype, expected_headers=HEADERS)
     if error:
         return {'status': 'error', 'errors': [error]}
 
@@ -230,19 +192,19 @@ def import_sesam_file(municipalities, election, file, mimetype):
     results = {}
 
     # This format has one candiate per municipality per line
-    mandates = 0
     counted = 0
     total = 0
+    absolute_majority = None
     for line in csv.lines:
         line_errors = []
 
         # Parse the line
-        mandates, counted, total = parse_election(line, line_errors)
+        counted, total, absolute_majority = parse_election(line, line_errors)
         result = parse_election_result(line, line_errors, municipalities)
         candidate = parse_candidate(line, line_errors)
         candidate_result = parse_candidate_result(line, line_errors)
         if not majorz:
-            list = parse_list(line, line_errors)
+            list_ = parse_list(line, line_errors)
             list_result = parse_list_result(line, line_errors)
             connection, subconnection = parse_connection(line, line_errors)
 
@@ -258,32 +220,32 @@ def import_sesam_file(municipalities, election, file, mimetype):
         result = results.setdefault(result.municipality_id, result)
 
         if not majorz:
-            list = lists.setdefault(list.list_id, list)
+            list_ = lists.setdefault(list_.list_id, list_)
 
             if connection:
                 connection = connections.setdefault(
                     connection.connection_id, connection
                 )
-                list.connection_id = connection.id
+                list_.connection_id = connection.id
                 if subconnection:
                     subconnection = subconnections.setdefault(
                         subconnection.connection_id, subconnection
                     )
                     subconnection.parent_id = connection.id
-                    list.connection_id = subconnection.id
+                    list_.connection_id = subconnection.id
 
             list_results.setdefault(result.municipality_id, {})
             list_result = list_results[result.municipality_id].setdefault(
-                list.list_id, list_result
+                list_.list_id, list_result
             )
-            list_result.list_id = list.id
+            list_result.list_id = list_.id
 
         candidate = candidates.setdefault(candidate.candidate_id, candidate)
         candidate_result.candidate_id = candidate.id
         result.candidate_results.append(candidate_result)
 
         if not majorz:
-            candidate.list_id = list.id
+            candidate.list_id = list_.id
 
     if not errors and not results:
         errors.append(FileImportError(_("No data found")))
@@ -292,7 +254,8 @@ def import_sesam_file(municipalities, election, file, mimetype):
         return {'status': 'error', 'errors': errors}
 
     if results:
-        election.number_of_mandates = mandates
+        if absolute_majority is not None:
+            election.absolute_majority = absolute_majority
         election.counted_municipalities = counted
         election.total_municipalities = total
 
@@ -305,10 +268,10 @@ def import_sesam_file(municipalities, election, file, mimetype):
         for connection in subconnections.values():
             election.list_connections.append(connection)
 
-        for list in election.lists:
-            session.delete(list)
-        for list in lists.values():
-            election.lists.append(list)
+        for list_ in election.lists:
+            session.delete(list_)
+        for list_ in lists.values():
+            election.lists.append(list_)
 
         for candidate in election.candidates:
             session.delete(candidate)

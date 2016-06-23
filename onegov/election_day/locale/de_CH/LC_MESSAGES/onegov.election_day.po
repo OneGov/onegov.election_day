@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2016-03-14 12:08+0100\n"
+"POT-Creation-Date: 2016-03-17 11:13+0100\n"
 "PO-Revision-Date: 2015-10-14 17:17+0200\n"
 "Last-Translator: Denis Krienbühl <denis.krienbuehl@seantis.ch>\n"
 "Language-Team: German\n"
@@ -11,12 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Lingua 3.12\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-msgid "System"
-msgstr "System"
-
-msgid "Type"
-msgstr "Art"
 
 msgid "Election (German)"
 msgstr "Wahl (Deutsch)"
@@ -38,6 +32,15 @@ msgstr "Datum"
 
 msgid "Mandates"
 msgstr "Sitze"
+
+msgid "System"
+msgstr "System"
+
+msgid "Type"
+msgstr "Art"
+
+msgid "Related link"
+msgstr "Weiterführende Informationen"
 
 msgid "An election with this title exists already"
 msgstr "Eine Wahl mit diesem Titel existiert bereits"
@@ -61,7 +64,7 @@ msgid "List connections"
 msgstr "Listenverbindungen"
 
 msgid "Elected Candidates"
-msgstr "Gewählte Kandidaten"
+msgstr "Gewählte Kandidierende"
 
 msgid "Election statistics"
 msgstr "Wahlstatistik"
@@ -141,45 +144,18 @@ msgstr "Wahlbeteiligung"
 msgid "Received Ballots"
 msgstr "Abgegebene Wahlzettel"
 
-msgid "Lists"
-msgstr "Listen"
+msgid "Candidates"
+msgstr "Kandidierende"
 
-msgid "List"
-msgstr "Liste"
+msgid "Candidate"
+msgstr "Kandidierende"
 
 #. Default: Votes
 msgid "single_votes"
 msgstr "Stimmen"
 
-msgid "Show all..."
-msgstr "Zeige alle..."
-
-msgid "Show less..."
-msgstr "Zeige weniger..."
-
-msgid "List connection"
-msgstr "Listenverbindung"
-
-msgid "Sublist connection"
-msgstr "Unterlistenverbindung"
-
-msgid "Subtotal"
-msgstr "Zwischensumme"
-
-msgid "Show details..."
-msgstr "Zeige Details..."
-
-msgid "Hide details..."
-msgstr "Verstecke Details..."
-
-msgid "Total"
-msgstr "Total"
-
-msgid "Candidates"
-msgstr "Kandidaten"
-
-msgid "Candidate"
-msgstr "Kandidat"
+msgid "List"
+msgstr "Liste"
 
 msgid "Elected"
 msgstr "Gewählt"
@@ -190,8 +166,23 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nein"
 
-msgid "Show elected only..."
-msgstr "Zeige nur gewählte Kandidaten"
+msgid "All candidates"
+msgstr "Alle Kandidierende"
+
+msgid "Elected candidates only"
+msgstr "Nur gewählte Kandidierende"
+
+msgid "List connection"
+msgstr "Listenverbindung"
+
+msgid "Sublist connection"
+msgstr "Unterlistenverbindung"
+
+msgid "Subtotal"
+msgstr "Zwischensumme"
+
+msgid "Total"
+msgstr "Total"
 
 msgid "Electoral Districts"
 msgstr "Wahlkreise"
@@ -360,7 +351,7 @@ msgstr "Der Name der Gemeinde/des Standorts"
 msgid "The id of the municipality/locale (\"BFS Nummer\")."
 msgstr "Die ID der Gemeinde/des Standorts. Besser bekannt als \"BFS Nummer\"."
 
-msgid "The number of people elegible to vote for this municipality."
+msgid "The number of people eligible to vote for this municipality."
 msgstr "Die Anzahl Stimmberechtigter der Gemeinde/des Standorts."
 
 msgid "The number of received ballots for this municipality."
@@ -376,7 +367,7 @@ msgid "The number of unaccounted ballots for this municipality."
 msgstr ""
 "Die Anzahl der ungültigen oder leeren Stimmzettel der Gemeinde/des Standorts."
 
-msgid "The nubmer of accounted ballots for this municipality."
+msgid "The number of accounted ballots for this municipality."
 msgstr "Die Anzahl gültiger Stimmzettel der Gemeinde/des Standorts."
 
 msgid "The number of blank votes for this municipality."
@@ -393,9 +384,9 @@ msgid "The number of accounted votes for this municipality."
 msgstr "Die Anzahl gültiger Stimmen der Gemeinde/des Standorts."
 
 msgid ""
-"The name of the list this candidate appears on. Only relevant forelections "
+"The name of the list this candidate appears on. Only relevant for elections "
 "based on proportional representation."
-msgstr "Der Name der Liste des Kandidaten. Nur bei Proporzwahlen."
+msgstr "Der Name der Liste des Kandidierenden. Nur bei Proporzwahlen."
 
 msgid ""
 "The number of votes this list has got. Only relevant for elections based on "
@@ -415,16 +406,16 @@ msgstr ""
 "es sich um eine Unterlistenverbindung handelt."
 
 msgid "The family name of the candidate."
-msgstr "Der Nachnahme des Kandidate.n"
+msgstr "Der Nachnahme des Kandidierenden."
 
-msgid "The first name of the candiate."
+msgid "The first name of the candidate."
 msgstr "Der Vorname des Kandidaten."
 
 msgid "True if the candidate has been elected."
-msgstr "True, falls der Kandidate gewählt wurde."
+msgstr "True, falls der Kandidierenden gewählt wurde."
 
 msgid "The number of votes this candidate got."
-msgstr "Die Anzahl Kandidatenstimmen der Gemeinde/des Standorts."
+msgstr "Die Anzahl Kandidierendenstimmen der Gemeinde/des Standorts."
 
 msgid "Fields (Votes)"
 msgstr "Felder (Abstimmungen)"
@@ -571,7 +562,7 @@ msgstr "Die Datei enthält eine leere Zeile."
 msgid "Invalid election values"
 msgstr "Ungültige Wahldaten"
 
-msgid "Invalid muncipality values"
+msgid "Invalid municipality values"
 msgstr "Ungültige Gemeindedaten"
 
 #, python-format
@@ -585,10 +576,10 @@ msgid "Invalid list results"
 msgstr "Ungültige Listenresultate"
 
 msgid "Invalid candidate values"
-msgstr "Ungültige Kandidatendaten"
+msgstr "Ungültige Kandidierendendaten"
 
 msgid "Invalid candidate results"
-msgstr "Ungültige Kandidatenresultate"
+msgstr "Ungültige Kandidierendenresultate"
 
 msgid "Invalid list connection values"
 msgstr "Ungültige Listenverbindungsdaten"
@@ -596,13 +587,13 @@ msgstr "Ungültige Listenverbindungsdaten"
 msgid "No data found"
 msgstr "Keine Daten gefunden"
 
-msgid "Unkown candidate"
-msgstr "Unbekannter Kandidat"
+msgid "Unknown candidate"
+msgstr "Unbekannter Kandidierender"
 
 msgid "Invalid values"
 msgstr "Ungültige Werte"
 
-msgid "Unkown municipality"
+msgid "Unknown municipality"
 msgstr "Unbekannte Gemeinde"
 
 msgid "Wrong username or password"

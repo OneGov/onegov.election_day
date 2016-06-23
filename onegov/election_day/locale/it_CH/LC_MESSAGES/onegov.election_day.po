@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2016-03-14 12:08+0100\n"
+"POT-Creation-Date: 2016-04-04 17:05+0200\n"
 "PO-Revision-Date: 2016-01-08 10:00+0100\n"
 "Last-Translator: Fabian Reinhard <fabian.reinhard@seantis.ch>\n"
 "Language-Team: \n"
@@ -13,23 +13,17 @@ msgstr ""
 "Generated-By: xls-to-po 1.0\n"
 "X-Generator: Poedit 1.7.6\n"
 
-msgid "System"
-msgstr ""
-
-msgid "Type"
-msgstr "Tipo"
-
 msgid "Election (German)"
-msgstr ""
+msgstr "Elezione (tedesco)"
 
 msgid "Election (French)"
-msgstr ""
+msgstr "Elezione (francese)"
 
 msgid "Election (Italian)"
-msgstr ""
+msgstr "Elezione (italiano)"
 
 msgid "Election (Romansh)"
-msgstr ""
+msgstr "Elezione (romancio)"
 
 msgid "Shortcode"
 msgstr "Abbreviazione"
@@ -38,10 +32,19 @@ msgid "Date"
 msgstr "Data"
 
 msgid "Mandates"
-msgstr ""
+msgstr "Mandati"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Related link"
+msgstr "Ulteriori informazioni"
 
 msgid "An election with this title exists already"
-msgstr ""
+msgstr "Esiste già un'elezione con questo nome"
 
 msgid "Election based on proportional representation"
 msgstr "Sistema proporzionale"
@@ -50,28 +53,28 @@ msgid "Majority system"
 msgstr "Sistema maggioritario"
 
 msgid "Federal Election"
-msgstr ""
+msgstr "Elezione federale"
 
 msgid "Cantonal Election"
-msgstr ""
+msgstr "Elezione cantonale"
 
 msgid "Results"
 msgstr "Risultati"
 
 msgid "List connections"
-msgstr ""
+msgstr "Elenca i collegamenti"
 
 msgid "Elected Candidates"
-msgstr ""
+msgstr "Candidati eletti"
 
 msgid "Election statistics"
-msgstr ""
+msgstr "Statistiche delle elezioni"
 
 msgid "Complete"
-msgstr ""
+msgstr "Completo"
 
 msgid "Absolute majority"
-msgstr ""
+msgstr "Maggioranza assoluta"
 
 msgid "Proposal"
 msgstr "Iniziativa"
@@ -83,10 +86,10 @@ msgid "Tie-Breaker"
 msgstr "Domanda eventuale"
 
 msgid "SESAM"
-msgstr ""
+msgstr "SESAM"
 
 msgid "Wabsti"
-msgstr ""
+msgstr "Wabsti"
 
 msgid "Simple Vote"
 msgstr "Progetto semplice"
@@ -140,77 +143,65 @@ msgid "Turnout"
 msgstr "Partecipazione al voto"
 
 msgid "Received Ballots"
-msgstr ""
+msgstr "Schede ricevute"
 
-msgid "Lists"
-msgstr ""
+msgid "Candidates"
+msgstr "Candidati"
 
-msgid "List"
-msgstr ""
+msgid "Candidate"
+msgstr "Candidato"
 
 #. Default: Votes
 msgid "single_votes"
-msgstr ""
+msgstr "Voti"
 
-msgid "Show all..."
-msgstr ""
+msgid "List"
+msgstr "Lista"
 
-msgid "Show less..."
-msgstr ""
+msgid "Elected"
+msgstr "Eletto"
+
+msgid "Yes"
+msgstr "Si"
+
+msgid "No"
+msgstr "No"
+
+msgid "All candidates"
+msgstr "Tutti i candidati"
+
+msgid "Elected candidates only"
+msgstr "Solo i candidati eletti"
 
 msgid "List connection"
-msgstr ""
+msgstr "Collegamenti tra liste"
 
 msgid "Sublist connection"
-msgstr ""
+msgstr "Collegamenti tra sottoliste"
 
 msgid "Subtotal"
-msgstr ""
-
-msgid "Show details..."
-msgstr ""
-
-msgid "Hide details..."
-msgstr ""
+msgstr "Subtotale"
 
 msgid "Total"
 msgstr "Totale"
 
-msgid "Candidates"
-msgstr ""
-
-msgid "Candidate"
-msgstr ""
-
-msgid "Elected"
-msgstr ""
-
-msgid "Yes"
-msgstr ""
-
-msgid "No"
-msgstr ""
-
-msgid "Show elected only..."
-msgstr ""
-
 msgid "Electoral Districts"
-msgstr ""
+msgstr "Distretti elettorali"
 
 msgid "Electoral District"
 msgstr "Circondario elettorale"
 
 msgid "Accounted Ballots"
-msgstr ""
+msgstr "Schede valide"
 
 msgid "Blank Ballots"
-msgstr ""
+msgstr "Schede bianche"
 
 msgid "Invalid Ballots"
-msgstr ""
+msgstr "Schede nulle"
 
 msgid "Accounted Votes"
-msgstr ""
+msgstr "Voti validi"
 
 msgid "The form contains errors. Please check the fields marked in red."
 msgstr ""
@@ -338,92 +329,104 @@ msgstr ""
 "formati seguenti:"
 
 msgid "Fields (Elections)"
-msgstr ""
+msgstr "Campi (Elezioni)"
 
 msgid "The following fields are included in all formats:"
 msgstr "I seguenti campi sono contenuti in tutti i formati:"
 
 msgid "Title of the election."
-msgstr ""
+msgstr "Titolo dell'elezione."
 
 msgid "The date of the election (an ISO 8601 date string)."
-msgstr ""
+msgstr "Data dell'elezione (stringa data in formato ISO 8601)"
 
 msgid "\"proporz\" for proportional, \"majorz\" for majority system."
 msgstr ""
+"\"proporz\" per il sistema proporzionale, \"majorz\" per il sistema "
+"maggioritario."
 
 msgid "The number of mandates."
-msgstr ""
+msgstr "Numero di mandati."
 
 msgid "The name of the municipality."
-msgstr ""
+msgstr "Nome del comune."
 
 msgid "The id of the municipality/locale (\"BFS Nummer\")."
-msgstr ""
+msgstr "Identificativo del comune/località (\"BFS Nummer\")."
 
-msgid "The number of people elegible to vote for this municipality."
-msgstr ""
+msgid "The number of people eligible to vote for this municipality."
+msgstr "Numero degli aventi diritto al voto di questo comune."
 
 msgid "The number of received ballots for this municipality."
-msgstr ""
+msgstr "Numero di schede ricevute per questo comune."
 
 msgid "The number of blank ballots for this municipality."
-msgstr ""
+msgstr "Numero di schede bianche per questo comune."
 
 msgid "The number of invalid ballots for this municipality."
-msgstr ""
+msgstr "Numero di schede nulle per questo comune."
 
 msgid "The number of unaccounted ballots for this municipality."
-msgstr ""
+msgstr "Numero di schede non valide per questo comune."
 
-msgid "The nubmer of accounted ballots for this municipality."
-msgstr ""
+msgid "The number of accounted ballots for this municipality."
+msgstr "Numero di schede valide per questo comune."
 
 msgid "The number of blank votes for this municipality."
-msgstr ""
+msgstr "Numero di voti nulli in questo comune."
 
 msgid ""
 "The number of invalid votes for this municipality. Zero for elections based "
 "on proportional representation."
 msgstr ""
+"Numero di voti non validi in questo comune. Zero per elezioni basate sul "
+"sistema proporzionale."
 
 msgid "The number of accounted votes for this municipality."
-msgstr ""
+msgstr "Numero di voti validi in questo comune."
 
 msgid ""
-"The name of the list this candidate appears on. Only relevant forelections "
+"The name of the list this candidate appears on. Only relevant for elections "
 "based on proportional representation."
 msgstr ""
+"Nome della lista alla quale appartiene questo candidato. Valido solo per "
+"elezioni basate sul sistema proporzionale."
 
 msgid ""
 "The number of votes this list has got. Only relevant for elections based on "
 "proportional representation."
 msgstr ""
+"Numero di voti ricevuti da questa lista. Valido solo per elezioni basate sul "
+"sistema proporzionale."
 
 msgid ""
 "The ID of the list connection this list is connected to. Only relevant for "
 "elections based on proportional representation."
 msgstr ""
+"L'identificato del collegamento della lista a cui questa lista è collegata. "
+"Valido solo per elezioni basate sul sistema proporzionale."
 
 msgid ""
 "The ID of the parent list connection this list is connected to. Only "
 "relevant for elections based on proportional representation."
 msgstr ""
+"L'identificativo del collegamento della lista padre a cui questa lista è "
+"collegata. Valido solo per elezioni basate sul sistema proporzionale."
 
 msgid "The family name of the candidate."
-msgstr ""
+msgstr "Cognome del candidato."
 
-msgid "The first name of the candiate."
-msgstr ""
+msgid "The first name of the candidate."
+msgstr "Nome del candidato."
 
 msgid "True if the candidate has been elected."
-msgstr ""
+msgstr "Vero se il candidato è stato eletto."
 
 msgid "The number of votes this candidate got."
-msgstr ""
+msgstr "Numero di voti ricevuti da questo candidato."
 
 msgid "Fields (Votes)"
-msgstr ""
+msgstr "Campi (voti)"
 
 msgid "Title of the vote."
 msgstr "Titolo della votazione."
@@ -562,51 +565,51 @@ msgid "The file contains an empty line."
 msgstr "Il file contiene una riga vuota."
 
 msgid "Invalid election values"
-msgstr ""
+msgstr "Valori dell'elezione non validi"
 
-msgid "Invalid muncipality values"
-msgstr ""
+msgid "Invalid municipality values"
+msgstr "Valori del comune non validi"
 
 #, python-format
 msgid "municipality id ${id} is unknown"
 msgstr "Il numero UST ${id} è sconosciuto"
 
 msgid "Invalid list values"
-msgstr ""
+msgstr "Valori della lista non validi"
 
 msgid "Invalid list results"
-msgstr ""
+msgstr "Risultati della lista non validi"
 
 msgid "Invalid candidate values"
-msgstr ""
+msgstr "Valori del candidato non validi"
 
 msgid "Invalid candidate results"
-msgstr ""
+msgstr "Risultati del candidato non validi"
 
 msgid "Invalid list connection values"
-msgstr ""
+msgstr "Valori della lista delle connessioni non validi"
 
 msgid "No data found"
 msgstr "Nessun dato trovato"
 
-msgid "Unkown candidate"
-msgstr ""
+msgid "Unknown candidate"
+msgstr "Candidato non conosciuto"
 
 msgid "Invalid values"
-msgstr ""
+msgstr "Valori non validi"
 
-msgid "Unkown municipality"
-msgstr ""
+msgid "Unknown municipality"
+msgstr "Comune non conosciuto"
 
 msgid "Wrong username or password"
 msgstr "Nome utente sconosciuto o password errata"
 
 #, python-format
 msgid "Do you really want to delete \"${election}\"?"
-msgstr ""
+msgstr "Sei sicuro/a di voler eliminare \"${election}\"?"
 
 msgid "Delete election"
-msgstr ""
+msgstr "Elimina elezione"
 
 #, python-format
 msgid "Do you really want to delete \"${vote}\"?"

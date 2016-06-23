@@ -11,6 +11,13 @@ $('.collapsible .more, .collapsible .less').click(function() {
     $(this).parents('table').children('tbody').children('tr:not(.total):not(.sticky)').toggle();
 });
 
+// fold sections wishing to be foldable
+$('.foldable.folded .foldable-panel').hide();
+$('.foldable .foldable-title').click(function() {
+    $(this).parents('.foldable').toggleClass('folded');
+    $(this).parents('.foldable').find('.foldable-panel').toggle();
+});
+
 // force all dropdowns to be rendered in the direction specified in the
 // options of said dropdown (so if we say align:left, *always* align left)
 Foundation.libs.dropdown.small = function() { return false; };
