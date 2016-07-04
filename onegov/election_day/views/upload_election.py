@@ -90,6 +90,9 @@ def view_upload(self, request, form):
     if status == 'error':
         transaction.abort()
 
+    if status == 'ok':
+        request.app.pages_cache.invalidate()
+
     return {
         'layout': ManageLayout(self, request),
         'title': self.title,
