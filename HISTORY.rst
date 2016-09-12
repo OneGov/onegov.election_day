@@ -4,6 +4,9 @@ Changelog
 - Updates translations.
   [msom]
 
+- Improves print styles.
+  [msom]
+
 0.9.0 (2016-09-06)
 ~~~~~~~~~~~~~~~~~~~
 
