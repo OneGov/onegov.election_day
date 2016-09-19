@@ -1,5 +1,10 @@
 Changelog
 ---------
+
+- Removes the Last-Modified header from certain views, it interferes with the
+  localization.
+  [msom]
+
 0.9.1 (2016-09-14)
 ~~~~~~~~~~~~~~~~~~~
 

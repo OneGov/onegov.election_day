@@ -13,12 +13,7 @@ def view_principal(self, request):
 
     archive = Archive(request.app.session())
     latest = archive.latest(group=False)
-    last_modified = archive.last_modified(latest)
     latest = archive.group_items(latest, reverse=True)
-
-    @request.after
-    def add_last_modified(response):
-        add_last_modified_header(response, last_modified)
 
     return {
         'layout': DefaultLayout(self, request),
