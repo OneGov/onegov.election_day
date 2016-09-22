@@ -556,6 +556,3 @@ msgstr "L'onn ${year} na vegn anc betg sustegnì"
 
 msgid "This ballot has fewer results than the others"
 msgstr "Quest project ha main resultats ch'ils auters projects."
-
-#~ msgid "No results yet"
-#~ msgstr "Anc nagins resultats avant maun"

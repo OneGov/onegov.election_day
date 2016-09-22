@@ -554,12 +554,3 @@ msgstr "Das Jahr ${year} wird noch nicht unterstützt"
 
 msgid "This ballot has fewer results than the others"
 msgstr "Diese Vorlage hat weniger Resultate als die Anderen"
-
-#~ msgid "Do you want to trigger the notfications?"
-#~ msgstr "Benachrichtigungen auslösen?"
-
-#~ msgid "Retrigger notifications"
-#~ msgstr "Benachrichtigungen erneut auslösen"
-
-#~ msgid "No results yet"
-#~ msgstr "Noch keine Resultate"

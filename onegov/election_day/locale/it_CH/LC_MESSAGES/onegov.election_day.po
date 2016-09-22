@@ -553,6 +553,3 @@ msgstr "L'anno ${year} non viene ancora supportato"
 
 msgid "This ballot has fewer results than the others"
 msgstr "Questo progetto contiene meno risultati rispetto agli altri."
-
-#~ msgid "No results yet"
-#~ msgstr "Ancora nessun risultato"

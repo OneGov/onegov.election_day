@@ -554,6 +554,3 @@ msgstr "L'année ${year} n'est pas encore prise en charge"
 
 msgid "This ballot has fewer results than the others"
 msgstr "Cet urne a moins de résultats que les autres."
-
-#~ msgid "No results yet"
-#~ msgstr "Pas de résultats à l'heure actuelle"
