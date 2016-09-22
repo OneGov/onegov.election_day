@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-02 08:25+0200\n"
-"PO-Revision-Date: 2016-09-02 08:22+0200\n"
+"POT-Creation-Date: 2016-09-06 08:46+0200\n"
+"PO-Revision-Date: 2016-09-05 16:44+0200\n"
 "Last-Translator: Denis Krienbühl <denis.krienbuehl@seantis.ch>\n"
 "Language-Team: German\n"
 "Language: de_CH\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Lingua 3.12\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 1.8.9\n"
 
 msgid "Elections"
 msgstr "Wahlen"
@@ -256,6 +256,12 @@ msgstr "Abgegebene Wahlzettel"
 msgid "Counted municipalities"
 msgstr "Ausgezählte Gemeinden"
 
+msgid "Download"
+msgstr "Herunterladen"
+
+msgid "Embed"
+msgstr "Einbetten"
+
 msgid "Candidates"
 msgstr "Kandidierende"
 
@@ -313,6 +319,12 @@ msgstr "Ungültige Wahlzettel"
 
 msgid "Accounted Votes"
 msgstr "Gültige Stimmen"
+
+msgid "Yay"
+msgstr "JA"
+
+msgid "Nay"
+msgstr "NEIN"
 
 msgid "The form contains errors. Please check the fields marked in red."
 msgstr ""
@@ -481,6 +493,21 @@ msgstr "Keine Fehler in der Stichfrage"
 msgid "Errors found in tie-breaker"
 msgstr "Fehler in der Stichfrage"
 
+msgid "Proposal and counter proposal rejected"
+msgstr "Initative und Gegenvorschlag abgelehnt"
+
+msgid "Proposal accepted"
+msgstr "Initiative angenommen"
+
+msgid "Counter proposal accepted"
+msgstr "Gegenvorschlag angenommen"
+
+msgid "Tie breaker in favor of the proposal"
+msgstr "Stichfrage zugunsten der Initiative"
+
+msgid "Tie breaker in favor of the counter proposal"
+msgstr "Stichfrage zugunsten des Gegenvorschlages"
+
 msgid "Yeas"
 msgstr "JA Stimmen"
 
@@ -489,12 +516,6 @@ msgstr "NEIN Stimmen"
 
 msgid "Cast Ballots"
 msgstr "Eingegangene Stimmzettel"
-
-msgid "Yay"
-msgstr "JA"
-
-msgid "Nay"
-msgstr "NEIN"
 
 msgid "Empty"
 msgstr "Leer"

@@ -4,7 +4,7 @@ name = 'onegov.election_day'
 description = (
     'OneGov ballot results website used on election day.'
 )
-version = '0.8.1'
+version = '0.9.5'
 
 
 def get_long_description():
@@ -62,6 +62,9 @@ setup(
         ],
         'onegov': [
             'upgrade = onegov.election_day.upgrade'
+        ],
+        'console_scripts': [
+            'onegov-election-day=onegov.election_day.cli:cli'
         ]
     },
     classifiers=[

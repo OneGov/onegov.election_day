@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-02 08:25+0200\n"
-"PO-Revision-Date: 2016-08-31 07:54+0200\n"
+"POT-Creation-Date: 2016-09-06 08:46+0200\n"
+"PO-Revision-Date: 2016-09-06 09:00+0200\n"
 "Last-Translator: Fabian Reinhard <fabian.reinhard@seantis.ch>\n"
 "Language-Team: \n"
 "Language: fr_CH\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: xls-to-po 1.0\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 1.8.9\n"
 
 msgid "Elections"
 msgstr "Elections"
@@ -242,7 +242,7 @@ msgid "Not yet counted."
 msgstr "Pas encore compté."
 
 msgid "Format Description"
-msgstr "Description du format:"
+msgstr "Description du format"
 
 msgid "Turnout"
 msgstr "Participation"
@@ -255,6 +255,12 @@ msgstr "Votes reçus"
 
 msgid "Counted municipalities"
 msgstr "Municipalités comptées"
+
+msgid "Download"
+msgstr "Télécharger"
+
+msgid "Embed"
+msgstr "Intégration"
 
 msgid "Candidates"
 msgstr "Candidats"
@@ -313,6 +319,12 @@ msgstr "Bulletins de vote non valides"
 
 msgid "Accounted Votes"
 msgstr "Votes comptés"
+
+msgid "Yay"
+msgstr "Oui"
+
+msgid "Nay"
+msgstr "Non"
 
 msgid "The form contains errors. Please check the fields marked in red."
 msgstr ""
@@ -481,6 +493,21 @@ msgstr "Pas d'erreurs trouvées dans le jeu décisif."
 msgid "Errors found in tie-breaker"
 msgstr "Erreurs trouvées dans le jeu décisif."
 
+msgid "Proposal and counter proposal rejected"
+msgstr "Refusé"
+
+msgid "Proposal accepted"
+msgstr "Accepté"
+
+msgid "Counter proposal accepted"
+msgstr "Contre-proposition"
+
+msgid "Tie breaker in favor of the proposal"
+msgstr "Accepté"
+
+msgid "Tie breaker in favor of the counter proposal"
+msgstr "Contre-proposition"
+
 msgid "Yeas"
 msgstr "Oui"
 
@@ -489,12 +516,6 @@ msgstr "Non"
 
 msgid "Cast Ballots"
 msgstr "Suffrages exprimés"
-
-msgid "Yay"
-msgstr "Oui"
-
-msgid "Nay"
-msgstr "Non"
 
 msgid "Empty"
 msgstr "Vide"

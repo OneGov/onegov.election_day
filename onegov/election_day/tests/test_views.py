@@ -358,16 +358,12 @@ def test_view_last_modified(election_day_app):
         client.get('/locale/de_CH').follow()
 
         for path in (
-            '/'
             '/json',
-            '/archive/2013',
-            '/election/election',
             '/election/election/summary',
             '/election/election/json',
             '/election/election/data-json',
             '/election/election/data-csv',
             '/election/election/data-xlsx',
-            '/vote/vote/',
             '/vote/vote/summary',
             '/vote/vote/json',
             '/vote/vote/data-json',
@@ -376,3 +372,11 @@ def test_view_last_modified(election_day_app):
         ):
             assert client.get(path).headers.get('Last-Modified') == \
                 'Wed, 01 Jan 2014 12:00:00 GMT'
+
+        for path in (
+            '/'
+            '/archive/2013',
+            '/election/election',
+            '/vote/vote/',
+        ):
+            assert 'Last-Modified' not in client.get(path).headers

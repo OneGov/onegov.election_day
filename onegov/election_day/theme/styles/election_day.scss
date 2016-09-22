@@ -382,6 +382,32 @@ table {
     font-size: .8rem;
     margin-top: 1em;
     text-align: right;
+
+    i.fa {
+        margin-right: .2em;
+    }
+}
+
+/*
+    Embed Code
+*/
+.embed {
+    font-size: .8rem;
+
+    a {
+        display: block;
+        text-align: right;
+    }
+
+    code {
+        display: block;
+        padding: 1em;
+        word-break: break-all;
+    }
+
+    i.fa {
+        margin-right: .2em;
+    }
 }
 
 /*
@@ -416,36 +442,6 @@ footer {
 
 }
 
-
-/*
-    Results Navigation
-*/
-.results-navigation {
-    h2 {
-        display: inline-block;
-        margin-bottom: 1rem;
-        margin-right: .4ex;
-    }
-
-    a {
-        color: $base;
-        font-size: $h2-font-size;
-    }
-
-    > *::after {
-        content: ' / ';
-    }
-
-    > *:last-child::after {
-        content: '';
-    }
-}
-
-@media #{$small-only} {
-    .results-navigation a {
-        font-size: $h2-font-size - $h2-font-reduction;
-    }
-}
 
 /*
     Manage navigation
@@ -684,6 +680,8 @@ form {
 
 .foldable {
 
+    margin-bottom: 2rem;
+
     .foldable-title {
         background-color: $snow;
         border-top: 5px solid $primary-color;
@@ -715,6 +713,7 @@ form {
         }
     }
 }
+
 
 /*
     Related Links
@@ -791,5 +790,12 @@ form {
     h3,
     .factoids {
         page-break-after: avoid;
+    }
+
+    html,
+    body {
+        margin: 0;
+        max-width: 100%;
+        width: 100%;
     }
 }

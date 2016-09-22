@@ -33,6 +33,14 @@ class Layout(ChameleonLayout):
         ).format(lang)
 
     @cached_property
+    def format_description_link(self):
+        lang = (self.request.locale or 'en')[:2]
+        return (
+            "https://github.com/OneGov/onegov.election_day"
+            "/blob/master/docs/format_{}.md"
+        ).format(lang)
+
+    @cached_property
     def font_awesome_path(self):
         static_file = StaticFile.from_application(
             self.app, 'font-awesome/css/font-awesome.min.css')
@@ -49,7 +57,7 @@ class Layout(ChameleonLayout):
 
     @cached_property
     def manage_link(self):
-        return self.request.link(ElectionCollection(self.app.session()))
+        return self.request.link(VoteCollection(self.app.session()))
 
     @cached_property
     def login_link(self):
@@ -100,13 +108,13 @@ class ManageLayout(DefaultLayout):
         menu = []
         session = self.request.app.session()
 
-        link = self.request.link(ElectionCollection(session))
-        class_ = 'active' if link == self.manage_model_link else ''
-        menu.append((_("Elections"), link, class_))
-
         link = self.request.link(VoteCollection(session))
         class_ = 'active' if link == self.manage_model_link else ''
         menu.append((_("Votes"), link, class_))
+
+        link = self.request.link(ElectionCollection(session))
+        class_ = 'active' if link == self.manage_model_link else ''
+        menu.append((_("Elections"), link, class_))
 
         return menu
 
