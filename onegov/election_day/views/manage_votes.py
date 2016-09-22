@@ -6,7 +6,7 @@ from onegov.ballot import Vote, VoteCollection
 from onegov.core.security import Private
 from onegov.election_day import _
 from onegov.election_day import ElectionDayApp
-from onegov.election_day.collections import WebhookCollection
+from onegov.election_day.collection import WebhookCollection
 from onegov.election_day.forms import DeleteForm
 from onegov.election_day.forms import TriggerWebhookForm
 from onegov.election_day.forms import VoteForm
