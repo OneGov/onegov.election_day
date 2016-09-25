@@ -5,7 +5,7 @@ from datetime import date
 from freezegun import freeze_time
 from onegov.testing import utils
 from webtest import TestApp as Client
-from onegov.election_day.collection import ArchivedResultCollection
+from onegov.election_day.collections import ArchivedResultCollection
 
 
 COLUMNS = [
