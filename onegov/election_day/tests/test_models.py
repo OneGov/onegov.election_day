@@ -1,8 +1,18 @@
+import json
 import textwrap
+import pytest
 
 from datetime import date, datetime, timezone
-from onegov.election_day.models import ArchivedResult, Principal
+from freezegun import freeze_time
+from onegov.ballot import Election, Vote
+from onegov.election_day.models import ArchivedResult
+from onegov.election_day.models import Notification
+from onegov.election_day.models import Principal
+from onegov.election_day.models import WebhookNotification
 from onegov.election_day.models.principal import cantons
+from onegov.election_day.tests import DummyRequest
+from time import sleep
+from unittest.mock import patch
 
 
 def test_load_principal():
@@ -25,6 +35,7 @@ def test_load_principal():
     assert principal.domain is 'canton'
     assert list(principal.available_domains.keys()) == ['federation', 'canton']
     assert principal.fetch == {}
+    assert principal.webhooks == []
 
     principal = Principal.from_yaml(textwrap.dedent("""
         name: Kanton Zug
@@ -39,6 +50,9 @@ def test_load_principal():
                 - municipality
             baar:
                 - municipality
+        webhooks:
+          - 'http://abc.com/1'
+          - 'http://abc.com/2'
     """))
 
     assert principal.name == 'Kanton Zug'
@@ -56,6 +70,7 @@ def test_load_principal():
         'steinhausen': ['municipality'],
         'baar': ['municipality']
     }
+    assert principal.webhooks == ['http://abc.com/1', 'http://abc.com/2']
 
     principal = Principal.from_yaml(textwrap.dedent("""
         name: Stadt Bern
@@ -78,6 +93,7 @@ def test_load_principal():
         'federation', 'canton', 'municipality'
     ]
     assert principal.fetch == {}
+    assert principal.webhooks == []
 
     principal = Principal.from_yaml(textwrap.dedent("""
         name: Stadt Bern
@@ -101,6 +117,7 @@ def test_load_principal():
         'federation', 'canton', 'municipality'
     ]
     assert principal.fetch == {}
+    assert principal.webhooks == []
 
 
 def test_municipalities():
@@ -309,3 +326,144 @@ def test_archived_result(session):
         'counted': True,
     }
     assert copied.shortcode == 'shortcode'
+
+
+def test_notification(session):
+    notification = Notification()
+    notification.action = 'action'
+    notification.last_change = datetime(2007, 1, 1, 0, 0, tzinfo=timezone.utc)
+
+    session.add(notification)
+    session.flush()
+
+    notification = session.query(Notification).one()
+    assert notification.id
+    assert notification.action == 'action'
+    assert notification.last_change == datetime(2007, 1, 1, 0, 0,
+                                                tzinfo=timezone.utc)
+    assert notification.election_id is None
+    assert notification.vote_id is None
+
+    with freeze_time("2008-01-01 00:00"):
+        session.add(
+            Election(
+                title="Election",
+                domain='federation',
+                type='majorz',
+                date=date(2011, 1, 1)
+            )
+        )
+        session.flush()
+        election = session.query(Election).one()
+
+        notification = Notification()
+        notification.update_from_model(election)
+        assert notification.election_id == election.id
+        assert notification.vote_id == None
+        assert notification.last_change == datetime(2008, 1, 1, 0, 0,
+                                                    tzinfo=timezone.utc)
+
+    with freeze_time("2009-01-01 00:00"):
+        session.add(
+            Vote(
+                title="Vote",
+                domain='federation',
+                date=date(2011, 1, 1),
+            )
+        )
+        session.flush()
+        vote = session.query(Vote).one()
+
+        notification = Notification()
+        notification.update_from_model(vote)
+        assert notification.election_id == None
+        assert notification.vote_id == vote.id
+        assert notification.last_change == datetime(2009, 1, 1, 0, 0,
+                                                    tzinfo=timezone.utc)
+
+    with pytest.raises(NotImplementedError):
+        notification.trigger(DummyRequest(), election)
+    with pytest.raises(NotImplementedError):
+        notification.trigger(DummyRequest(), vote)
+
+
+def test_webhook_notification(session):
+    with freeze_time("2008-01-01 00:00"):
+        session.add(
+            Election(
+                title="Election",
+                domain='federation',
+                type='majorz',
+                date=date(2011, 1, 1)
+            )
+        )
+        election = session.query(Election).one()
+
+        notification = WebhookNotification()
+        notification.trigger(DummyRequest(), election)
+
+        assert notification.action == 'webhooks'
+        assert notification.election_id == election.id
+        assert notification.last_change == datetime(2008, 1, 1, 0, 0,
+                                                    tzinfo=timezone.utc)
+
+        session.add(
+            Vote(
+                title="Vote",
+                domain='federation',
+                date=date(2011, 1, 1),
+            )
+        )
+        vote = session.query(Vote).one()
+
+        notification.trigger(DummyRequest(), vote)
+
+        assert notification.action == 'webhooks'
+        assert notification.vote_id == vote.id
+        assert notification.last_change == datetime(2008, 1, 1, 0, 0,
+                                                    tzinfo=timezone.utc)
+
+        with patch('urllib.request.urlopen') as urlopen:
+            request = DummyRequest()
+            request.app.principal.webhooks = ['http://abc.com/1']
+
+            notification.trigger(DummyRequest(), election)
+            sleep(5)
+            assert urlopen.called
+
+            headers = urlopen.call_args[0][0].headers
+            data = urlopen.call_args[0][1]
+            assert headers['Content-type'] == 'application/json; charset=utf-8'
+            assert headers['Content-length'] == len(data)
+
+            assert json.loads(data.decode('utf-8')) == {
+                'date': '2011-01-01',
+                'domain': 'federation',
+                'last_modified': '2008-01-01T00:00:00+00:00',
+                'progress': {'counted': 0, 'total': 0},
+                'title': {'de_CH': 'Election'},
+                'type': 'election',
+                'url': 'Election/election'
+            }
+
+            notification.trigger(DummyRequest(), vote)
+            sleep(5)
+            assert urlopen.called
+
+            headers = urlopen.call_args[0][0].headers
+            data = urlopen.call_args[0][1]
+            assert headers['Content-type'] == 'application/json; charset=utf-8'
+            assert headers['Content-length'] == len(data)
+
+            assert json.loads(data.decode('utf-8')) == {
+                'answer': '',
+                'date': '2011-01-01',
+                'domain': 'federation',
+                'last_modified': '2008-01-01T00:00:00+00:00',
+                'nays_percentage': 100.0,
+                'progress': {'counted': 0.0, 'total': 0.0},
+                'title': {'de_CH': 'Vote'},
+                'type': 'vote',
+                'url': 'Vote/vote',
+                'yeas_percentage': 0.0
+            }

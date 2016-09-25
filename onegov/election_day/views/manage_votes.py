@@ -7,7 +7,10 @@ from onegov.core.security import Private
 from onegov.election_day import _
 from onegov.election_day import ElectionDayApp
 from onegov.election_day.collections import ArchivedResultCollection
-from onegov.election_day.forms import DeleteForm, VoteForm
+from onegov.election_day.collections import NotificationCollection
+from onegov.election_day.forms import DeleteForm
+from onegov.election_day.forms import TriggerNotificationForm
+from onegov.election_day.forms import VoteForm
 from onegov.election_day.layout import ManageVotesLayout
 
 
@@ -97,5 +100,46 @@ def delete_vote(self, request, form):
         'subtitle': _("Delete vote"),
         'button_text': _("Delete vote"),
         'button_class': 'alert',
+        'cancel': layout.manage_model_link
+    }
+
+
+@ElectionDayApp.form(model=Vote, name='trigger', template='form.pt',
+                     permission=Private, form=TriggerNotificationForm)
+def trigger_notifications(self, request, form):
+
+    session = request.app.session()
+    notifications = NotificationCollection(session)
+    layout = ManageVotesLayout(self, request)
+
+    if form.submitted(request):
+        notifications.trigger(request, self)
+        return morepath.redirect(layout.manage_model_link)
+
+    callout = None
+    message = ''
+    title = _("Trigger Notifications")
+    button_class = 'primary'
+
+    if notifications.by_vote(self):
+        callout = _(
+            "There are no changes since the last time the notifications "
+            "have been triggered!"
+        )
+        message = _(
+            "Do you really want to retrigger the notfications?",
+        )
+        button_class = 'alert'
+
+    return {
+        'message': message,
+        'layout': layout,
+        'form': form,
+        'title': self.title,
+        'shortcode': self.shortcode,
+        'subtitle': title,
+        'callout': callout,
+        'button_text': title,
+        'button_class': button_class,
         'cancel': layout.manage_model_link
     }

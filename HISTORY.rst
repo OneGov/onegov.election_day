@@ -48,6 +48,10 @@ Changelog
   [msom]
 
 - Only shows the latest election day on the homepage.
+  [msom]
+
+- Adds support for webhooks.
+  [msom]
 
 0.9.5 (2016-09-21)
 ~~~~~~~~~~~~~~~~~~~

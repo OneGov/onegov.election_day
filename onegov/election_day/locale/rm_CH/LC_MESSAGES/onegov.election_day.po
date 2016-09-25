@@ -13,11 +13,11 @@ msgstr ""
 "Generated-By: xls-to-po 1.0\n"
 "X-Generator: Poedit 1.8.9\n"
 
-msgid "Elections"
-msgstr "Elecziuns"
-
 msgid "Votes"
 msgstr "Votaziuns"
+
+msgid "Elections"
+msgstr "Elecziuns"
 
 msgid "Manage"
 msgstr "Administrar"
@@ -459,6 +459,9 @@ msgstr "Modifitgar"
 msgid "Upload Results"
 msgstr "Chargiar si resultats"
 
+msgid "Trigger Notifications"
+msgstr ""
+
 msgid "Delete"
 msgstr "Stizzar"
 
@@ -477,14 +480,17 @@ msgstr "Duvrai per plaschair il suandant format:"
 msgid "Your results were uploaded successfully."
 msgstr "Voss resultats èn vegnids chargiads si cun success."
 
-msgid "Click here to see the updated results page."
-msgstr "Cliccai qua per mussar la pagina cun ils resultats actualisads."
+msgid "Click here to trigger the notifications"
+msgstr ""
 
 msgid "Your results could not be uploaded."
 msgstr "Voss resultats n'han displaschaivlamain betg pudì vegnir chargiads si."
 
 msgid "Line"
 msgstr "Lingia"
+
+msgid "Click here to see the updated results page."
+msgstr "Cliccai qua per mussar la pagina cun ils resultats actualisads."
 
 msgid "No errors found in proposal"
 msgstr "Chattà nagins sbagls en la proposta"
@@ -545,6 +551,14 @@ msgstr "Vulais Vus propi stizzar l'elecziun \"${election}\"?"
 
 msgid "Delete election"
 msgstr "Stizzar l'elecziun"
+
+msgid ""
+"There are no changes since the last time the notifications have been "
+"triggered!"
+msgstr ""
+
+msgid "Do you really want to retrigger the notfications?"
+msgstr ""
 
 #, python-format
 msgid "Do you really want to delete \"${vote}\"?"

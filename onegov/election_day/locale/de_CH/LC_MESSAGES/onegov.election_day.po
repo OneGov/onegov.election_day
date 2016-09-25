@@ -14,11 +14,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.9\n"
 
-msgid "Elections"
-msgstr "Wahlen"
-
 msgid "Votes"
 msgstr "Abstimmungen"
+
+msgid "Elections"
+msgstr "Wahlen"
 
 msgid "Manage"
 msgstr "Verwalten"
@@ -458,6 +458,9 @@ msgstr "Bearbeiten"
 msgid "Upload Results"
 msgstr "Resultate Hochladen"
 
+msgid "Trigger Notifications"
+msgstr "Benachrichtigungen auslösen"
+
 msgid "Delete"
 msgstr "Löschen"
 
@@ -476,15 +479,18 @@ msgstr "Bitte verwenden Sie das folgende Format:"
 msgid "Your results were uploaded successfully."
 msgstr "Ihre Resultate wurden erfolgreich hochgeladen."
 
-msgid "Click here to see the updated results page."
-msgstr ""
-"Hier klicken um die Seite mit den aktualisierten Resultaten anzuzeigen."
+msgid "Click here to trigger the notifications"
+msgstr "Hier klicken um die Benachrichtigungen auszulösen."
 
 msgid "Your results could not be uploaded."
 msgstr "Ihre Resultate konnten leider nicht hochgeladen werden."
 
 msgid "Line"
 msgstr "Zeile"
+
+msgid "Click here to see the updated results page."
+msgstr ""
+"Hier klicken um die Seite mit den aktualisierten Resultaten anzuzeigen."
 
 msgid "No errors found in proposal"
 msgstr "Keine Fehler im Vorschlag"
@@ -543,6 +549,14 @@ msgstr "Möchten Sie die Wahl \"${election}\" wirklich löschen?"
 
 msgid "Delete election"
 msgstr "Wahl löschen"
+
+msgid ""
+"There are no changes since the last time the notifications have been "
+"triggered!"
+msgstr "Keine Änderungen seit dem letzten Auslösen der Benachrichtigungen!"
+
+msgid "Do you really want to retrigger the notfications?"
+msgstr "Benachrichtigungen wirklich erneut auslösen?"
 
 #, python-format
 msgid "Do you really want to delete \"${vote}\"?"

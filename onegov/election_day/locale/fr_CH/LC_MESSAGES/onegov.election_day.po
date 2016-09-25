@@ -14,11 +14,11 @@ msgstr ""
 "Generated-By: xls-to-po 1.0\n"
 "X-Generator: Poedit 1.8.9\n"
 
-msgid "Elections"
-msgstr "Elections"
-
 msgid "Votes"
 msgstr "Votes"
+
+msgid "Elections"
+msgstr "Elections"
 
 msgid "Manage"
 msgstr "Gérer"
@@ -459,6 +459,9 @@ msgstr "Editer"
 msgid "Upload Results"
 msgstr "Mettre à jour les résultats"
 
+msgid "Trigger Notifications"
+msgstr ""
+
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -477,14 +480,17 @@ msgstr "Veuillez utiliser le format suivant:"
 msgid "Your results were uploaded successfully."
 msgstr "Vos résultats ont été correctement mis à jour."
 
-msgid "Click here to see the updated results page."
-msgstr "Cliquez pour voir la page des résultats mise à jour."
+msgid "Click here to trigger the notifications"
+msgstr ""
 
 msgid "Your results could not be uploaded."
 msgstr "Vos résultats n'ont pas pu être mis à jour."
 
 msgid "Line"
 msgstr "Ligne"
+
+msgid "Click here to see the updated results page."
+msgstr "Cliquez pour voir la page des résultats mise à jour."
 
 msgid "No errors found in proposal"
 msgstr "Pas d'erreurs trouvées dans la proposition."
@@ -543,6 +549,14 @@ msgstr "Voulez-vous vraiment supprimer \"$ {election}\"?"
 
 msgid "Delete election"
 msgstr "Supprimer l'élection"
+
+msgid ""
+"There are no changes since the last time the notifications have been "
+"triggered!"
+msgstr ""
+
+msgid "Do you really want to retrigger the notfications?"
+msgstr ""
 
 #, python-format
 msgid "Do you really want to delete \"${vote}\"?"
