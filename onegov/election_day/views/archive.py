@@ -15,10 +15,6 @@ def view_archive(self, request):
     results, last_modified = self.by_date()
     results = self.group_items(results)
 
-    @request.after
-    def add_last_modified(response):
-        add_last_modified_header(response, last_modified)
-
     return {
         'layout': DefaultLayout(self, request),
         'date': self.date,
@@ -51,10 +47,6 @@ def view_principal(self, request):
     archive = ArchivedResultCollection(request.app.session())
     latest, last_modified = archive.latest()
     latest = archive.group_items(latest, reverse=True)
-
-    @request.after
-    def add_last_modified(response):
-        add_last_modified_header(response, last_modified)
 
     return {
         'layout': DefaultLayout(self, request),
