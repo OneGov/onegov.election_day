@@ -12,6 +12,9 @@ from onegov.election_day.utils import get_summaries
                      permission=Public)
 def view_archive(self, request):
 
+    if 'headerless' in request.params:
+        request.include('frame_resizer')
+
     results, last_modified = self.by_date()
     results = self.group_items(results)
 
@@ -43,6 +46,9 @@ def view_archive_json(self, request):
 
 @ElectionDayApp.html(model=Principal, template='archive.pt', permission=Public)
 def view_principal(self, request):
+
+    if 'headerless' in request.params:
+        request.include('frame_resizer')
 
     archive = ArchivedResultCollection(request.app.session())
     latest, last_modified = archive.latest()
