@@ -521,6 +521,9 @@ def test_view_headerless(election_day_app):
     ):
         assert 'frame_resizer' not in client.get(path)
         assert 'frame_resizer' in client.get(path + '?headerless')
+        assert 'frame_resizer' in client.get(path)
+        assert 'frame_resizer' not in client.get(path + '?headerful')
+        assert 'frame_resizer' not in client.get(path)
 
     for path in (
         '/archive/2013/json',
@@ -542,6 +545,9 @@ def test_view_headerless(election_day_app):
     ):
         assert 'frame_resizer' not in client.get(path)
         assert 'frame_resizer' not in client.get(path + '?headerless')
+        assert 'frame_resizer' not in client.get(path)
+        assert 'frame_resizer' not in client.get(path + '?headerful')
+        assert 'frame_resizer' not in client.get(path)
 
     for path in (
         '/election/majorz-election/candidates-chart',
@@ -551,3 +557,6 @@ def test_view_headerless(election_day_app):
     ):
         assert 'frame_resizer' in client.get(path)
         assert 'frame_resizer' in client.get(path + '?headerless')
+        assert 'frame_resizer' in client.get(path)
+        assert 'frame_resizer' in client.get(path + '?headerful')
+        assert 'frame_resizer' in client.get(path)
