@@ -1,9 +1,11 @@
 """ Provides commands used to initialize election day websites. """
 
 import click
+import os
 
 from onegov.core.cli import command_group, pass_group_context
 from onegov.election_day.models import ArchivedResult
+from onegov.election_day.sms_processor import SmsQueueProcessor
 
 
 cli = command_group()
@@ -68,3 +70,22 @@ def fetch(group_context):
         click.echo("Results fetched successfully")
 
     return fetch_results
+
+
+@cli.command()
+@click.argument('username')
+@click.argument('password')
+def send_sms(username, password):
+    """ Sends the SMS in the smsdir for a given instance. For example:
+
+        onegov-election-day --select '/onegov_election_day/zg' send_sms
+            'info@seantis.ch' 'top-secret'
+
+    """
+
+    def send(request, app):
+        path = os.path.join(app.configuration['sms_directory'], app.schema)
+        qp = SmsQueueProcessor(path, username, password)
+        qp.send_messages()
+
+    return send

@@ -6,6 +6,7 @@ from click.testing import CliRunner
 from datetime import date, datetime, timezone
 from onegov.election_day.cli import cli
 from onegov.election_day.models import ArchivedResult
+from unittest.mock import patch
 
 
 def test_add_instance(postgres_dsn, temporary_directory):
@@ -255,3 +256,88 @@ def test_fetch(postgres_dsn, temporary_directory, session_manager):
     assert get_session('be').query(ArchivedResult).count() == 3 + 4
     assert get_session('bern').query(ArchivedResult).count() == 5 + 3
     assert get_session('thun').query(ArchivedResult).count() == 4
+
+
+def test_send_sms(postgres_dsn, temporary_directory):
+
+    schema = 'onegov_election_day-govikon'
+    cfg_path = os.path.join(temporary_directory, 'onegov.yml')
+    with open(cfg_path, 'w') as f:
+        f.write(yaml.dump({
+            'applications': [
+                {
+                    'path': '/onegov_election_day/*',
+                    'application': 'onegov.election_day.ElectionDayApp',
+                    'namespace': 'onegov_election_day',
+                    'configuration': {
+                        'dsn': postgres_dsn,
+                        'depot_backend': 'depot.io.memory.MemoryFileStorage',
+                        'filestorage': 'fs.osfs.OSFS',
+                        'filestorage_options': {
+                            'root_path': '{}/file-storage'.format(
+                                temporary_directory
+                            ),
+                            'create': 'true'
+                        },
+                        'sms_directory': '{}/sms'.format(
+                            temporary_directory
+                        ),
+                    },
+                }
+            ]
+        }))
+
+    principal_path = os.path.join(temporary_directory, 'file-storage', schema)
+    os.makedirs(principal_path)
+    with open(os.path.join(principal_path, 'principal.yml'), 'w') as f:
+        f.write(
+            yaml.dump({
+                'name': 'Govikon',
+                'canton': 'be',
+                'color': '#fff',
+                'logo': 'canton-be.svg',
+            }, default_flow_style=False)
+        )
+
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        '--config', cfg_path, '--select', '/onegov_election_day/govikon',
+        'add',
+    ])
+    assert result.exit_code == 0
+    assert "Instance was created successfully" in result.output
+
+    sms_path = os.path.join(temporary_directory, 'sms', schema)
+    os.makedirs(sms_path)
+
+    # no sms yet
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        '--config', cfg_path, '--select', '/onegov_election_day/govikon',
+        'send_sms', 'username', 'password'
+    ])
+    assert result.exit_code == 0
+
+    with open(os.path.join(sms_path, '+417772211.000000'), 'w') as f:
+        f.write('Fancy new results!')
+
+    with patch('requests.post') as post:
+        runner = CliRunner()
+        result = runner.invoke(cli, [
+            '--config', cfg_path, '--select', '/onegov_election_day/govikon',
+            'send_sms', 'username', 'password'
+        ])
+        assert post.called
+        assert post.call_args[0] == (
+            'https://json.aspsms.com/SendSimpleTextSMS',
+        )
+        assert post.call_args[1] == {
+            'json': {
+                'MessageText': 'Fancy new results!',
+                'Originator': 'OneGov',
+                'Password': 'password',
+                'Recipients': ['+417772211'],
+                'UserName': 'username'
+            }
+        }
+        assert result.exit_code == 0
