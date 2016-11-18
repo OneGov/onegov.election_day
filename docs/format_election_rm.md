@@ -2,7 +2,7 @@
 
 Sco formats da datoteca vegnan acceptadas datotecas CSV, XLS u XLSX che vegnan generadas dals programs d'elecziun "Elecziuns (SESAM)" e "Wabsti Elecziuns e votaziuns (VRSG)", u da l'applicaziun web sezza. Sche la tabella duai vegnir fatga a maun, è il format da l'applicaziun web il pli simpel.
 
-"Vischnanca" might refer to a district, ward, etc.
+Ina "vischnanca" po er esser in district, in circul electoral e.u.v.
 
 ## Cuntegn
 
