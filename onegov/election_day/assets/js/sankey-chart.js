@@ -62,7 +62,9 @@ var init_sankey_chart = function(el) {
         .attr('height', height + 40)
         .attr('xmlns', "http://www.w3.org/2000/svg")
         .attr('version', '1.1')
-        .style('padding-top', '20px');
+        .style('padding-top', '20px')
+        .style('padding-bottom', '20px')
+        .style('overflow', 'visible');
     var offset = {left: 0, right: 0, margin: 6};
     var name = {};
     var scale = d3.scale.linear().domain([0, width]);
