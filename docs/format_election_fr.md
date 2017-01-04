@@ -28,6 +28,7 @@ Les colonnes suivantes seront évaluées et on devrait avoir au moins celles-ci 
 
 - **Anzahl Sitze** (Nombre de places)
 - **Wahlkreis-Nr** (Numéro de circonscription électorale)
+- **Wahlkreisbezeichnung** (Electoral district name)
 - **Anzahl Gemeinden** (Nombre de municipalités)
 - **Stimmberechtigte** (Autorisé à voter)
 - **Wahlzettel** (Bulletins)
@@ -59,6 +60,7 @@ Les colonnes suivantes seront évaluées et on devrait avoir au moins celles-ci 
 
 - **Anzahl Sitze** (Nombre de places)
 - **Wahlkreis-Nr** (Numéro de circonscription électorale)
+- **Wahlkreisbezeichnung** (Electoral district name)
 - **Stimmberechtigte** (Autorisé à voter)
 - **Wahlzettel** (Bulletins)
 - **Ungültige Wahlzettel** (Bulletins non valides)
@@ -105,6 +107,7 @@ Dans l'exportation des données, une ligne est présente pour chaque municipalit
 
 - **AnzMandate** (Nombre de places)
 - **BFS** (Numéro BFS de la municipalité.)
+- **EinheitBez**
 - **StimmBer** (Autorisé à voter)
 - **StimmAbgegeben** (Votes)
 - **StimmLeer** (Votes vides)
@@ -152,6 +155,7 @@ Le format de fichier nécessite quatre diagrammes individuels : l'exportation de
 Une ligne est présente par candidat et municipalité dans l'exportation des données. Les colonnes suivantes seront évaluées et devraient exister :
 
 - **Einheit_BFS** (Numéro BFS de la municipalité.)
+- **Einheit_Name**
 - **Kand_Nachname** (Nom de famille du candidat)
 - **Kand_Vorname** (Prénom du candidat)
 - **Liste_KandID** (Identifiant du candidat)
@@ -221,7 +225,8 @@ Les colonnes suivantes seront évaluées et devraient exister :
 - **election_absolute_majority**: Majorité absolue de l'élection, seulement si c'est une élection Majorz.
 - **election_counted_entities**: Nombre de municipalités comptées. Si `election_counted_entities = election_total_entities`, on considère alors que l'élection est entièrement comptée.
 - **election_total_entities**: Nombre total de municipalités. Si aucune information précise à propos de la situation de l'élection n'est possible (parce que l'élection a été importée par Wabsti), alors cette valeur est `0`.
-- **entity_id**: Numéro BFS de la municipalité..
+- **entity_id**: Numéro BFS de la municipalité.
+- **entity_name**: The name of the municipality.
 - **entity_elegible_voters**: Nombre de personnes autorisées à voter dans la municipalité.
 - **entity_received_ballots**: Nombre de bulletins soumis dans la municipalité.
 - **entity_blank_ballots**: Nombre de bulletins vides dans la municipalité.
