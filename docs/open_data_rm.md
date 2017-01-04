@@ -79,7 +79,7 @@ election_absolute_majority|La maioritad absoluta. Mo tar elecziuns da maiorz.
 election_counted_entities|Il dumber da vischnancas ch'èn dumbradas ora.
 election_total_entities|Il dumber total da vischnancas.
 entity_name|Il num da la vischnanca/dal lieu
-entity_id|La ID da la vischnanca/dal lieu.
+entity_id|La ID da la vischnanca/dal lieu. A value `0` represents the expats.
 entity_elegible_voters|Il dumber da las votantas e dals votants da la vischnanca/dal lieu.
 entity_received_ballots|Il dumber dals cedels electorals consegnads da la vischnanca/dal lieu.
 entity_blank_ballots|Il dumber dals cedels electorals vids da la vischnanca/dal lieu.
@@ -151,7 +151,7 @@ shortcode|Scursanida interna (definescha la successiun da pliras votaziuns che h
 domain|`federation` per votaziuns naziunalas, `canton` per votaziuns chantunalas
 type|`proposal` (proposta), `counter-proposal` (cuntraproposta) or "tie-breaker" (dumonda decisiva).
 group|La derivanza dal resultat. Quai po esser il district e la vischnanca, separads cun in stritg diagonal, il num da la citad ed il num dal circul, er separads cun in stritg diagonal, u simplamain il num da la vischnanca. Quai dependa dal chantun respectiv.
-entity_id|La ID da la vischnanca/dal lieu.
+entity_id|La ID da la vischnanca/dal lieu. A value `0` represents the expats.
 counted|Gist, sch'il resultat è vegnì eruì. Fauss, sch'il resultat n'è anc betg enconuschent (las valurs n'èn anc betg correctas).
 yeas|Il dumber da las vuschs affirmativas
 nays|Il dumber da las vuschs negativas
