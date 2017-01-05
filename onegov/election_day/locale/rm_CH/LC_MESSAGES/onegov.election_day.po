@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-19 15:17+0100\n"
+"POT-Creation-Date: 2017-01-04 09:24+0100\n"
 "PO-Revision-Date: 2016-12-14 11:30+0100\n"
 "Last-Translator: Fabian Reinhard <fabian.reinhard@seantis.ch>\n"
 "Language-Team: \n"
@@ -116,13 +116,6 @@ msgstr "Datas nunvalaivlas da colliaziuns da glistas"
 msgid "No data found"
 msgstr "Chattà naginas datas"
 
-msgid "Invalid municipality values"
-msgstr "Datas nunvalaivlas da vischnancas"
-
-#, python-format
-msgid "municipality id ${id} is unknown"
-msgstr "Il numer UST ${id} n'è betg enconuschent"
-
 msgid "Unknown candidate"
 msgstr "Candidat(a) nunenconuschent(a)"
 
@@ -159,20 +152,6 @@ msgstr "Dapli vuschs entradas che persunas cun dretg da votar."
 
 msgid "Invalid ballot type"
 msgstr "Tip da votaziun nunvalaivel"
-
-msgid "Missing municipality"
-msgstr "Lieu che manca"
-
-#, python-format
-msgid "${group} was found twice"
-msgstr "${group} è avant maun duas giadas"
-
-msgid "Invalid municipality id"
-msgstr "Numer UST nunvalaivel"
-
-#, python-format
-msgid "municipality id ${id} was found twice"
-msgstr "Il numer UST ${id} vegn duvrà duas giadas"
 
 msgid "Election (German)"
 msgstr "Elecziun (tudestg)"
@@ -231,9 +210,6 @@ msgstr "Resultat eruì cumplettamain"
 msgid "Absolute majority"
 msgstr "Maioritad absoluta"
 
-msgid "Counter-Proposal"
-msgstr "Cuntraproposta"
-
 msgid "Vote number"
 msgstr "Numer dal project"
 
@@ -274,14 +250,14 @@ msgstr "Votaziun (rumantsch)"
 msgid "New results are available on ${url}"
 msgstr "Novs resultats disponibels sin ${url}"
 
-msgid "federal"
-msgstr "federal"
+msgid "Federal"
+msgstr "Sin plaun naziunal"
 
-msgid "cantonal"
-msgstr "chantunal"
+msgid "Cantonal"
+msgstr "Sin plaun chantunal"
 
-msgid "communal"
-msgstr "communal"
+msgid "Communal"
+msgstr "Sin plaun communal"
 
 msgid "Elections &amp; Votes"
 msgstr "Elecziuns &amp; votaziuns"
@@ -439,6 +415,17 @@ msgstr "Dumbrà ora"
 msgid "Cast Ballots"
 msgstr "Cedels da votar entrads"
 
+msgid ""
+"The raw data used to display the results is available in the following "
+"formats:"
+msgstr ""
+
+msgid "The format of the data is described here:"
+msgstr ""
+
+msgid "Format Description"
+msgstr "descripziun dal format"
+
 msgid "New Election"
 msgstr "Nova elecziun"
 
@@ -448,25 +435,16 @@ msgstr "I n'èn registradas anc naginas elecziuns."
 msgid "Actions"
 msgstr "Acziuns"
 
-msgid "Federal"
-msgstr "Sin plaun naziunal"
-
-msgid "Cantonal"
-msgstr "Sin plaun chantunal"
-
-msgid "Communal"
-msgstr "Sin plaun communal"
-
 msgid "View"
 msgstr "Mussar"
 
 msgid "Edit"
 msgstr "Modifitgar"
 
-msgid "Upload Results"
+msgid "Upload results"
 msgstr "Chargiar si resultats"
 
-msgid "Trigger Notifications"
+msgid "Trigger notifications"
 msgstr "Trametter communicaziuns als abunents"
 
 msgid "Delete"
@@ -487,14 +465,8 @@ msgstr "Nova votaziun"
 msgid "No votes yet."
 msgstr "I n'èn registradas anc naginas votaziuns."
 
-msgid "Upload results"
-msgstr "Chargiar si resultats"
-
 msgid "Please use the following format:"
 msgstr "Duvrai per plaschair il suandant format:"
-
-msgid "Format Description"
-msgstr "descripziun dal format"
 
 msgid "Your results were uploaded successfully."
 msgstr "Voss resultats èn vegnids chargiads si cun success."
@@ -580,6 +552,9 @@ msgstr "Summa intermediara"
 msgid "Total"
 msgstr "Total"
 
+msgid "The raw data is available as:"
+msgstr ""
+
 msgid "Electoral District"
 msgstr "Circul electoral"
 
@@ -644,6 +619,9 @@ msgid ""
 msgstr ""
 "La communicaziun per SMS è vegnida terminada. A partir d'ussa na survegnis "
 "Vus pli nagins SMS en chaussa."
+
+msgid "Blank list"
+msgstr ""
 
 #, python-format
 msgid "Do you really want to delete \"${election}\"?"

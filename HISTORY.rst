@@ -1,5 +1,28 @@
 Changelog
 ---------
+1.4.3 (2017-01-04)
+~~~~~~~~~~~~~~~~~~~
+
+- Harmonize the usage of the groups in the various formats.
+  [msom]
+
+- Allow to list expats as separate entity (but not using SESAM format).
+  [msom]
+
+1.4.2 (2017-01-03)
+~~~~~~~~~~~~~~~~~~~
+
+- Fixes cropped labels in panachage charts.
+  [msom]
+
+1.4.1 (2016-12-29)
+~~~~~~~~~~~~~~~~~~~
+
+- Fixes templates.
+  [msom]
+
+1.4.0 (2016-12-28)
+~~~~~~~~~~~~~~~~~~~
 
 - Adds panachage charts.
   [msom]
@@ -8,9 +31,6 @@ Changelog
   [msom]
 
 - Uses tabs instead of foldable sections.
-  [msom]
-
-- Shows the number of SMS subscribers in the manage view.
   [msom]
 
 - Uses fading effects on charts.
@@ -23,6 +43,12 @@ Changelog
   [msom]
 
 - Improves handling of invalid (excel) files.
+  [msom]
+
+- Adds (partial) support for 2017.
+  [msom]
+
+- Shows the number of SMS subscribers in the manage view.
   [msom]
 
 - Adds support for PyFilesystem 2.x and Chameleon 3.x.

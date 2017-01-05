@@ -164,6 +164,7 @@ def test_principal_municipalities():
         2014: municipalities,
         2015: municipalities,
         2016: municipalities,
+        2017: municipalities,
     }
 
     for canton in cantons:
@@ -171,7 +172,7 @@ def test_principal_municipalities():
             name=canton, canton=canton, logo=None, color=None
         )
 
-        for year in range(2009, 2017):
+        for year in range(2009, 2018):
             assert principal.municipalities[year]
 
 
@@ -184,14 +185,9 @@ def test_principal_districts():
     )
 
     assert principal.districts == {
-        2009: {1059: {'name': 'Kriens'}},
-        2010: {1059: {'name': 'Kriens'}},
-        2011: {1059: {'name': 'Kriens'}},
-        2012: {1059: {'name': 'Kriens'}},
-        2013: {1059: {'name': 'Kriens'}},
-        2014: {1059: {'name': 'Kriens'}},
-        2015: {1059: {'name': 'Kriens'}},
-        2016: {1059: {'name': 'Kriens'}},
+        year: {1059: {'name': 'Kriens'}} for year in range(
+            2009, date.today().year + 2
+        )
     }
 
     principal = Principal(
@@ -210,7 +206,8 @@ def test_principal_districts():
         2013: districts,
         2014: districts,
         2015: districts,
-        2016: districts
+        2016: districts,
+        2017: districts
     }
 
 
@@ -257,6 +254,13 @@ def test_principal_years_available():
             assert principal.is_year_available(year)
         for year in range(2009, 2017):
             assert principal.is_year_available(year, map_required=False)
+
+        if canton in ['gr', 'sg', 'sz', 'zg']:
+            assert principal.is_year_available(2017)
+            assert principal.is_year_available(2017, map_required=False)
+        else:
+            assert not principal.is_year_available(2017)
+            assert principal.is_year_available(2017, map_required=False)
 
 
 def test_principal_notifications_enabled():

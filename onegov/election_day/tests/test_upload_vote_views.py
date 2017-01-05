@@ -552,15 +552,15 @@ def test_upload_vote_wabsti(election_day_app_sg, tar_file):
     upload = upload.form.submit()
 
     assert "Ihre Resultate wurden erfolgreich hochgeladen" in upload
-    assert archive.query().one().progress == (77, 77)
+    assert archive.query().one().progress == (78, 78)
 
     results = upload.click("Hier klicken")
 
-    assert "37.27%" in results
-    assert "77 von 77" in results
-    assert "61.49 %" in results
-    assert "311'828" in results
-    assert "191'755" in results
+    assert "37.31%" in results
+    assert "78 von 78" in results
+    assert "61.07 %" in results
+    assert "318'446" in results
+    assert "194'469" in results
 
     upload = client.get('/vote/bacon-yea-or-nay/upload')
     upload.form['type'] = 'simple'
@@ -575,7 +575,7 @@ def test_upload_vote_wabsti(election_day_app_sg, tar_file):
     results = upload.click("Hier klicken")
 
     assert "3 von 77" in results
-    assert "40.00" in results
+    assert "40.30" in results
 
     new = client.get('/manage/votes/new-vote')
     new.form['vote_de'] = 'Complex vote'
@@ -598,8 +598,8 @@ def test_upload_vote_wabsti(election_day_app_sg, tar_file):
     assert "Stichfrage" in results
     assert "answer rejected" in results
 
-    assert "37.27" in results
-    assert "62.73" in results
+    assert "37.31" in results
+    assert "61.07" in results
     assert "53.00" in results
     assert "47.00" in results
 
@@ -891,3 +891,65 @@ def test_upload_communal_vote_districts(election_day_app_bern):
     assert '37.99' in result
     assert 'ballot-map' in result
     assert '<td>Total' in result
+
+
+def test_upload_vote_with_expats(election_day_app):
+    client = Client(election_day_app)
+    client.get('/locale/de_CH').follow()
+
+    login(client)
+
+    new = client.get('/manage/votes/new-vote')
+    new.form['vote_de'] = 'vote'
+    new.form['date'] = date(2015, 1, 1)
+    new.form['domain'] = 'federation'
+    new.form.submit()
+
+    # simple: ID = 0
+    csv = '\n'.join((
+        ','.join(COLUMNS),
+        ',0,Auslandschweizer,10,20,30,0,0',
+    )).encode('utf-8')
+    upload = client.get('/vote/vote/upload')
+    upload.form['type'] = 'simple'
+    upload.form['proposal'] = Upload('data.csv', csv, 'text/plain')
+    assert 'erfolgreich hochgeladen' in upload.form.submit()
+
+    result_standard = client.get('/vote/vote/data-csv').text
+    assert 'Auslandschweizer,0' in result_standard
+
+    # onegov: entity_id = 0
+    csv = '\n'.join((
+        (
+            'type,group,entity_id,counted,yeas,nays,invalid,empty,'
+            'elegible_voters'
+        ),
+        'proposal,Auslandschweizer,0,True,10,20,0,0,30',
+    )).encode('utf-8')
+    upload = client.get('/vote/vote/upload')
+    upload.form['type'] = 'simple'
+    upload.form['file_format'] = 'internal'
+    upload.form['proposal'] = Upload('data.csv', csv, 'text/plain')
+    assert 'erfolgreich hochgeladen' in upload.form.submit()
+
+    result_internal = client.get('/vote/vote/data-csv').text
+    assert result_standard == result_internal
+
+    # wabsti: Name = Auslandschweizer, Bfs-Nr. unknown
+    csv = '\n'.join((
+        (
+            'Vorlage-Nr.,Gemeinde,BfS-Nr.,StimmBet,Ja,Nein,ungültige SZ,'
+            'leere SZ,Stimmberechtigte,GegenvJa,GegenvNein,StichfrJa,'
+            'StichfrNein'
+        ),
+        '1,Auslandschweizer,1700,100.0,10,20,0,0,30,0,0,0,0',
+    )).encode('utf-8')
+    upload = client.get('/vote/vote/upload')
+    upload.form['type'] = 'simple'
+    upload.form['file_format'] = 'wabsti'
+    upload.form['vote_number'] = '1'
+    upload.form['proposal'] = Upload('data.csv', csv, 'text/plain')
+    assert 'erfolgreich hochgeladen' in upload.form.submit()
+
+    result_wabsti = client.get('/vote/vote/data-csv').text
+    assert result_standard == result_wabsti

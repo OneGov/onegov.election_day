@@ -12,6 +12,7 @@ from uuid import uuid4
 HEADERS = [
     'AnzMandate',
     'BFS',
+    'EinheitBez',
     'StimmBer',
     'StimmAbgegeben',
     'StimmLeer',
@@ -35,8 +36,9 @@ def parse_election(line, errors):
         return mandates
 
 
-def parse_election_result(line, errors, municipalities):
+def parse_election_result(line, errors, entities):
     try:
+        group = line.einheitbez.strip()
         entity_id = int(line.bfs or 0)
         elegible_voters = int(line.stimmber or 0)
         received_ballots = int(line.stimmabgegeben or 0)
@@ -65,17 +67,19 @@ def parse_election_result(line, errors, municipalities):
             raise ValueError()
 
     except ValueError:
-        errors.append(_("Invalid municipality values"))
+        errors.append(_("Invalid entity values"))
     else:
-        if entity_id not in municipalities:
+        if entity_id not in entities and group.lower() == 'auslandschweizer':
+            entity_id = 0
+
+        if entity_id and entity_id not in entities:
             errors.append(_(
-                "municipality id ${id} is unknown",
-                mapping={'id': entity_id}
+                _("${name} is unknown", mapping={'name': entity_id})
             ))
         else:
             return ElectionResult(
                 id=uuid4(),
-                group=municipalities[entity_id]['name'],
+                group=group,
                 entity_id=entity_id,
                 elegible_voters=elegible_voters,
                 received_ballots=received_ballots,
@@ -121,13 +125,13 @@ def parse_candidates(line, errors):
     return results
 
 
-def import_file(municipalities, election, file, mimetype,
+def import_file(entities, election, file, mimetype,
                 elected_file=None, elected_mimetype=None):
     errors = []
     candidates = {}
     results = []
 
-    # This format has one municipality per line and every candidate as row
+    # This format has one entity per line and every candidate as row
     csv, error = load_csv(file, mimetype, expected_headers=HEADERS)
     if error:
         errors.append(error)
@@ -138,7 +142,7 @@ def import_file(municipalities, election, file, mimetype,
 
             # Parse the line
             mandates = parse_election(line, line_errors)
-            result = parse_election_result(line, line_errors, municipalities)
+            result = parse_election_result(line, line_errors, entities)
             if result:
                 for candidate, c_result in parse_candidates(line, line_errors):
                     candidate = candidates.setdefault(

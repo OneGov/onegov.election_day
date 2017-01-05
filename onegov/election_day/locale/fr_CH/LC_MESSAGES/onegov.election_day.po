@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-19 15:17+0100\n"
+"POT-Creation-Date: 2017-01-04 09:24+0100\n"
 "PO-Revision-Date: 2016-12-19 13:16+0100\n"
 "Last-Translator: Fabian Reinhard <fabian.reinhard@seantis.ch>\n"
 "Language-Team: \n"
@@ -33,7 +33,7 @@ msgid "Election statistics"
 msgstr "Statistiques des élections"
 
 msgid "Panachage"
-msgstr ""
+msgstr "Panachage"
 
 msgid "Open Data"
 msgstr "Ouvrir les données"
@@ -116,13 +116,6 @@ msgstr "Valeurs de connexion de liste non valides"
 msgid "No data found"
 msgstr "Pas de données trouvées"
 
-msgid "Invalid municipality values"
-msgstr "Valeurs de la municipalité non valides"
-
-#, python-format
-msgid "municipality id ${id} is unknown"
-msgstr "référence de municipalité ${id} inconnue"
-
 msgid "Unknown candidate"
 msgstr "Candidat inconnu"
 
@@ -159,20 +152,6 @@ msgstr "Plus de votes que d'électeurs"
 
 msgid "Invalid ballot type"
 msgstr "Type de scrutin invalide"
-
-msgid "Missing municipality"
-msgstr "Municipalité manquante"
-
-#, python-format
-msgid "${group} was found twice"
-msgstr "${group} a été trouvé en double"
-
-msgid "Invalid municipality id"
-msgstr "Mauvaise référence de municipalité"
-
-#, python-format
-msgid "municipality id ${id} was found twice"
-msgstr "référence de municipalité ${id} trouvées deux fois"
 
 msgid "Election (German)"
 msgstr "Election (allemand)"
@@ -231,9 +210,6 @@ msgstr "Terminé"
 msgid "Absolute majority"
 msgstr "Majorité absolue"
 
-msgid "Counter-Proposal"
-msgstr "Contre-proposition"
-
 msgid "Vote number"
 msgstr "Numéro de votation"
 
@@ -274,14 +250,14 @@ msgstr "Vote (roumain)"
 msgid "New results are available on ${url}"
 msgstr "Les nouveaux résultats sont disponibles sur ${url}"
 
-msgid "federal"
-msgstr "fédéral"
+msgid "Federal"
+msgstr "Fédéral"
 
-msgid "cantonal"
-msgstr "cantonal"
+msgid "Cantonal"
+msgstr "Cantonal"
 
-msgid "communal"
-msgstr "municipal"
+msgid "Communal"
+msgstr "Municipal"
 
 msgid "Elections &amp; Votes"
 msgstr "Elections et votes: données ouvertes"
@@ -439,6 +415,17 @@ msgstr "Compté"
 msgid "Cast Ballots"
 msgstr "Suffrages exprimés"
 
+msgid ""
+"The raw data used to display the results is available in the following "
+"formats:"
+msgstr ""
+
+msgid "The format of the data is described here:"
+msgstr ""
+
+msgid "Format Description"
+msgstr "Description du format"
+
 msgid "New Election"
 msgstr "Nouveau election"
 
@@ -448,25 +435,16 @@ msgstr "Pas de elections actuellement"
 msgid "Actions"
 msgstr "Actions"
 
-msgid "Federal"
-msgstr "Fédéral"
-
-msgid "Cantonal"
-msgstr "Cantonal"
-
-msgid "Communal"
-msgstr "Municipal"
-
 msgid "View"
 msgstr "Voir"
 
 msgid "Edit"
 msgstr "Editer"
 
-msgid "Upload Results"
+msgid "Upload results"
 msgstr "Mettre à jour les résultats"
 
-msgid "Trigger Notifications"
+msgid "Trigger notifications"
 msgstr "Activer les notifications"
 
 msgid "Delete"
@@ -487,14 +465,8 @@ msgstr "Nouveau vote"
 msgid "No votes yet."
 msgstr "Pas de votes actuellement"
 
-msgid "Upload results"
-msgstr "Mettre à jour les résultats"
-
 msgid "Please use the following format:"
 msgstr "Veuillez utiliser le format suivant:"
-
-msgid "Format Description"
-msgstr "Description du format"
 
 msgid "Your results were uploaded successfully."
 msgstr "Vos résultats ont été correctement mis à jour."
@@ -580,6 +552,9 @@ msgstr "Sous-total"
 msgid "Total"
 msgstr "Total"
 
+msgid "The raw data is available as:"
+msgstr ""
+
 msgid "Electoral District"
 msgstr "District électoral"
 
@@ -641,6 +616,9 @@ msgid ""
 msgstr ""
 "Désabonnement aux services SMS réussi. Vous ne recevrez plus de SMS quand de "
 "nouveaux résultats seront publiés."
+
+msgid "Blank list"
+msgstr ""
 
 #, python-format
 msgid "Do you really want to delete \"${election}\"?"

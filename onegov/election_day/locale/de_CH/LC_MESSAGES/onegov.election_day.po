@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-19 15:17+0100\n"
-"PO-Revision-Date: 2016-12-19 15:18+0100\n"
+"POT-Creation-Date: 2017-01-04 09:24+0100\n"
+"PO-Revision-Date: 2017-01-03 09:48+0100\n"
 "Last-Translator: Denis Krienbühl <denis.krienbuehl@seantis.ch>\n"
 "Language-Team: German\n"
 "Language: de_CH\n"
@@ -116,13 +116,6 @@ msgstr "Ungültige Listenverbindungsdaten"
 msgid "No data found"
 msgstr "Keine Daten gefunden"
 
-msgid "Invalid municipality values"
-msgstr "Ungültige Gemeindedaten"
-
-#, python-format
-msgid "municipality id ${id} is unknown"
-msgstr "BFS Nummer ${id} ist unbekannt"
-
 msgid "Unknown candidate"
 msgstr "Unbekannter Kandidierender"
 
@@ -159,20 +152,6 @@ msgstr "Mehr eingelegte Stimmen als Stimmberechtigte"
 
 msgid "Invalid ballot type"
 msgstr "Ungültige Abstimmungsart"
-
-msgid "Missing municipality"
-msgstr "Fehlender Ort"
-
-#, python-format
-msgid "${group} was found twice"
-msgstr "${group} kommt zweimal vor"
-
-msgid "Invalid municipality id"
-msgstr "Ungültige BFS Nummer"
-
-#, python-format
-msgid "municipality id ${id} was found twice"
-msgstr "BFS Nummer ${id} kommt zweimal vor"
 
 msgid "Election (German)"
 msgstr "Wahl (Deutsch)"
@@ -231,9 +210,6 @@ msgstr "Komplett ausgezählt"
 msgid "Absolute majority"
 msgstr "Absolutes Mehr"
 
-msgid "Counter-Proposal"
-msgstr "Gegenentwurf"
-
 msgid "Vote number"
 msgstr "Vorlagen-Nummer"
 
@@ -274,14 +250,14 @@ msgstr "Abstimmung (Rumantsch)"
 msgid "New results are available on ${url}"
 msgstr "Neue Resultate verfügbar auf ${url}"
 
-msgid "federal"
-msgstr "national"
+msgid "Federal"
+msgstr "National"
 
-msgid "cantonal"
-msgstr "kantonal"
+msgid "Cantonal"
+msgstr "Kantonal"
 
-msgid "communal"
-msgstr "kommunal"
+msgid "Communal"
+msgstr "Kommunal"
 
 msgid "Elections &amp; Votes"
 msgstr "Wahlen &amp; Abstimmungen"
@@ -438,6 +414,19 @@ msgstr "Ausgezählt"
 msgid "Cast Ballots"
 msgstr "Eingegangene Stimmzettel"
 
+msgid ""
+"The raw data used to display the results is available in the following "
+"formats:"
+msgstr ""
+"Die Rohdaten die zur Anzeige der Resultate verwendet werden, sind in den "
+"folgenden Formaten verfügbar:"
+
+msgid "The format of the data is described here:"
+msgstr "Das Datenformat ist hier beschrieben:"
+
+msgid "Format Description"
+msgstr "Formatbeschreibung"
+
 msgid "New Election"
 msgstr "Neue Wahl"
 
@@ -447,25 +436,16 @@ msgstr "Noch keine Wahlen erfasst."
 msgid "Actions"
 msgstr "Aktionen"
 
-msgid "Federal"
-msgstr "National"
-
-msgid "Cantonal"
-msgstr "Kantonal"
-
-msgid "Communal"
-msgstr "Kommunal"
-
 msgid "View"
 msgstr "Anzeigen"
 
 msgid "Edit"
 msgstr "Bearbeiten"
 
-msgid "Upload Results"
-msgstr "Resultate Hochladen"
+msgid "Upload results"
+msgstr "Resultate hochladen"
 
-msgid "Trigger Notifications"
+msgid "Trigger notifications"
 msgstr "Benachrichtigungen auslösen"
 
 msgid "Delete"
@@ -486,14 +466,8 @@ msgstr "Neue Abstimmung"
 msgid "No votes yet."
 msgstr "Noch keine Abstimmungen erfasst."
 
-msgid "Upload results"
-msgstr "Resultate hochladen"
-
 msgid "Please use the following format:"
 msgstr "Bitte verwenden Sie das folgende Format:"
-
-msgid "Format Description"
-msgstr "Formatbeschreibung"
 
 msgid "Your results were uploaded successfully."
 msgstr "Ihre Resultate wurden erfolgreich hochgeladen."
@@ -568,7 +542,7 @@ msgid ""
 "the number of mandates."
 msgstr ""
 "Das Diagramm zeigt die Verteilung der Stimmen und der Sitze auf die Listen- "
-"und Unterlistenverbindungen. Die Balken auf der linken Seite enstprechen den "
+"und Unterlistenverbindungen. Die Balken auf der linken Seite entsprechen den "
 "Listenverbindungen, die Balken in der Mitte den Unterlisten, die Balken "
 "rechts den Listen. Die Breite der Balken und der Verbindungen ist "
 "proportional zu den Stimmen, blau eingefärbte Balken enthalten die Anzahl "
@@ -586,6 +560,9 @@ msgstr "Zwischensumme"
 msgid "Total"
 msgstr "Total"
 
+msgid "The raw data is available as:"
+msgstr "Die Rohdaten sind in folgendem Format verfügbar:"
+
 msgid "Electoral District"
 msgstr "Wahlkreis"
 
@@ -597,9 +574,9 @@ msgid ""
 msgstr ""
 "Das Diagramm zeigt die Herkunft der gewonnenen und verlorenen Listenstimmen "
 "durch Panaschieren. Auf der linken Seite sind die unveränderten Stimmen der "
-"Listen inklusive Blankoliste,\n"
-"auf der rechten Seite die panaschierten Listenstimmen. Die Breite der Balken "
-"und der Verbindungen ist proportional zu den Stimmen."
+"Listen inklusive Blankoliste, auf der rechten Seite die panaschierten "
+"Listenstimmen. Die Breite der Balken und der Verbindungen ist proportional "
+"zu den Stimmen."
 
 msgid ""
 "The diagram shows the votes and mandates of the parties. The rimmed bars "
@@ -656,6 +633,9 @@ msgid ""
 msgstr ""
 "Die SMS-Benachrichtigung wurde beendet. Sie erhalten in Zukunft keine SMS "
 "mehr."
+
+msgid "Blank list"
+msgstr "Blankoliste"
 
 #, python-format
 msgid "Do you really want to delete \"${election}\"?"

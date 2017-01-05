@@ -105,12 +105,16 @@ class UploadElectionForm(Form):
             self.connections.render_kw['data-depends-on'] = 'file_format/none'
             self.statistics.render_kw['data-depends-on'] = 'file_format/none'
             self.parties.render_kw['data-depends-on'] = 'file_format/none'
+            self.majority.render_kw['data-depends-on'] = (
+                'file_format/!internal'
+            )
         else:
-            self.connections.render_kw['data-depends-on'] = \
+            self.connections.render_kw['data-depends-on'] = (
                 'file_format/wabsti'
+            )
             self.statistics.render_kw['data-depends-on'] = 'file_format/wabsti'
-            self.majority.render_kw = {'data-depends-on': 'file_format/none'}
             self.parties.render_kw.pop('data-depends-on', None)
+            self.majority.render_kw['data-depends-on'] = 'file_format/none'
 
 
 class UploadVoteForm(Form):
@@ -152,7 +156,7 @@ class UploadVoteForm(Form):
     )
 
     counter_proposal = UploadField(
-        label=_("Counter-Proposal"),
+        label=_("Counter Proposal"),
         validators=[
             DataRequired(),
             WhitelistedMimeType(ALLOWED_MIME_TYPES),
