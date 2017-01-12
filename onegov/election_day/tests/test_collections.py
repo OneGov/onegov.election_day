@@ -64,7 +64,7 @@ def test_archive(session):
         items, modified = archive.by_year(str(year))
         assert item in items
 
-        groups = archive.group_items(items)
+        groups = archive.group_items(items, DummyRequest())
         assert groups[date(year, 1, 1)]['federation']['election'] == [item]
 
     for year in (2007, 2011, 2015, 2016):
@@ -79,8 +79,73 @@ def test_archive(session):
         items, modified = archive.by_year(str(year))
         assert item in items
 
-        groups = archive.group_items(items)
+        groups = archive.group_items(items, DummyRequest())
         assert groups[date(year, 1, 1)]['federation']['vote'] == [item]
+
+
+def test_archive_grouping(session):
+    for domain in ('federation', 'canton', 'municipality'):
+        session.add(
+            Election(
+                title="{} election 1".format(domain),
+                domain=domain,
+                type='majorz',
+                date=date(2017, 2, 12)
+            )
+        )
+        session.add(
+            Vote(
+                title="{} vote 1".format(domain),
+                domain=domain,
+                date=date(2017, 2, 12)
+            )
+        )
+
+        session.add(
+            Election(
+                title="{} election 2".format(domain),
+                domain=domain,
+                type='majorz',
+                date=date(2017, 5, 21)
+            )
+        )
+        session.add(
+            Vote(
+                title="{} vote 2".format(domain),
+                domain=domain,
+                date=date(2017, 5, 21)
+            )
+        )
+
+    session.flush()
+
+    archive = ArchivedResultCollection(session).for_date(2017)
+
+    request = DummyRequest()
+    archive.update_all(request)
+
+    items, last_modified = archive.by_date()
+
+    request.app.principal.domain = 'federation'
+    expected = ['federation', 'canton', 'municipality']
+
+    grouped = archive.group_items(items, request)
+    assert list(grouped) == [date(2017, 2, 12), date(2017, 5, 21)]
+    assert all([list(group) == expected for group in grouped.values()])
+
+    request.app.principal.domain = 'canton'
+
+    grouped = archive.group_items(items, request)
+    grouped = archive.group_items(items, request)
+    assert list(grouped) == [date(2017, 2, 12), date(2017, 5, 21)]
+    assert all([list(group) == expected for group in grouped.values()])
+
+    request.app.principal.domain = 'municipality'
+    expected = ['municipality', 'federation', 'canton']
+
+    grouped = archive.group_items(items, request)
+    assert list(grouped) == [date(2017, 2, 12), date(2017, 5, 21)]
+    assert all([list(group) == expected for group in grouped.values()])
 
 
 def test_archived_results(session):
@@ -118,16 +183,32 @@ def test_archived_results(session):
     assert archive.get_years() == [2001]
     assert archive.query().count() == 2
 
+    ids_i = sorted([r.meta['id'] for r in archive.query()])
+    ids_a = [r.id for r in elections.values()] + [r.id for r in votes.values()]
+    assert ids_i == ['election-2001', 'vote-2001']
+    assert set(ids_i).issubset(set(ids_a))
+
     archive.update_all(request)
 
     assert archive.get_years() == [2002, 2001]
     assert archive.query().count() == 4
+
+    ids_i = sorted([r.meta['id'] for r in archive.query()])
+    ids_a = [r.id for r in elections.values()] + [r.id for r in votes.values()]
+    assert ids_i == [
+        'election-2001', 'election-2002', 'vote-2001', 'vote-2002'
+    ]
+    assert set(ids_i).issubset(set(ids_a))
 
     archive.add(elections[2003], request)
     archive.add(votes[2003], request)
 
     assert archive.get_years() == [2003, 2002, 2001]
     assert archive.query().count() == 6
+
+    ids_i = sorted([r.meta['id'] for r in archive.query()])
+    ids_a = [r.id for r in elections.values()] + [r.id for r in votes.values()]
+    assert set(ids_i) == set(ids_a)
 
     archive.delete(elections[2002], request)
     archive.delete(votes[2002], request)
@@ -148,6 +229,7 @@ def test_archived_results(session):
     assert result.counted_entities == None
     assert result.total_entities == None
     assert result.progress == (0, 0)
+    assert result.meta['id'] == 'election-2001'
 
     last_result_change = result.last_result_change
 
@@ -180,6 +262,7 @@ def test_archived_results(session):
     assert result.title == 'Vote'
     assert result.shortcode == 'shortcode'
     assert result.title_translations == {'de_CH': 'Vote'}
+    assert result.meta['id'] == 'vote-2001'
 
 
 def test_notification_collection(session):

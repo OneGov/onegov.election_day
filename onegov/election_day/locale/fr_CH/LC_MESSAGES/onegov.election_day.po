@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-01-04 09:24+0100\n"
-"PO-Revision-Date: 2016-12-19 13:16+0100\n"
+"PO-Revision-Date: 2017-01-06 08:08+0100\n"
 "Last-Translator: Fabian Reinhard <fabian.reinhard@seantis.ch>\n"
 "Language-Team: \n"
 "Language: fr_CH\n"
@@ -39,16 +39,16 @@ msgid "Open Data"
 msgstr "Ouvrir les données"
 
 msgid "Proposal"
-msgstr "Proposition"
+msgstr "Objet de la votation"
 
 msgid "Counter Proposal"
-msgstr "Contre-proposition"
+msgstr "Contre-projet"
 
 msgid "Tie-Breaker"
-msgstr "Jeu décisif"
+msgstr "Question subsidiaire"
 
 msgid "Votes"
-msgstr "Votes"
+msgstr "Votations"
 
 msgid "Elections"
 msgstr "Elections"
@@ -83,7 +83,7 @@ msgid "Not a valid xls/xlsx file."
 msgstr "Fichier xls/xlsx non valide."
 
 msgid "The xls/xlsx file contains unsupported cells."
-msgstr ""
+msgstr "Le fichier xls/xlsx contient des cellules non supportées."
 
 msgid "Invalid values"
 msgstr "Valeurs non valides"
@@ -96,7 +96,7 @@ msgstr "Valeurs non valides"
 
 #, python-format
 msgid "${name} is unknown"
-msgstr "${id} inconnue"
+msgstr "${name} inconnue"
 
 msgid "Invalid list values"
 msgstr "Valeurs de la liste non valides"
@@ -229,7 +229,7 @@ msgid "Simple Vote"
 msgstr "Vote simple"
 
 msgid "Vote with Counter-Proposal"
-msgstr "Vote avec contre-proposition"
+msgstr "Vote avec contre-projet"
 
 msgid "Not a valid phone number."
 msgstr "N'est pas un numéro de téléphone valide."
@@ -260,13 +260,13 @@ msgid "Communal"
 msgstr "Municipal"
 
 msgid "Elections &amp; Votes"
-msgstr "Elections et votes: données ouvertes"
+msgstr "Elections et votations: données ouvertes"
 
 msgid "There are no elections or votes defined yet."
-msgstr "Il n'y a pas de élections ou votes définis actuellement"
+msgstr "Il n'y a pas de élections ou votations définis actuellement"
 
 msgid "Elections and votes on ${date}"
-msgstr "Elections et votes sur $ {date}"
+msgstr "Elections et votes sur ${date}"
 
 msgid "Federal Elections"
 msgstr "Elections fédéraux"
@@ -278,13 +278,13 @@ msgid "Communal Elections"
 msgstr "Elections communales"
 
 msgid "Federal Votes"
-msgstr "Votes fédéraux"
+msgstr "Votations fédérales"
 
 msgid "Cantonal Votes"
-msgstr "Votes cantonaux"
+msgstr "Votations  cantonales"
 
 msgid "Communal Votes"
-msgstr "Votes communaux"
+msgstr "Votations communales"
 
 msgid "Election"
 msgstr "Election"
@@ -319,7 +319,7 @@ msgstr ""
 "en rouge."
 
 msgid "Back to the latest elections &amp; votes"
-msgstr "Retour aux dernières élections et votes"
+msgstr "Retour aux dernières élections et votations"
 
 msgid "Login"
 msgstr "Se connecter"
@@ -380,19 +380,19 @@ msgid "Stop SMS subscription"
 msgstr "Arrêter l'abonnement SMS"
 
 msgid "Proposal and counter proposal rejected"
-msgstr "Proposition et contre-proposition rejetées"
+msgstr "Initiative et contre-projet rejetées"
 
 msgid "Proposal accepted"
-msgstr "Proposition acceptée"
+msgstr "Initiative acceptée"
 
 msgid "Counter proposal accepted"
-msgstr "Contre-proposition acceptée"
+msgstr "Contre-projet accepté"
 
 msgid "Tie breaker in favor of the proposal"
-msgstr "Jeu décisif en faveur de la proposition"
+msgstr "Jeu décisif en faveur de l'initiative"
 
 msgid "Tie breaker in favor of the counter proposal"
-msgstr "Jeu décisif en faveur de la contre-proposition"
+msgstr "Jeu décisif en faveur de le contre-projet"
 
 msgid "Yeas"
 msgstr "Oui"
@@ -401,16 +401,24 @@ msgid "Nays"
 msgstr "Non"
 
 msgid "Turnout"
-msgstr "Participation"
+msgstr "Participation électorale"
 
 msgid "Elegible Voters"
-msgstr "Electeurs valides"
+msgstr "Electeurs"
 
 msgid "Received Ballots"
 msgstr "Votes reçus"
 
 msgid "Counted"
 msgstr "Compté"
+
+#. Default: Voter turnout
+msgid "turnout_vote"
+msgstr "Participation au vote"
+
+#. Default: Elegible Voters
+msgid "elegible_voters_vote"
+msgstr "Electeurs"
 
 msgid "Cast Ballots"
 msgstr "Suffrages exprimés"
@@ -419,9 +427,11 @@ msgid ""
 "The raw data used to display the results is available in the following "
 "formats:"
 msgstr ""
+"Les données brutes utilisées pour afficher les résultats sont disponibles "
+"dans les formats suivants:"
 
 msgid "The format of the data is described here:"
-msgstr ""
+msgstr "Le format des données est décrit ici:"
 
 msgid "Format Description"
 msgstr "Description du format"
@@ -460,10 +470,10 @@ msgid "Locale"
 msgstr "Locaux"
 
 msgid "New Vote"
-msgstr "Nouveau vote"
+msgstr "Nouvelle votation"
 
 msgid "No votes yet."
-msgstr "Pas de votes actuellement"
+msgstr "Pas de votations actuellement"
 
 msgid "Please use the following format:"
 msgstr "Veuillez utiliser le format suivant:"
@@ -484,16 +494,16 @@ msgid "Line"
 msgstr "Ligne"
 
 msgid "No errors found in proposal"
-msgstr "Pas d'erreurs trouvées dans la proposition."
+msgstr "Pas d'erreurs trouvées dans l'initiative."
 
 msgid "Errors found in proposal"
-msgstr "Erreurs trouvées dans la proposition."
+msgstr "Erreurs trouvées dans l'initiative."
 
 msgid "No errors found in counter proposal"
-msgstr "Pas d'erreurs trouvées dans la contre-proposition."
+msgstr "Pas d'erreurs trouvées dans le contre-projet."
 
 msgid "Errors found in counter proposal"
-msgstr "Erreurs trouvées dans la contre-proposition."
+msgstr "Erreurs trouvées dans le contre-projet."
 
 msgid "No errors found in tie-breaker"
 msgstr "Pas d'erreurs trouvées dans le jeu décisif."
@@ -539,6 +549,11 @@ msgid ""
 "bars and connections is proportional to the votes, blue colored bars contain "
 "the number of mandates."
 msgstr ""
+"Le diagramme montre la répartition des voix et des sièges sur la liste et "
+"les sous-listes. Les barres de gauche correspondent aux connexions de liste, "
+"les barres au milieu aux sous-listes, les barres à droite aux listes. La "
+"largeur des barres et des connexions est proportionnelle aux votes, les "
+"barres de couleur bleue contiennent le nombre de mandats."
 
 msgid "List connection"
 msgstr "Connexion de listes"
@@ -553,7 +568,7 @@ msgid "Total"
 msgstr "Total"
 
 msgid "The raw data is available as:"
-msgstr ""
+msgstr "Les données brutes sont disponibles comme:"
 
 msgid "Electoral District"
 msgstr "District électoral"
@@ -564,6 +579,10 @@ msgid ""
 "on the right side to the final list results. The width of the bars and "
 "connections is proportional to the votes."
 msgstr ""
+"Le diagramme montre l'origine des votes de liste. Les barres de gauche "
+"correspondent aux votes de liste inchangés (y compris la liste vierge), les "
+"barres du côté droit aux résultats de la liste finale. La largeur des barres "
+"et des connexions est proportionnelle aux votes."
 
 msgid ""
 "The diagram shows the votes and mandates of the parties. The rimmed bars "
@@ -571,9 +590,16 @@ msgid ""
 "scale) to the voices (percentages). The results of earlier elections are "
 "grayed out."
 msgstr ""
+"Le diagramme montre les votes et les mandats des partis. Les barres à rebord "
+"(échelle de gauche) correspondent au nombre de sièges, les barres colorées "
+"(échelle de droite) aux voix (pourcentages). Les résultats des précédentes "
+"élections sont grisés."
 
 msgid "Party"
 msgstr "Parti"
+
+msgid "Difference"
+msgstr "Différence"
 
 msgid "Accounted Ballots"
 msgstr "Bulletins de vote comptabilisés"
@@ -618,11 +644,11 @@ msgstr ""
 "nouveaux résultats seront publiés."
 
 msgid "Blank list"
-msgstr ""
+msgstr "Liste vierge"
 
 #, python-format
 msgid "Do you really want to delete \"${election}\"?"
-msgstr "Voulez-vous vraiment supprimer \"$ {election}\"?"
+msgstr "Voulez-vous vraiment supprimer \"${election}\"?"
 
 msgid "Delete election"
 msgstr "Supprimer l'élection"
@@ -642,7 +668,7 @@ msgid "Do you really want to delete \"${vote}\"?"
 msgstr "Souhaitez-vous vraiment supprimer \"${vote}\"?"
 
 msgid "Delete vote"
-msgstr "Supprimer le vote"
+msgstr "Supprimer la votation"
 
 #, python-format
 msgid "The year ${year} is not yet supported"

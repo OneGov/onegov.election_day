@@ -7,14 +7,6 @@ from time import mktime, strptime
 from onegov.ballot import Election, ElectionCollection, Vote, VoteCollection
 
 
-def domain_sortfunc(item):
-    if item.domain == 'federation':
-        return 0
-    if item.domain == 'canton':
-        return 1
-    return 2
-
-
 def groupbydict(items, keyfunc, sortfunc=None):
     return OrderedDict(
         (key, list(group))
@@ -47,16 +39,22 @@ class ArchivedResultCollection(object):
 
         return list(r[0] for r in query.all())
 
-    def group_items(self, items, reverse=False):
+    def group_items(self, items, request):
         """ Groups a list of elections/votes. """
 
         if not items:
             return None
 
         dates = groupbydict(items, lambda i: i.date)
+        order = ('federation', 'canton', 'municipality')
+        if request.app.principal.domain == 'municipality':
+            order = ('municipality', 'federation', 'canton')
+
         for date_, items_by_date in dates.items():
             domains = groupbydict(
-                items_by_date, lambda i: i.domain, domain_sortfunc
+                items_by_date,
+                lambda i: i.domain,
+                lambda i: order.index(i.domain) if i.domain in order else 99
             )
             for domain, items_by_domain in domains.items():
                 types = groupbydict(
@@ -148,6 +146,8 @@ class ArchivedResultCollection(object):
         result.title = item.title
         result.title_translations = item.title_translations
         result.last_result_change = item.last_result_change
+        result.meta = {}
+        result.meta['id'] = item.id
 
         if isinstance(item, Election):
             result.type = 'election'
@@ -157,12 +157,10 @@ class ArchivedResultCollection(object):
         if isinstance(item, Vote):
             result.type = 'vote'
             result.counted_entities, result.total_entities = item.progress
-            result.meta = {
-                'answer': item.answer,
-                'counted': item.counted,
-                'nays_percentage': item.nays_percentage,
-                'yeas_percentage': item.yeas_percentage,
-            }
+            result.meta['answer'] = item.answer
+            result.meta['counted'] = item.counted
+            result.meta['nays_percentage'] = item.nays_percentage
+            result.meta['yeas_percentage'] = item.yeas_percentage
 
         if add_result:
             self.session.add(result)

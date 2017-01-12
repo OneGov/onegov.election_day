@@ -1,5 +1,23 @@
 Changelog
 ---------
+1.5.0 (2017-01-12)
+~~~~~~~~~~~~~~~~~~~
+
+- Show the results of the municipality instead of the overall results for
+  federal and cantonal votes in communal instances.
+  [msom]
+
+- Adds a column to the party results with the difference of the last two
+  percent values.
+  [msom]
+
+- Updates translations.
+  [msom]
+
+- Changes the order of the result groups in the overview such that communal
+  elections and votes are displayed first for communal instances.
+  [msom]
+
 1.4.3 (2017-01-04)
 ~~~~~~~~~~~~~~~~~~~
 
@@ -69,19 +87,19 @@ Changelog
 1.3.3 (2016-11-18)
 ~~~~~~~~~~~~~~~~~~~
 
-- Update translations.
+- Updates translations.
   [msom]
 
 1.3.2 (2016-11-16)
 ~~~~~~~~~~~~~~~~~~~
 
-- Update translations.
+- Updates translations.
   [msom]
 
 1.3.1 (2016-11-16)
 ~~~~~~~~~~~~~~~~~~~
 
-- Update translations.
+- Updates translations.
   [msom]
 
 1.3.0 (2016-11-11)
