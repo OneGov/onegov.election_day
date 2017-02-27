@@ -56,4 +56,8 @@ target/
 onegov/election_day/assets/bundles
 onegov/election_day/assets/.webassets-cache
 
+# OS X
 .DS_Store
+
+# Node
+node_modules/
