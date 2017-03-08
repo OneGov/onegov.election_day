@@ -255,7 +255,7 @@ def test_principal_years_available():
         for year in range(2009, 2017):
             assert principal.is_year_available(year, map_required=False)
 
-        if canton in ['gr', 'sg', 'sz', 'zg']:
+        if canton in ['gr', 'sg', 'sz', 'so', 'zg']:
             assert principal.is_year_available(2017)
             assert principal.is_year_available(2017, map_required=False)
         else:
@@ -306,6 +306,9 @@ def test_archived_result(session):
     result.counted_entities = 5
     assert result.progress == (5, 10)
 
+    result.elected_candidates = [('Joe', 'Quimby')]
+    assert result.elected_candidates == [('Joe', 'Quimby')]
+
     result.answer = 'rejected'
     assert result.answer == 'rejected'
 
@@ -315,6 +318,20 @@ def test_archived_result(session):
     result.yeas_percentage = 79.5
     assert result.yeas_percentage == 79.5
 
+    assert result.local_answer == ''
+    assert result.local_nays_percentage == 100.0
+    assert result.local_yeas_percentage == 0.0
+
+    request = DummyRequest()
+    assert result.display_answer(request) == 'rejected'
+    assert result.display_nays_percentage(request) == 20.5
+    assert result.display_yeas_percentage(request) == 79.5
+
+    request.app.principal.domain = 'municipality'
+    assert result.display_answer(request) == ''
+    assert result.display_nays_percentage(request) == 100.0
+    assert result.display_yeas_percentage(request) == 0.0
+
     result.counted = True
     assert result.counted == True
 
@@ -323,6 +340,7 @@ def test_archived_result(session):
         'nays_percentage': 20.5,
         'yeas_percentage': 79.5,
         'counted': True,
+        'elected_candidates': [('Joe', 'Quimby')]
     }
 
     assert result.title == 'title'
@@ -331,10 +349,10 @@ def test_archived_result(session):
     assert result.title_translations == {'en': 'title', 'de_CH': 'title'}
 
     assert result.name == 'name'
-    assert result.title_prefix(session=session) == ''
+    assert result.title_prefix == ''
 
     result.domain = 'municipality'
-    assert result.title_prefix(session=session) == result.name
+    assert result.title_prefix == result.name
 
     result.shortcode = 'shortcode'
 
@@ -363,6 +381,7 @@ def test_archived_result(session):
         'nays_percentage': 20.5,
         'yeas_percentage': 79.5,
         'counted': True,
+        'elected_candidates': [('Joe', 'Quimby')]
     }
     assert copied.shortcode == 'shortcode'
 
@@ -370,19 +389,27 @@ def test_archived_result(session):
 def test_archived_result_local_results(session):
     result = ArchivedResult()
 
-    assert not result.has_local_results
+    assert result.answer == ''
+    assert result.nays_percentage == 100.0
+    assert result.yeas_percentage == 0.0
+
     assert result.local_answer == ''
-    assert result.local_nays_percentage == 0.0
+    assert result.local_nays_percentage == 100.0
     assert result.local_yeas_percentage == 0.0
+
+    request = DummyRequest()
+    assert result.display_answer(request) == ''
+    assert result.display_nays_percentage(request) == 100.0
+    assert result.display_yeas_percentage(request) == 0.0
+
+    request.app.principal.domain = 'municipality'
+    assert result.display_answer(request) == ''
+    assert result.display_nays_percentage(request) == 100.0
+    assert result.display_yeas_percentage(request) == 0.0
 
     result.answer = 'accepted'
     result.yeas_percentage = 79.5
     result.nays_percentage = 20.5
-
-    assert not result.has_local_results
-    assert result.local_answer == 'accepted'
-    assert result.local_yeas_percentage == 79.5
-    assert result.local_nays_percentage == 20.5
 
     assert result.meta == {
         'answer': 'accepted',
@@ -390,17 +417,27 @@ def test_archived_result_local_results(session):
         'yeas_percentage': 79.5,
     }
 
+    assert result.answer == 'accepted'
+    assert result.nays_percentage == 20.5
+    assert result.yeas_percentage == 79.5
+
+    assert result.local_answer == ''
+    assert result.local_nays_percentage == 100.0
+    assert result.local_yeas_percentage == 0.0
+
+    request = DummyRequest()
+    assert result.display_answer(request) == 'accepted'
+    assert result.display_nays_percentage(request) == 20.5
+    assert result.display_yeas_percentage(request) == 79.5
+
+    request.app.principal.domain = 'municipality'
+    assert result.display_answer(request) == ''
+    assert result.display_nays_percentage(request) == 100.0
+    assert result.display_yeas_percentage(request) == 0.0
+
     result.local_answer = 'rejected'
     result.local_yeas_percentage = 40.0
     result.local_nays_percentage = 60.0
-
-    assert result.has_local_results
-    assert result.answer == 'accepted'
-    assert result.yeas_percentage == 79.5
-    assert result.nays_percentage == 20.5
-    assert result.local_answer == 'rejected'
-    assert result.local_yeas_percentage == 40.0
-    assert result.local_nays_percentage == 60.0
 
     assert result.meta == {
         'answer': 'accepted',
@@ -412,6 +449,24 @@ def test_archived_result_local_results(session):
             'nays_percentage': 60.0,
         }
     }
+
+    assert result.answer == 'accepted'
+    assert result.nays_percentage == 20.5
+    assert result.yeas_percentage == 79.5
+
+    assert result.local_answer == 'rejected'
+    assert result.local_nays_percentage == 60.0
+    assert result.local_yeas_percentage == 40.0
+
+    request = DummyRequest()
+    assert result.display_answer(request) == 'accepted'
+    assert result.display_nays_percentage(request) == 20.5
+    assert result.display_yeas_percentage(request) == 79.5
+
+    request.app.principal.domain = 'municipality'
+    assert result.display_answer(request) == 'rejected'
+    assert result.display_nays_percentage(request) == 60.0
+    assert result.display_yeas_percentage(request) == 40.0
 
 
 def test_notification(session):
@@ -513,7 +568,7 @@ def test_webhook_notification(session):
             request = DummyRequest()
             request.app.principal.webhooks = {'http://abc.com/1': None}
 
-            notification.trigger(DummyRequest(), election)
+            notification.trigger(request, election)
             sleep(5)
             assert urlopen.called
 
@@ -525,6 +580,7 @@ def test_webhook_notification(session):
             assert json.loads(data.decode('utf-8')) == {
                 'date': '2011-01-01',
                 'domain': 'federation',
+                'elected': [],
                 'last_modified': '2008-01-01T00:00:00+00:00',
                 'progress': {'counted': 0, 'total': 0},
                 'title': {'de_CH': 'Election'},
@@ -532,7 +588,7 @@ def test_webhook_notification(session):
                 'url': 'Election/election'
             }
 
-            notification.trigger(DummyRequest(), vote)
+            notification.trigger(request, vote)
             sleep(5)
             assert urlopen.called
 

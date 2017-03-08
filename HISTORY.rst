@@ -1,9 +1,54 @@
 Changelog
 ---------
+1.6.0 (2017-03-06)
+~~~~~~~~~~~~~~~~~~~
+
+- Adds hipchat integration.
+  [msom]
+
+- Adds backend link, delete action and pagination for subscribers.
+  [msom]
+
+- Displayes the date of the election and vote on the detail view.
+  [msom]
+
+- Adds the elected candidates to the JSON summary of an election.
+  [msom]
+
+- Adds links to the raw data in the JSON results views of elections and votes.
+  [msom]
+
+- Uses colored answers.
+  [msom]
+
+- Displays the percentages of intermediate results in the overview, too.
+  [msom]
+
+- Fixes displaying the progess of complex votes.
+  [msom]
+
+- Fixes displaing tooltips on iOS.
+  [msom]
+
+1.5.2 (2017-02-08)
+~~~~~~~~~~~~~~~~~~~
+
+- Fixes tests.
+  [msom]
+
+1.5.1 (2017-02-08)
+~~~~~~~~~~~~~~~~~~~
+
+- Adds (partial) support for 2017.
+  [msom]
+
+- Fixes typos in documentation.
+  [treinhard, freinhard]
+
 1.5.0 (2017-01-12)
 ~~~~~~~~~~~~~~~~~~~
 
-- Show the results of the municipality instead of the overall results for
+- Shows the results of the municipality instead of the overall results for
   federal and cantonal votes in communal instances.
   [msom]
 
@@ -21,10 +66,10 @@ Changelog
 1.4.3 (2017-01-04)
 ~~~~~~~~~~~~~~~~~~~
 
-- Harmonize the usage of the groups in the various formats.
+- Harmonizes the usage of the groups in the various formats.
   [msom]
 
-- Allow to list expats as separate entity (but not using SESAM format).
+- Allows to list expats as separate entity (but not using SESAM format).
   [msom]
 
 1.4.2 (2017-01-03)

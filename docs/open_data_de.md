@@ -2,17 +2,17 @@
 
 ## Einleitung
 
-Für jede wichtige Seite gibt es eine enstprechende JSON-Alternative. All Respoonses enthalten den `Last-Modified` HTTP Header, welcher Auskunft über den Zeitpunkt der letzten Änderung gibt (z.B., wann zum letzten Mal Ergebnisse einer Wahl oder Abstimmung hochgeladen wurden).
+Für jede wichtige Seite gibt es eine enstprechende JSON-Alternative. Alle Responses enthalten den `Last-Modified` HTTP Header, welcher Auskunft über den Zeitpunkt der letzten Änderung gibt (z.B., wann zum letzten Mal Ergebnisse einer Wahl oder Abstimmung hochgeladen wurden).
 
 Eine "Gemeinde" kann auch ein Bezirk, ein Wahlkreis etc. sein.
 
 ## Inhalt
 
-1. [Ergebnissübersicht](#ergebnissübersicht)
+1. [Ergebnisübersicht](#ergebnisübersicht)
 2. [Wahlresultate](#wahlresultate)
 3. [Abstimmungsresultate](#abstimmungsresultate)
 
-## Ergebnissübersicht
+## Ergebnisübersicht
 
 ```
 URL (letzte): /json
@@ -31,7 +31,7 @@ Name|Beschreibung
 `date`|Das Datum (ISO 8601).
 `domain`|Einflussbereich (Bund, Kanton, ...).
 `url`|Ein Link zur Detailansicht.
-`progess`|Ein Objekt welches die Anzahl ausgezählter Gemeinden (`counted`) die Gesamtzahl an Gemeinden (`total`) enthält.
+`progess`|Ein Objekt welches die Anzahl ausgezählter Gemeinden (`counted`) und die Gesamtzahl an Gemeinden (`total`) enthält.
 
 Abstimmungsresultate enthalten die folgenden zusätzlichen Informationen:
 
@@ -41,9 +41,6 @@ Name|Beschreibung
 `yeas_percentage`|Ja-Stimmen in Prozent.
 `nays_percentage`|Nein-Stimmen in Prozent.
 `local` (*optional*)|Eidgenössische und kantonale Abstimmungen innerhalb kommunaler Instanzen können zusätzlich die Resultate dieser Gemeinde enthalten als zusätzliches Objekt mit den Feldern `answer`, `yeas_percentage` and `nays_percentage`.
-
-
-Kantonale und
 
 ## Wahlresultate
 
@@ -89,7 +86,7 @@ Name|Beschreibung
 `entity_unaccounted_ballots`|Die Anzahl der ungültigen oder leeren Stimmzettel der Gemeinde.
 `entity_accounted_ballots`|Die Anzahl gültiger Stimmzettel der Gemeinde.
 `entity_blank_votes`|Die Anzahl leerer Stimmen der Gemeinde.
-`entity_invalid_votes`|Die Anzahl ungültiger Stimmen der Gemeinde. Null falls Proporzwahl.
+`entity_invalid_votes`|Die Anzahl ungültiger Stimmen der Gemeinde. `null` falls Proporzwahl.
 `entity_accounted_votes`|Die Anzahl gültiger Stimmen der Gemeinde.
 `list_name`|Der Name der Liste des Kandidierenden. Nur bei Proporzwahlen.
 `list_id`|Die ID der Liste, für welche der Kandidierende kandidiert. Nur bei Proporzwahlen.
@@ -98,7 +95,7 @@ Name|Beschreibung
 `list_connection`|Die ID der Listenverbindung. Nur bei Proporzwahlen.
 `list_connection_parent`|Die ID der übergeorndeten Listenverbidnung. Nur bei Proporzwahlen und falls es sich um eine Unterlistenverbindung handelt.
 `candidate_family_name`|Der Nachnahme des Kandidierenden.
-`candidate_first_name`|Der Vorname des Kandidaten.
+`candidate_first_name`|Der Vorname des Kandidierenden.
 `candidate_id`|Die ID des Kandidierenden.
 `candidate_elected`|True, falls der Kandidierenden gewählt wurde.
 `candidate_votes`|Die Anzahl Kandidierendenstimmen der Gemeinde.

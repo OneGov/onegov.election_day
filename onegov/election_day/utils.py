@@ -31,6 +31,7 @@ def get_election_summary(election, request, url=None):
     return {
         'date': election.date.isoformat(),
         'domain': election.domain,
+        'elected': election.elected_candidates,
         'last_modified': last_modified,
         'progress': {
             'counted': election.counted_entities or 0,
@@ -70,7 +71,7 @@ def get_vote_summary(vote, request, url=None):
         'url': url or request.link(vote),
         'yeas_percentage': vote.yeas_percentage,
     }
-    if getattr(vote, 'has_local_results', False):
+    if 'local' in (vote.meta or {}):
         summary['local'] = {
             'answer': vote.local_answer or "",
             'nays_percentage': vote.local_nays_percentage,

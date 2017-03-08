@@ -230,6 +230,7 @@ def test_archived_results(session):
     assert result.total_entities == None
     assert result.progress == (0, 0)
     assert result.meta['id'] == 'election-2001'
+    assert result.meta['elected_candidates'] == []
 
     last_result_change = result.last_result_change
 
@@ -364,16 +365,20 @@ def test_subscriber_collection(session):
 
     collection = SubscriberCollection(session)
     collection.subscribe('+41791112233', 'de_CH')
-    assert collection.query().one().phone_number == '+41791112233'
-    assert collection.query().one().locale == 'de_CH'
+    subscriber = collection.query().one()
+    assert subscriber.phone_number == '+41791112233'
+    assert subscriber.locale == 'de_CH'
+    assert collection.by_id(subscriber.id) == subscriber
 
     collection.subscribe('+41791112233', 'de_CH')
-    assert collection.query().one().phone_number == '+41791112233'
-    assert collection.query().one().locale == 'de_CH'
+    subscriber = collection.query().one()
+    assert subscriber.phone_number == '+41791112233'
+    assert subscriber.locale == 'de_CH'
 
     collection.subscribe('+41791112233', 'en')
-    assert collection.query().one().phone_number == '+41791112233'
-    assert collection.query().one().locale == 'en'
+    subscriber = collection.query().one()
+    assert subscriber.phone_number == '+41791112233'
+    assert subscriber.locale == 'en'
 
     collection.subscribe('+41792223344', 'de_CH')
     assert collection.query().count() == 2
@@ -386,3 +391,22 @@ def test_subscriber_collection(session):
 
     collection.unsubscribe('+41792223344')
     assert collection.query().count() == 0
+
+
+def test_subscriber_collection_pagination(session):
+
+    collection = SubscriberCollection(session)
+    for number in range(100):
+        collection.subscribe('+417911122{:02}'.format(number), 'de_CH')
+    assert collection.query().count() == 100
+
+    assert SubscriberCollection(session, page=0).batch[0].phone_number == \
+        '+41791112200'
+    assert SubscriberCollection(session, page=4).batch[4].phone_number == \
+        '+41791112244'
+    assert SubscriberCollection(session, page=5).batch[5].phone_number == \
+        '+41791112255'
+    assert SubscriberCollection(session, page=9).batch[9].phone_number == \
+        '+41791112299'
+
+    assert len(SubscriberCollection(session, page=10).batch) == 0
