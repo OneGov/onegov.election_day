@@ -37,7 +37,8 @@ def add(group_context):
 
 @cli.command()
 @pass_group_context
-def fetch(group_context):
+@click.option('--sentry')
+def fetch(group_context, sentry):
     """ Fetches the results from other instances as defined in the
         principal.yml. Only fetches results from the same namespace.
 
@@ -49,31 +50,41 @@ def fetch(group_context):
         if not app.principal:
             return
 
-        local_session = app.session()
-        assert local_session.info['schema'] == app.schema
+        try:
+            local_session = app.session()
+            assert local_session.info['schema'] == app.schema
 
-        for key in app.principal.fetch:
-            schema = '{}-{}'.format(app.namespace, key)
-            assert schema in app.session_manager.list_schemas()
-            app.session_manager.set_current_schema(schema)
-            remote_session = app.session_manager.session()
-            assert remote_session.info['schema'] == schema
+            for key in app.principal.fetch:
+                schema = '{}-{}'.format(app.namespace, key)
+                assert schema in app.session_manager.list_schemas()
+                app.session_manager.set_current_schema(schema)
+                remote_session = app.session_manager.session()
+                assert remote_session.info['schema'] == schema
 
-            items = local_session.query(ArchivedResult)
-            items = items.filter_by(schema=schema)
-            for item in items:
-                local_session.delete(item)
-
-            for domain in app.principal.fetch[key]:
-                items = remote_session.query(ArchivedResult)
-                items = items.filter_by(schema=schema, domain=domain)
+                items = local_session.query(ArchivedResult)
+                items = items.filter_by(schema=schema)
                 for item in items:
-                    new_item = ArchivedResult()
-                    new_item.copy_from(item)
-                    add_local_results(
-                        item, new_item, app.principal, remote_session
-                    )
-                    local_session.add(new_item)
+                    local_session.delete(item)
+
+                for domain in app.principal.fetch[key]:
+                    items = remote_session.query(ArchivedResult)
+                    items = items.filter_by(schema=schema, domain=domain)
+                    for item in items:
+                        new_item = ArchivedResult()
+                        new_item.copy_from(item)
+                        add_local_results(
+                            item, new_item, app.principal, remote_session
+                        )
+                        local_session.add(new_item)
+
+        except Exception as e:
+            log.error(
+                "An exception happened while fetching results",
+                exc_info=True
+            )
+            if sentry:
+                Client(sentry).captureException()
+            raise(e)
 
     return fetch_results
 
@@ -81,9 +92,9 @@ def fetch(group_context):
 @cli.command('send-sms')
 @click.argument('username')
 @click.argument('password')
-@click.option('--sentry')
 @click.option('--originator')
-def send_sms(username, password, sentry, originator):
+@click.option('--sentry')
+def send_sms(username, password, originator, sentry):
     """ Sends the SMS in the smsdir for a given instance. For example:
 
         onegov-election-day --select '/onegov_election_day/zg' send_sms
