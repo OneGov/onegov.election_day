@@ -78,7 +78,7 @@ def fetch(group_context):
     return fetch_results
 
 
-@cli.command()
+@cli.command('send-sms')
 @click.argument('username')
 @click.argument('password')
 @click.option('--sentry')
