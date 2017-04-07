@@ -1,10 +1,18 @@
 Changelog
 ---------
+1.7.5 (2017-04-07)
+~~~~~~~~~~~~~~~~~~~
 
 - Adds support for automatic import of votes using the Wabsti format.
   [msom]
 
 - Shows the filename of the import errors.
+  [msom]
+
+- Renames the send sms command.
+  [msom]
+
+- Adds sentry option for fetch command.
   [msom]
 
 - Hides empty sankey nodes.
