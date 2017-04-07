@@ -1,6 +1,9 @@
 Changelog
 ---------
 
+- Shows the filename of the import errors.
+  [msom]
+
 - Hides empty sankey nodes.
   [msom]
 
