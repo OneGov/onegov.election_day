@@ -4,6 +4,9 @@ Changelog
 - Adds support for automatic import of votes using the Wabsti format.
   [msom]
 
+- Adds support for automatic import of votes using the Wabsti format.
+  [msom]
+
 1.7.5 (2017-04-07)
 ~~~~~~~~~~~~~~~~~~~
 
