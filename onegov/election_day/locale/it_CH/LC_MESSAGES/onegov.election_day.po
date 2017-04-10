@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-29 12:55+0200\n"
+"POT-Creation-Date: 2017-04-10 13:21+0200\n"
 "PO-Revision-Date: 2017-03-29 13:05+0200\n"
 "Last-Translator: Fabian Reinhard <fabian.reinhard@seantis.ch>\n"
 "Language-Team: \n"
@@ -88,8 +88,14 @@ msgstr "Nessun file XLS/XLSX valido."
 msgid "The xls/xlsx file contains unsupported cells."
 msgstr "Il file xls/xlsx contiene celle non supportate."
 
+msgid "Party results"
+msgstr "Risultati del partito"
+
 msgid "Invalid values"
 msgstr "Valori non validi"
+
+msgid "Results"
+msgstr "Risultati"
 
 msgid "Invalid election values"
 msgstr "Valori dell'elezione non validi"
@@ -118,6 +124,9 @@ msgstr "Valori della lista delle connessioni non validi"
 
 msgid "No data found"
 msgstr "Nessun dato trovato"
+
+msgid "Elected Candidates"
+msgstr "Candidati eletti"
 
 msgid "Unknown candidate"
 msgstr "Candidato non conosciuto"
@@ -197,15 +206,6 @@ msgstr "Numero di telefono"
 
 msgid "File format"
 msgstr "Formato del file"
-
-msgid "Results"
-msgstr "Risultati"
-
-msgid "Elected Candidates"
-msgstr "Candidati eletti"
-
-msgid "Party results"
-msgstr "Risultati del partito"
 
 msgid "Complete"
 msgstr "Completo"
@@ -447,6 +447,12 @@ msgstr "Il formato dei dati è descritto qui:"
 msgid "Format Description"
 msgstr "Descrizione del formato"
 
+msgid "Your results could not be uploaded."
+msgstr "I Suoi risultati non hanno potuto essere caricati."
+
+msgid "Line"
+msgstr "Riga"
+
 msgid "New Election"
 msgstr "Nuova elezione"
 
@@ -483,9 +489,6 @@ msgstr "Nuova votazione"
 msgid "No votes yet."
 msgstr "Ancora nessun oggetto in votazione rilevato."
 
-msgid "Please use the following format:"
-msgstr "Utilizzi per favore il formato seguente:"
-
 msgid "Your results were uploaded successfully."
 msgstr "I Suoi risultati sono stati caricati correttamente."
 
@@ -495,29 +498,8 @@ msgstr "Clicca qui per attivare le notifiche"
 msgid "Click here to see the updated results page."
 msgstr "Cliccare qui per visualizzare la pagina con i risultati aggiornati."
 
-msgid "Your results could not be uploaded."
-msgstr "I Suoi risultati non hanno potuto essere caricati."
-
-msgid "Line"
-msgstr "Riga"
-
-msgid "No errors found in proposal"
-msgstr "Nessun errore nel progetto"
-
-msgid "Errors found in proposal"
-msgstr "Errori nel progetto"
-
-msgid "No errors found in counter proposal"
-msgstr "Nessun errore nel controprogetto"
-
-msgid "Errors found in counter proposal"
-msgstr "Errori nel controprogetto"
-
-msgid "No errors found in tie-breaker"
-msgstr "Nessun errore nella domanda eventuale"
-
-msgid "Errors found in tie-breaker"
-msgstr "Errori nella domanda eventuale"
+msgid "Please use the following format:"
+msgstr "Utilizzi per favore il formato seguente:"
 
 msgid "Embed"
 msgstr "Incorporare"
@@ -684,6 +666,3 @@ msgstr "Elimina votazione"
 #, python-format
 msgid "The year ${year} is not yet supported"
 msgstr "L'anno ${year} non viene ancora supportato"
-
-msgid "This ballot has fewer results than the others"
-msgstr "Questo progetto contiene meno risultati rispetto agli altri."

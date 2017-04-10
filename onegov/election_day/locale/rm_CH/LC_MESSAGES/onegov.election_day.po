@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-29 12:55+0200\n"
+"POT-Creation-Date: 2017-04-10 13:21+0200\n"
 "PO-Revision-Date: 2017-03-29 13:10+0200\n"
 "Last-Translator: Fabian Reinhard <fabian.reinhard@seantis.ch>\n"
 "Language-Team: \n"
@@ -88,8 +88,14 @@ msgstr "Nagina datoteca XLS/XLSX valaivla."
 msgid "The xls/xlsx file contains unsupported cells."
 msgstr "La datoteca XLS/XLSX cuntegna cellas betg sustegnidas."
 
+msgid "Party results"
+msgstr "Resultats da las partidas"
+
 msgid "Invalid values"
 msgstr "Valurs nunvalaivlas"
+
+msgid "Results"
+msgstr "Resultats"
 
 msgid "Invalid election values"
 msgstr "Datas electoralas nunvalaivlas"
@@ -118,6 +124,9 @@ msgstr "Datas nunvalaivlas da colliaziuns da glistas"
 
 msgid "No data found"
 msgstr "Chattà naginas datas"
+
+msgid "Elected Candidates"
+msgstr "Candidat(a)s elegid(a)s"
 
 msgid "Unknown candidate"
 msgstr "Candidat(a) nunenconuschent(a)"
@@ -197,15 +206,6 @@ msgstr "Numer da telefon"
 
 msgid "File format"
 msgstr "Format da la datoteca"
-
-msgid "Results"
-msgstr "Resultats"
-
-msgid "Elected Candidates"
-msgstr "Candidat(a)s elegid(a)s"
-
-msgid "Party results"
-msgstr "Resultats da las partidas"
 
 msgid "Complete"
 msgstr "Resultat eruì cumplettamain"
@@ -448,6 +448,12 @@ msgstr "Il format da las datas è descrit qua:"
 msgid "Format Description"
 msgstr "descripziun dal format"
 
+msgid "Your results could not be uploaded."
+msgstr "Voss resultats n'han displaschaivlamain betg pudì vegnir chargiads si."
+
+msgid "Line"
+msgstr "Lingia"
+
 msgid "New Election"
 msgstr "Nova elecziun"
 
@@ -484,9 +490,6 @@ msgstr "Nova votaziun"
 msgid "No votes yet."
 msgstr "I n'èn registradas anc naginas votaziuns."
 
-msgid "Please use the following format:"
-msgstr "Duvrai per plaschair il suandant format:"
-
 msgid "Your results were uploaded successfully."
 msgstr "Voss resultats èn vegnids chargiads si cun success."
 
@@ -496,29 +499,8 @@ msgstr "Cliccar qua per trametter communicaziuns als abunents."
 msgid "Click here to see the updated results page."
 msgstr "Cliccai qua per mussar la pagina cun ils resultats actualisads."
 
-msgid "Your results could not be uploaded."
-msgstr "Voss resultats n'han displaschaivlamain betg pudì vegnir chargiads si."
-
-msgid "Line"
-msgstr "Lingia"
-
-msgid "No errors found in proposal"
-msgstr "Chattà nagins sbagls en la proposta"
-
-msgid "Errors found in proposal"
-msgstr "Chattà sbagls en la proposta"
-
-msgid "No errors found in counter proposal"
-msgstr "Chattà nagins sbagls en la cuntraproposta"
-
-msgid "Errors found in counter proposal"
-msgstr "Chattà sbagls en la cuntraproposta"
-
-msgid "No errors found in tie-breaker"
-msgstr "Chattà nagins sbagls en la dumonda decisiva"
-
-msgid "Errors found in tie-breaker"
-msgstr "Chattà sbagls en la dumonda decisiva"
+msgid "Please use the following format:"
+msgstr "Duvrai per plaschair il suandant format:"
 
 msgid "Embed"
 msgstr "incorporar"
@@ -690,6 +672,3 @@ msgstr "Stizzar la votaziun"
 #, python-format
 msgid "The year ${year} is not yet supported"
 msgstr "L'onn ${year} na vegn anc betg sustegnì"
-
-msgid "This ballot has fewer results than the others"
-msgstr "Quest project ha main resultats ch'ils auters projects."

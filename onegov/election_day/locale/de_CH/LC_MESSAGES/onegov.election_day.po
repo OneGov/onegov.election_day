@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-29 12:55+0200\n"
+"POT-Creation-Date: 2017-04-10 13:21+0200\n"
 "PO-Revision-Date: 2017-03-29 13:05+0200\n"
 "Last-Translator: Denis Krienbühl <denis.krienbuehl@seantis.ch>\n"
 "Language-Team: German\n"
@@ -88,8 +88,14 @@ msgstr "Keine gültige XLS/XLSX Datei."
 msgid "The xls/xlsx file contains unsupported cells."
 msgstr "Die XLS/XLSX Datei enthält nicht unterstütze Zellen."
 
+msgid "Party results"
+msgstr "Parteiresultate"
+
 msgid "Invalid values"
 msgstr "Ungültige Werte"
+
+msgid "Results"
+msgstr "Resultate"
 
 msgid "Invalid election values"
 msgstr "Ungültige Wahldaten"
@@ -118,6 +124,9 @@ msgstr "Ungültige Listenverbindungsdaten"
 
 msgid "No data found"
 msgstr "Keine Daten gefunden"
+
+msgid "Elected Candidates"
+msgstr "Gewählte Kandidierende"
 
 msgid "Unknown candidate"
 msgstr "Unbekannter Kandidierender"
@@ -197,15 +206,6 @@ msgstr "Telefonnummer"
 
 msgid "File format"
 msgstr "Dateiformat"
-
-msgid "Results"
-msgstr "Resultate"
-
-msgid "Elected Candidates"
-msgstr "Gewählte Kandidierende"
-
-msgid "Party results"
-msgstr "Parteiresultate"
 
 msgid "Complete"
 msgstr "Komplett ausgezählt"
@@ -447,6 +447,12 @@ msgstr "Das Datenformat ist hier beschrieben:"
 msgid "Format Description"
 msgstr "Formatbeschreibung"
 
+msgid "Your results could not be uploaded."
+msgstr "Ihre Resultate konnten leider nicht hochgeladen werden."
+
+msgid "Line"
+msgstr "Zeile"
+
 msgid "New Election"
 msgstr "Neue Wahl"
 
@@ -483,9 +489,6 @@ msgstr "Neue Abstimmung"
 msgid "No votes yet."
 msgstr "Noch keine Abstimmungen erfasst."
 
-msgid "Please use the following format:"
-msgstr "Bitte verwenden Sie das folgende Format:"
-
 msgid "Your results were uploaded successfully."
 msgstr "Ihre Resultate wurden erfolgreich hochgeladen."
 
@@ -496,29 +499,8 @@ msgid "Click here to see the updated results page."
 msgstr ""
 "Hier klicken um die Seite mit den aktualisierten Resultaten anzuzeigen."
 
-msgid "Your results could not be uploaded."
-msgstr "Ihre Resultate konnten leider nicht hochgeladen werden."
-
-msgid "Line"
-msgstr "Zeile"
-
-msgid "No errors found in proposal"
-msgstr "Keine Fehler in der Vorlage"
-
-msgid "Errors found in proposal"
-msgstr "Fehler in der Vorlage"
-
-msgid "No errors found in counter proposal"
-msgstr "Keine Fehler im Gegenentwurf"
-
-msgid "Errors found in counter proposal"
-msgstr "Fehler im Gegenentwurf"
-
-msgid "No errors found in tie-breaker"
-msgstr "Keine Fehler in der Stichfrage"
-
-msgid "Errors found in tie-breaker"
-msgstr "Fehler in der Stichfrage"
+msgid "Please use the following format:"
+msgstr "Bitte verwenden Sie das folgende Format:"
 
 msgid "Embed"
 msgstr "Einbetten"
@@ -685,6 +667,3 @@ msgstr "Abstimmung löschen"
 #, python-format
 msgid "The year ${year} is not yet supported"
 msgstr "Das Jahr ${year} wird noch nicht unterstützt"
-
-msgid "This ballot has fewer results than the others"
-msgstr "Diese Vorlage hat weniger Resultate als die Anderen"
