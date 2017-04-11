@@ -7,6 +7,9 @@ Changelog
 - Adds support for automatic import of votes using the Wabsti format.
   [msom]
 
+- Fix providing giving an invalid archive date throwing an error.
+  [msom]
+
 1.7.5 (2017-04-07)
 ~~~~~~~~~~~~~~~~~~~
 
