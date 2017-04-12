@@ -3,7 +3,7 @@ from onegov.election_day import _
 from onegov.form import Form
 from wtforms import IntegerField, RadioField, StringField
 from wtforms.fields.html5 import DateField, URLField
-from wtforms.validators import NumberRange, InputRequired
+from wtforms.validators import NumberRange, InputRequired, Optional
 
 
 class ElectionForm(Form):
@@ -66,6 +66,15 @@ class ElectionForm(Form):
         label=_("Related link")
     )
 
+    absolute_majority = IntegerField(
+        label=_("Absolute majority"),
+        validators=[
+            Optional(),
+            NumberRange(min=1)
+        ],
+        depends_on=('election_type', 'majorz'),
+    )
+
     upload_type = RadioField(
         _("Upload"),
         choices=[
@@ -117,6 +126,7 @@ class ElectionForm(Form):
         model.type = self.election_type.data
         model.shortcode = self.shortcode.data
         model.number_of_mandates = self.mandates.data
+        model.absolute_majority = self.absolute_majority.data
 
         model.title_translations = {}
         model.title_translations['de_CH'] = self.election_de.data
@@ -149,6 +159,7 @@ class ElectionForm(Form):
         self.shortcode.data = model.shortcode
         self.election_type.data = model.type
         self.mandates.data = model.number_of_mandates
+        self.absolute_majority.data = model.absolute_majority
 
         meta_data = model.meta or {}
         self.related_link.data = meta_data.get('related_link', '')
