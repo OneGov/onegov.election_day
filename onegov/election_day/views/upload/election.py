@@ -8,7 +8,9 @@ from onegov.election_day import ElectionDayApp
 from onegov.election_day.collections import ArchivedResultCollection
 from onegov.election_day.formats import FileImportError
 from onegov.election_day.forms import UploadElectionForm
+from onegov.election_day.forms import UploadElectionPartyResultsForm
 from onegov.election_day.layout import ManageElectionsLayout
+from onegov.election_day.formats.election import import_party_results_file
 from onegov.election_day.formats.election.internal import (
     import_file as import_internal_file
 )
@@ -27,12 +29,7 @@ def view_upload(self, request, form):
 
     errors = []
 
-    # Remove wabsti and sesam for municipalities for the moment
-    if request.app.principal.domain == 'municipality':
-        form.file_format.choices = [
-            choice for choice in form.file_format.choices
-            if choice[0] != 'wabsti' and choice[0] != 'sesam'
-        ]
+    form.adjust(request.app.principal, self)
 
     status = 'open'
     if form.submitted(request):
@@ -48,24 +45,19 @@ def view_upload(self, request, form):
             ]
         else:
             entities = principal.entities[self.date.year]
-            parties = len(form.parties.data)
             if form.file_format.data == 'internal':
                 errors = import_internal_file(
                     entities,
                     self,
                     form.results.raw_data[0].file,
-                    form.results.data['mimetype'],
-                    form.parties.raw_data[0].file if parties else None,
-                    form.parties.data['mimetype'] if parties else None
+                    form.results.data['mimetype']
                 )
             elif form.file_format.data == 'sesam':
                 errors = import_sesam_file(
                     entities,
                     self,
                     form.results.raw_data[0].file,
-                    form.results.data['mimetype'],
-                    form.parties.raw_data[0].file if parties else None,
-                    form.parties.data['mimetype'] if parties else None
+                    form.results.data['mimetype']
                 )
                 if self.type == 'majorz':
                     self.absolute_majority = form.majority.data
@@ -83,9 +75,7 @@ def view_upload(self, request, form):
                     form.elected.raw_data[0].file if elected else None,
                     form.elected.data['mimetype'] if elected else None,
                     form.statistics.raw_data[0].file if stats else None,
-                    form.statistics.data['mimetype'] if stats else None,
-                    form.parties.raw_data[0].file if parties else None,
-                    form.parties.data['mimetype'] if parties else None
+                    form.statistics.data['mimetype'] if stats else None
                 )
                 if self.type == 'majorz':
                     self.absolute_majority = form.majority.data
@@ -110,7 +100,41 @@ def view_upload(self, request, form):
                     )
                 )
 
-    form.apply_model(self)
+    layout = ManageElectionsLayout(self, request)
+
+    return {
+        'layout': layout,
+        'title': self.title,
+        'shortcode': self.shortcode,
+        'form': form,
+        'cancel': layout.manage_model_link,
+        'errors': errors,
+        'status': status,
+        'election': self
+    }
+
+
+@ElectionDayApp.form(model=Election, name='upload-party-results',
+                     template='upload_election.pt', permission=Private,
+                     form=UploadElectionPartyResultsForm)
+def view_party_results_upload(self, request, form):
+
+    errors = []
+
+    status = 'open'
+    if form.submitted(request):
+        errors = import_party_results_file(
+            self,
+            form.parties.raw_data[0].file,
+            form.parties.data['mimetype']
+        )
+
+        if errors:
+            status = 'error'
+            transaction.abort()
+        else:
+            status = 'success'
+            request.app.pages_cache.invalidate()
 
     layout = ManageElectionsLayout(self, request)
 
