@@ -40,6 +40,18 @@ class VoteForm(Form):
         ]
     )
 
+    vote_type = RadioField(
+        _("Type"),
+        choices=[
+            ('simple', _("Simple Vote")),
+            ('complex', _("Vote with Counter-Proposal")),
+        ],
+        validators=[
+            InputRequired()
+        ],
+        default='simple'
+    )
+
     related_link = URLField(
         label=_("Related link")
     )
@@ -70,6 +82,7 @@ class VoteForm(Form):
         if not model.meta:
             model.meta = {}
         model.meta['related_link'] = self.related_link.data
+        model.meta['vote_type'] = self.vote_type.data
 
     def apply_model(self, model):
         self.vote_de.data = model.title_translations['de_CH']
@@ -83,3 +96,4 @@ class VoteForm(Form):
 
         meta_data = model.meta or {}
         self.related_link.data = meta_data.get('related_link', '')
+        self.vote_type.data = meta_data.get('vote_type', 'simple')
