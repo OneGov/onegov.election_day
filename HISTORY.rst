@@ -1,10 +1,7 @@
 Changelog
 ---------
 
-- Adds support for automatic import of votes using the Wabsti format.
-  [msom]
-
-- Adds support for automatic import of votes using the Wabsti format.
+- Adds support for the wabsti exporter format.
   [msom]
 
 - Fix providing giving an invalid archive date throwing an error.
