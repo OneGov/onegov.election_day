@@ -375,6 +375,7 @@ def test_view_election_summary(election_day_app_gr):
         upload_proporz_election(client)
 
         assert client.get('/election/majorz-election/summary').json == {
+            'completed': False,
             'date': '2015-01-01',
             'domain': 'federation',
             'elected': [['Stefan', 'Engler'], ['Martin', 'Schmid']],
@@ -385,6 +386,7 @@ def test_view_election_summary(election_day_app_gr):
             'url': 'http://localhost/election/majorz-election',
         }
         assert client.get('/election/proporz-election/summary').json == {
+            'completed': False,
             'date': '2015-01-01',
             'domain': 'federation',
             'elected': [],
