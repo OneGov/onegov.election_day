@@ -7,13 +7,15 @@ Für jede wichtige Seite gibt es eine enstprechende JSON-Alternative. Alle Respo
 
 Eine "Gemeinde" kann auch ein Bezirk, ein Wahlkreis etc. sein.
 
-## Inhalt
+Inhalt
+------
 
-1. [Ergebnisübersicht](#ergebnisübersicht)
-2. [Wahlresultate](#wahlresultate)
-3. [Abstimmungsresultate](#abstimmungsresultate)
+1. [Ergebnisübersicht](#1-ergebnisübersicht)
+2. [Wahlresultate](#2-wahlresultate)
+3. [Abstimmungsresultate](#3-abstimmungsresultate)
 
-## Ergebnisübersicht
+1 Ergebnisübersicht
+-------------------
 
 ```
 URL (letzte): /json
@@ -45,7 +47,8 @@ Name|Beschreibung
 `nays_percentage`|Nein-Stimmen in Prozent.
 `local` (*optional*)|Eidgenössische und kantonale Abstimmungen innerhalb kommunaler Instanzen können zusätzlich die Resultate dieser Gemeinde enthalten als zusätzliches Objekt mit den Feldern `answer`, `yeas_percentage` and `nays_percentage`.
 
-## Wahlresultate
+2 Wahlresultate
+---------------
 
 ### Aufbereitete Ergebnisse
 
@@ -121,7 +124,8 @@ Name|Description
 `mandates`|Die Anzahl gewonnener Sitze.
 `votes`|Die Anzahl erhaltener Stimmen.
 
-## Abstimmungsresultate
+3 Abstimmungsresultate
+----------------------
 
 ### Aufbereitete Ergebnisse
 
