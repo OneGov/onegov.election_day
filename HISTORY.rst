@@ -1,5 +1,9 @@
 Changelog
 ---------
+
+- Fixes importing of expats (vote/internal).
+  [msom]
+
 1.8.15 (2017-05-19)
 ~~~~~~~~~~~~~~~~~~~
 
