@@ -1,5 +1,9 @@
 Changelog
 ---------
+
+- Fixes format description link.
+  [msom]
+
 1.8.15 (2017-05-19)
 ~~~~~~~~~~~~~~~~~~~
 
