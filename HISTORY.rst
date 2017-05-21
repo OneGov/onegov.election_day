@@ -1,5 +1,9 @@
 Changelog
 ---------
+
+- Deletes superfluous ballots when uploading vote results.
+  [msom]
+
 1.8.15 (2017-05-19)
 ~~~~~~~~~~~~~~~~~~~
 
