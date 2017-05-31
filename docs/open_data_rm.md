@@ -1,4 +1,5 @@
-# Elecziuns & votaziuns: Open Data
+Elecziuns & votaziuns: Open Data
+================================
 
 ## Introducziun
 
@@ -8,13 +9,15 @@ Tuts Responses cuntegnan il `Last-Modified` HTTP Header che infurmescha, cura ch
 
 "Vischnanca" might refer to a district, ward, etc.
 
-## Cuntegn
+Cuntegn
+-------
 
-1. [Survista dals resultats](#survista-dals-resultats)
-2. [Resultats da las elecziuns](#resultats-da-las-elecziuns)
-3. [Resultats da la votaziun](#resultats-da-la-votaziun)
+1. [Survista dals resultats](#1-survista-dals-resultats)
+2. [Resultats da las elecziuns](#2-resultats-da-las-elecziuns)
+3. [Resultats da la votaziun](#3-resultats-da-la-votaziun)
 
-## Survista dals resultats
+1 Survista dals resultats
+-------------------------
 
 ```
 URL (latest): /json
@@ -33,6 +36,7 @@ Num|Descripziun
 `date`|La data (ISO 8601).
 `domain`|Champ d'influenza (confederaziun, chantun, ...).
 `url`|In link a la vista detagliada.
+`completed`|True, if the vote or election is completed.
 `progess`|In object che cuntegna il dumber da las vischnancas dumbradas ora (`counted`) ed il dumber total da vischnancas (`total`).
 
 Ils resultats da la votaziun cuntegnan las suandantas infurmaziuns supplementaras:
@@ -45,7 +49,8 @@ Num|Descripziun
 `local` (*optional*)|Federal and cantonal votes within a communal instance may contain additionally the results of the municipality in the form of an object with `answer`, `yeas_percentage` and `nays_percentage`.
 
 
-## Resultats da las elecziuns
+2 Resultats da las elecziuns
+----------------------------
 
 ### Resultats elavurads
 
@@ -78,6 +83,7 @@ Num|Descripziun
 `election_type`|`proporz` en cas d'ina elecziun da proporz, `majorz` en cas d'ina elecziun da maiorz
 `election_mandates`|Il dumber dals sezs.
 `election_absolute_majority`|La maioritad absoluta. Mo tar elecziuns da maiorz.
+`election_status`|Interim results (`interim`), final results (`final`) or unknown (`unknown`).
 `election_counted_entities`|Il dumber da vischnancas ch'èn dumbradas ora.
 `election_total_entities`|Il dumber total da vischnancas.
 `entity_name`|Il num da la vischnanca/dal lieu
@@ -123,7 +129,9 @@ Name|Description
 `mandates`|The number of mandates.
 `votes`|The number of votes.
 
-## Resultats da la votaziun
+
+3 Resultats da la votaziun
+--------------------------
 
 ### Resultats elavurads
 
@@ -154,7 +162,8 @@ Num|Descripziun
 `title`|Titel da la votaziun.
 `date`|La data da la votaziun (sco segns ISO 8601).
 `shortcode`|Scursanida interna (definescha la successiun da pliras votaziuns che han lieu il medem di).
-`domain`|`federation` per votaziuns naziunalas, `canton` per votaziuns chantunalas
+`domain`|`federation` per votaziuns naziunalas, `canton` per votaziuns chantunalas.
+`status`|Interim results (`interim`), final results (`final`) or unknown (`unknown`).
 `type`|`proposal` (proposta), `counter-proposal` (cuntraproposta) or "tie-breaker" (dumonda decisiva).
 `group`|La derivanza dal resultat. Quai po esser il district e la vischnanca, separads cun in stritg diagonal, il num da la citad ed il num dal circul, er separads cun in stritg diagonal, u simplamain il num da la vischnanca. Quai dependa dal chantun respectiv.
 `entity_id`|La ID da la vischnanca/dal lieu. A value `0` represents the expats.

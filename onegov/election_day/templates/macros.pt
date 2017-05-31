@@ -28,20 +28,6 @@
     </tal:block>
 </metal:navigation>
 
-<metal:archive define-macro="archive" i18n:domain="onegov.election_day">
-    <div class="row archive" tal:define="years layout.archive.get_years()" tal:condition="years">
-        <div class="columns small-12 small-centered">
-            <h1 i18n:translate="" tal:condition="not: h2|nothing">Archive</h1>
-            <h2 i18n:translate="" tal:condition="h2|nothing">Archive</h2>
-            <ul>
-                <li tal:repeat="date years">
-                    <a href="${request.link(layout.archive.for_date(date))}">${date}</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</metal:archive>
-
 <metal:search define-macro="form" i18n:domain="onegov.election_day">
     <form tal:attributes="action form.action" method="POST" enctype="multipart/form-data">
         <tal:block repeat="fieldset form.fieldsets">
@@ -151,19 +137,29 @@
 </metal:breadcrumbs>
 
 <metal:tab_menu define-macro="tab_menu">
-    <ul class="tabs" tal:condition="layout.menu">
-        <tal:block repeat="item layout.menu">
-            <li class="tab-title ${item[2]}"><a href="${item[1]}">${item[0]}</a></li>
-        </tal:block>
-    </ul>
+    <div class="tab-navigation clearfix" tal:condition="layout.menu">
+        <nav class="top-bar" data-topbar role="navigation">
+            <ul class="title-area">
+                <li class="name menu-icon"><span>${layout.title()}</span></li>
+                <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
+            </ul>
+            <section class="top-bar-section">
+                <ul class="left">
+                    <tal:block repeat="item layout.menu">
+                        <li class="${item[2]}"><a href="${item[1]}">${item[0]}</a></li>
+                    </tal:block>
+                </ul>
+            </section>
+        </nav>
+    </div>
 </metal:tab_menu>
 
 <metal:temporary_results_callout define-macro="temporary_results_callout" i18n:domain="onegov.election_day">
-    <div class="panel callout radius" tal:condition="not:counted">
+    <div class="panel callout radius" tal:condition="not:item.completed">
          <h5 i18n:translate="">Not yet counted.</h5>
          <p>
              <span i18n:translate="">Last change</span>:
-             <strong>${layout.format_date(last_change, 'relative')}</strong>
+             <strong>${layout.format_date(item.last_change, 'relative')}</strong>
          </p>
     </div>
 </metal:temporary_results_callout>
@@ -182,9 +178,13 @@
 </metal:subscription_links>
 
 <metal:election_day_link define-macro="election_day_link" i18n:domain="onegov.election_day">
-    <div>
-        <a class="back-to-election-day" href="${request.link(layout.archive.for_date(date))}" tal:content="layout.format_date(date, 'date_long')" />
-    </div>
+    <nav role="navigation" aria-label="Aktuelle Seite">
+        <ul class="breadcrumbs back-links">
+            <li><a href="${layout.homepage_link}" i18n:translate>Start</a></li>
+            <li><a href="${request.link(layout.archive.for_date(date.year))}">${date.year}</a></li>
+            <li><a href="${request.link(layout.archive.for_date(date))}">${layout.format_date(date, 'day_long')}</a></li>
+        </ul>
+    </nav>
 </metal:election_day_link>
 
 
@@ -228,25 +228,30 @@
 
     <div class="clearfix"></div>
 
-    <div class="row percentages">
-        <div class="columns small-6">
-            <dl>
-                <dt i18n:translate="">Yeas</dt>
-                <dd class="accepted" >${'{0:.2f}'.format(vote.yeas_percentage)}%</dd>
-            </dl>
-        </div>
-        <div class="columns small-6 end">
-            <dl style="text-align: right;">
-                <dt i18n:translate="">Nays</dt>
-                <dd class="rejected" >${'{0:.2f}'.format(vote.nays_percentage)}%</dd>
-            </dl>
-        </div>
-    </div>
+    <tal:block tal:condition="layout.has_results">
+        <div class="row percentages">
+            <div class="columns small-6">
+                <dl>
+                    <dt i18n:translate="">Yeas</dt>
+                    <dd class="accepted" >${'{0:.2f}'.format(vote.yeas_percentage)}%</dd>
 
-    <div class="percentage">
-        <div class="yeas"></div>
-        <div class="nays right" style="width:${'{0:.2f}'.format(vote.nays_percentage)}%"></div>
-    </div>
+                </dl>
+            </div>
+            <div class="columns small-6 end">
+                <dl style="text-align: right;">
+                    <dt i18n:translate="">Nays</dt>
+                    <dd class="rejected" >${'{0:.2f}'.format(vote.nays_percentage)}%</dd>
+                </dl>
+            </div>
+        </div>
+        <div class="percentage">
+            <div class="yeas"></div>
+            <div class="nays right" style="width:${'{0:.2f}'.format(vote.nays_percentage)}%"></div>
+        </div>
+    </tal:block>
+    <tal:block tal:condition="not layout.has_results">
+        <hr />
+    </tal:block>
 </metal:vote_header>
 
 <metal:election_factoids define-macro="election_factoids" i18n:domain="onegov.election_day">

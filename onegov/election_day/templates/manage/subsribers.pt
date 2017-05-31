@@ -11,11 +11,23 @@
             <div class="small-12 columns">
 
                 <div class="row">
-                    <div class="small-12 medium-6 columns">
+                    <div class="small-12 medium-9 columns">
                         <h1>
                             <tal:block i18n:translate>Subscribers</tal:block>
                             <tal:block tal:condition="subscribers">(${count})</tal:block>
                         </h1>
+                    </div>
+                    <div class="small-12 medium-3 columns">
+                        <form style="margin-top: 1em;">
+                            <div class="row collapse">
+                                <div class="small-10 columns">
+                                    <input type="text" name="term" value="${term}"/>
+                                </div>
+                                <div class="small-2 columns">
+                                    <span class="postfix"><i class="fa fa-search" aria-hidden="true"></i></span>
+                                </div>
+                              </div>
+                        </form>
                     </div>
                 </div>
 
@@ -28,15 +40,15 @@
                         <tr>
                             <th i18n:translate>Phone number</th>
                             <th i18n:translate>Locale</th>
-                            <th i18n:translate>Actions</th>
+                            <th i18n:translate class="row-actions right-aligned">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                     <tr tal:repeat="subscriber subscribers">
                         <td>${subscriber.phone_number}</td>
                         <td>${subscriber.locale}</td>
-                        <td>
-                            <ul class="actions">
+                        <td class="right-aligned">
+                            <ul class="actions" data-title="Actions" i18n:attributes="data-title">
                                 <li>
                                     <a i18n:translate class="action-delete" href="${request.link(subscriber, 'delete')}">Delete</a>
                                 </li>

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-26 09:26+0200\n"
-"PO-Revision-Date: 2017-04-24 10:42+0200\n"
+"POT-Creation-Date: 2017-05-29 15:10+0200\n"
+"PO-Revision-Date: 2017-05-29 14:04+0200\n"
 "Last-Translator: Fabian Reinhard <fabian.reinhard@seantis.ch>\n"
 "Language-Team: \n"
 "Language: rm_CH\n"
@@ -94,14 +94,11 @@ msgstr "Nagina datoteca XLS/XLSX valaivla."
 msgid "The xls/xlsx file contains unsupported cells."
 msgstr "La datoteca XLS/XLSX cuntegna cellas betg sustegnidas."
 
-msgid "Party results"
-msgstr "Resultats da las partidas"
-
-msgid "Invalid values"
-msgstr "Valurs nunvalaivlas"
-
 msgid "Results"
 msgstr "Resultats"
+
+msgid "Invalid status"
+msgstr "Status nunvalaivel"
 
 msgid "Invalid election values"
 msgstr "Datas electoralas nunvalaivlas"
@@ -131,6 +128,18 @@ msgstr "Datas nunvalaivlas da colliaziuns da glistas"
 msgid "No data found"
 msgstr "Chattà naginas datas"
 
+msgid "Party results"
+msgstr "Resultats da las partidas"
+
+msgid "Invalid values"
+msgstr "Valurs nunvalaivlas"
+
+msgid "Elected Candidates"
+msgstr "Candidat(a)s elegid(a)s"
+
+msgid "Unknown candidate"
+msgstr "Candidat(a) nunenconuschent(a)"
+
 msgid "Invalid id"
 msgstr "ID nunvalaivel"
 
@@ -140,12 +149,6 @@ msgstr "${name} è avant maun duas giadas"
 
 msgid "Could not read the elegible voters"
 msgstr "I n'è betg stà pussaivel da leger las persunas cun dretg da votar"
-
-msgid "Elected Candidates"
-msgstr "Candidat(a)s elegid(a)s"
-
-msgid "Unknown candidate"
-msgstr "Candidat(a) nunenconuschent(a)"
 
 msgid "Missing municipality/district"
 msgstr "Lieu che manca"
@@ -228,8 +231,8 @@ msgstr "Format da la datoteca"
 msgid "Complete"
 msgstr "Resultat eruì cumplettamain"
 
-msgid "Proposal / Results / SG_Gemeinden.csv"
-msgstr "Project da votaziun / Resultats / SG_Gemeinden.csv"
+msgid "Proposal / Results"
+msgstr "Project da votaziun / Resultats"
 
 msgid "Vote number"
 msgstr "Numer dal project"
@@ -340,6 +343,9 @@ msgstr "% GEA"
 msgid "No %"
 msgstr "% NA"
 
+msgid "Archive"
+msgstr "Archiv"
+
 msgid "Yay"
 msgstr "GEA"
 
@@ -351,8 +357,8 @@ msgstr ""
 "Il formular cuntegna sbagls. Controllai per plaschair ils champs marcads cun "
 "cotschen."
 
-msgid "Back to the latest elections &amp; votes"
-msgstr "Enavos a las elecziuns &amp; votaziuns actualas"
+msgid "Start"
+msgstr "Pagina iniziala"
 
 msgid "Open Data"
 msgstr "Open Data"
@@ -375,9 +381,6 @@ msgstr "Refusà"
 #, python-format
 msgid "${counted} of ${total}"
 msgstr "${counted} da ${total}"
-
-msgid "Archive"
-msgstr "Archiv"
 
 msgid "Cancel"
 msgstr "Interrumper"
@@ -499,6 +502,9 @@ msgstr "Cliccai qua per mussar la pagina cun ils resultats actualisads."
 msgid "Please use the following format:"
 msgstr "Duvrai per plaschair il suandant format:"
 
+msgid "No map available for this year."
+msgstr ""
+
 msgid "Embed"
 msgstr "Incorporar"
 
@@ -610,6 +616,9 @@ msgstr "Nova attribuziun"
 msgid "No mappings yet."
 msgstr "Anc naginas attribuziuns."
 
+msgid "Actions"
+msgstr "Acziuns"
+
 msgid "Delete"
 msgstr "Stizzar"
 
@@ -624,9 +633,6 @@ msgstr "Anc naginas funtaunas da datas."
 
 msgid "Token"
 msgstr "Token"
-
-msgid "Actions"
-msgstr "Acziuns"
 
 msgid "Regenerate token"
 msgstr "Generar da nov il token"
@@ -662,6 +668,18 @@ msgid "Wrong username or password"
 msgstr ""
 "Il num da l'utilisadra u da l'utilisader n'è betg enconuschent u il pled-"
 "clav è sbaglià"
+
+msgid "Access Denied"
+msgstr ""
+
+msgid "You are trying to open a page for which you are not authorized."
+msgstr ""
+
+msgid "Page not Found"
+msgstr ""
+
+msgid "The page you are looking for could not be found."
+msgstr ""
 
 msgid ""
 "Successfully subscribed to the SMS services. You will receive an SMS every "
@@ -723,3 +741,6 @@ msgstr "Stizzar la votaziun"
 #, python-format
 msgid "The year ${year} is not yet supported"
 msgstr "L'onn ${year} na vegn anc betg sustegnì"
+
+msgid "The data source is not configured properly"
+msgstr ""

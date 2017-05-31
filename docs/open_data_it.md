@@ -1,4 +1,5 @@
-# Elezioni & votazioni: Dati aperti
+Elezioni & votazioni: Dati aperti
+=================================
 
 ## Introduzione
 
@@ -6,13 +7,15 @@ Ci sono alternative al formato JSON per tutte le visualizzazioni più importanti
 
 "Comune" si riferisce ad un distretto, una circoscrizione elettorale, etc.
 
-## Contenuti
+Contenuti
+---------
 
-1. [Riepilogo dei risultati](#riepilogo-dei-risultati)
-2. [Risultati dell'elezione](#risultati-dellelezione)
-3. [Risultati della votazione](#risultati-della-votazione)
+1. [Riepilogo dei risultati](#1-riepilogo-dei-risultati)
+2. [Risultati dell'elezione](#2-risultati-dellelezione)
+3. [Risultati della votazione](#3-risultati-della-votazione)
 
-## Riepilogo dei risultati
+1 Riepilogo dei risultati
+-------------------------
 
 ```
 URL (ultimo): /json
@@ -31,6 +34,7 @@ Nome|Descrizione
 `date`|La data (ISO 8601).
 `domain`|Il dominio di influenza (federazione, cantone, ...).
 `url`|Un collegamento alla visualizzazione dettagliata.
+`completed`|True, if the vote or election is completed.
 `progess`|Un oggetto contenente il numero dei comuni già contati (`counted`) e il numero totale di comuni (`total`).
 
 I risultati della votazione contengono le seguenti informazioni aggiuntive:
@@ -43,7 +47,8 @@ Nome|Descrizione
 `local` (*optional*)|Federal and cantonal votes within a communal instance may contain additionally the results of the municipality in the form of an object with `answer`, `yeas_percentage` and `nays_percentage`.
 
 
-## Risultati dell'elezione
+2 Risultati dell'elezione
+-------------------------
 
 ### Risultati elaborati
 
@@ -76,6 +81,7 @@ Nome|Descrizione
 `election_type`|`proporz` per il sistema proporzionale, `majorz` per il sistema maggioritario.
 `election_mandates`|Numero di mandati.
 `election_absolute_majority`|La maggioranza assoluta. Rilevante solo per le elezioni basate sul sistema di maggioranza.
+`election_status`|Interim results (`interim`), final results (`final`) or unknown (`unknown`).
 `election_counted_entities`|Il numero di comuni già contati.
 `election_total_entities`|Il numero totale dei comuni.
 `entity_name`|Nome del comune.
@@ -121,7 +127,8 @@ Name|Description
 `mandates`|The number of mandates.
 `votes`|The number of votes.
 
-## Risultati della votazione
+3 Risultati della votazione
+---------------------------
 
 ### Risultati elaborati
 
@@ -152,7 +159,8 @@ Nome|Descrizione
 `title`|Titolo della votazione.
 `date`|Data della votazione (una stringa ISO 8601).
 `shortcode`|Abbreviazione interna (definisce l'ordine di diverse votazioni in un giorno).
-`domain`|`federation` per votazioni federali, `canton` per votazioni cantonali
+`domain`|`federation` per votazioni federali, `canton` per votazioni cantonali.
+`status`|Interim results (`interim`), final results (`final`) or unknown (`unknown`).
 `type`|`proposal` (progetto), `counter-proposal` (controprogetto) or `tie-breaker` (domanda eventuale).
 `group`|Da dove viene il risultato. Si può trattare del distretto e del comune, separati da una barra, del nome della città e del nome del circolo, anch'essi separati da una barra, o del semplice nome di un comune. Tutto ciò dipende dal rispettivo Cantone.
 `entity_id`|ID del comune/dell'ubicazione. A value `0` represents the expats.

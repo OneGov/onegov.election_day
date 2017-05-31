@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-26 09:26+0200\n"
-"PO-Revision-Date: 2017-04-24 10:41+0200\n"
+"POT-Creation-Date: 2017-05-29 15:10+0200\n"
+"PO-Revision-Date: 2017-05-29 15:12+0200\n"
 "Last-Translator: Fabian Reinhard <fabian.reinhard@seantis.ch>\n"
 "Language-Team: \n"
 "Language: fr_CH\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: xls-to-po 1.0\n"
-"X-Generator: Poedit 2.0.1\n"
+"X-Generator: Poedit 2.0.2\n"
 
 msgid "Expats"
 msgstr "Suisses de l'étranger"
@@ -94,14 +94,11 @@ msgstr "Fichier xls/xlsx non valide."
 msgid "The xls/xlsx file contains unsupported cells."
 msgstr "Le fichier xls/xlsx contient des cellules non supportées."
 
-msgid "Party results"
-msgstr "Résultats des partis"
-
-msgid "Invalid values"
-msgstr "Valeurs non valides"
-
 msgid "Results"
 msgstr "Résultats"
+
+msgid "Invalid status"
+msgstr "Statut non valide"
 
 msgid "Invalid election values"
 msgstr "Valeurs des élections non valides"
@@ -131,6 +128,18 @@ msgstr "Valeurs de connexion de liste non valides"
 msgid "No data found"
 msgstr "Pas de données trouvées"
 
+msgid "Party results"
+msgstr "Résultats des partis"
+
+msgid "Invalid values"
+msgstr "Valeurs non valides"
+
+msgid "Elected Candidates"
+msgstr "Candidats élus"
+
+msgid "Unknown candidate"
+msgstr "Candidat inconnu"
+
 msgid "Invalid id"
 msgstr "Mauvaise référence"
 
@@ -140,12 +149,6 @@ msgstr "${name} a été trouvé en double"
 
 msgid "Could not read the elegible voters"
 msgstr "Impossible de connaître les électeurs valides"
-
-msgid "Elected Candidates"
-msgstr "Candidats élus"
-
-msgid "Unknown candidate"
-msgstr "Candidat inconnu"
 
 msgid "Missing municipality/district"
 msgstr "Municipalité manquante/District manquant"
@@ -228,8 +231,8 @@ msgstr "Format de fichier"
 msgid "Complete"
 msgstr "Terminé"
 
-msgid "Proposal / Results / SG_Gemeinden.csv"
-msgstr "Objet de la votation / Résultats / SG_Gemeinden.csv"
+msgid "Proposal / Results"
+msgstr "Objet de la votation / Résultats"
 
 msgid "Vote number"
 msgstr "Numéro de votation"
@@ -340,6 +343,9 @@ msgstr "Oui %"
 msgid "No %"
 msgstr "Non %"
 
+msgid "Archive"
+msgstr "Archive"
+
 msgid "Yay"
 msgstr "Oui"
 
@@ -351,8 +357,8 @@ msgstr ""
 "Le formulaire contient des erreurs. Prière de vérifier les champs entourés "
 "en rouge."
 
-msgid "Back to the latest elections &amp; votes"
-msgstr "Retour aux dernières élections et votations"
+msgid "Start"
+msgstr "Page d'accueil"
 
 msgid "Open Data"
 msgstr "Ouvrir les données"
@@ -375,9 +381,6 @@ msgstr "Refusé"
 #, python-format
 msgid "${counted} of ${total}"
 msgstr "${counted} de ${total}"
-
-msgid "Archive"
-msgstr "Archive"
 
 msgid "Cancel"
 msgstr "Annuler"
@@ -499,6 +502,9 @@ msgstr "Cliquez pour voir la page des résultats mise à jour."
 msgid "Please use the following format:"
 msgstr "Veuillez utiliser le format suivant:"
 
+msgid "No map available for this year."
+msgstr "Aucune carte disponible pour cette année."
+
 msgid "Embed"
 msgstr "Intégration"
 
@@ -608,6 +614,9 @@ msgstr "Nouvelle cartographie"
 msgid "No mappings yet."
 msgstr "Aucune cartographie pour l'instant."
 
+msgid "Actions"
+msgstr "Actions"
+
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -622,9 +631,6 @@ msgstr "Aucune source de données pour l'instant."
 
 msgid "Token"
 msgstr "Token"
-
-msgid "Actions"
-msgstr "Actions"
 
 msgid "Regenerate token"
 msgstr "Renouveler le token"
@@ -658,6 +664,18 @@ msgstr "Invalide"
 
 msgid "Wrong username or password"
 msgstr "Mauvais nom d'utilisateur ou mot de passe"
+
+msgid "Access Denied"
+msgstr "Accès refusé"
+
+msgid "You are trying to open a page for which you are not authorized."
+msgstr "Vous n'êtes pas autorisé."
+
+msgid "Page not Found"
+msgstr "Page Introuvable"
+
+msgid "The page you are looking for could not be found."
+msgstr "La page que vous cherchez n’a pas pu être trouvée."
 
 msgid ""
 "Successfully subscribed to the SMS services. You will receive an SMS every "
@@ -718,3 +736,6 @@ msgstr "Supprimer la votation"
 #, python-format
 msgid "The year ${year} is not yet supported"
 msgstr "L'année ${year} n'est pas encore prise en charge"
+
+msgid "The data source is not configured properly"
+msgstr "La source de données n'est pas configurée correctement"

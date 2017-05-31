@@ -1,21 +1,26 @@
-# ongov.election_day
+ongov.election_day
+==================
 
-## Upload Formats
+Upload Formats
+--------------
 
-- EN: [Format Specification](format_en.md)
-- DE: [Format Spezifikation](format_de.md)
-- FR: [Spécifications de format](format_fr.md)
-- IT: [Specifica Formato](format_election_it.md)
+- EN: [Format Specification](format__en.md)
+- DE: [Format Spezifikation](format__de.md)
+- FR: [Spécifications de format](format__fr.md)
+- IT: [Specifica Formato](format__it.md)
+- RM: [Format Specificaziun](format__rm.md)
 
-## Download Format
+Download Format
+---------------
 
 - EN: [Format Specification](open_data_en.md)
 - DE: [Format Spezifikation](open_data_de.md)
 - FR: [Spécifications de format](open_data_fr.md)
-- IT: [Specifica Formato](open_data_election_it.md)
-- RM: [Specifica Formato](open_data_election_rm.md)
+- IT: [Specifica Formato](open_data_it.md)
+- RM: [Specifica Formato](open_data_rm.md)
 
-## Embedding
+Embedding
+---------
 
 The web app containts different views which allows easy embedding of election
 and vote results on a different site:
@@ -27,11 +32,116 @@ and vote results on a different site:
 -   `{path_to_election}/panachage-chart`: The panachage sankey chart.
 -   `{path_to_election}/parties-chart`: The party results bar chart.
 
-Furthermore, the web app can be called in a headerless mode by browsing
+Make sure you serve the files with the embedding code with a web server!
+
+The views include the https://github.com/davidjbradshaw/iframe-resizer.
+
+
+Headerless Mode
+---------------
+
+The web app can be called in a headerless mode by browsing
 `{root_path}?headerless`. In headerless mode, both the header and footer are
 hidden. The headerless setting is stored in the browser session after the
-intial call which means that browsing all further links are in headerless mode
+initial call which means that browsing all further links are in headerless mode
 as well. End the headerless mode with `{root_path}?headerful`.
 
-Both the special view and the pages in headerless mode include the
-https://github.com/davidjbradshaw/iframe-resizer.
+To set the language, set the a cookie either by browsing to
+`{root_path}/locale/xx` or directly (`locale: xxx`). Valid options are `de_CH`,
+`fr_CH`, `it_CH` or `rm_CH`
+
+The views include the https://github.com/davidjbradshaw/iframe-resizer.
+
+WabstiCExport
+-------------
+
+The web app allows to upload results directly from the Wabsti export program.
+First add the election/vote(s), then a datasource (the token hereby generated
+is used for authentication later) and connect the election/votes using the
+parameters used in Wabsti.
+
+The files can then be uploaded by using a multipart-POST-request to
+- `[base_url]/upload-wabsti-vote` for votes with the fields
+  - `sg_gemeinden` (SG_Gemeinden.csv)
+  - `sg_geschaefte` (SG_Geschaefte.csv)
+  - `sgstatic_gemeinden` (SGStatic_Gemeinden.csv)
+  - `sgstatic_geschaefte` (SGStatic_Geschaefte.csv)
+- `[base_url]/upload-wabsti-majorz` for majorz elections with the fields
+  - `wm_gemeinden` (WM_Gemeinden.csv)
+  - `wm_kandidaten` (WM_Kandidaten.csv)
+  - `wm_kandidatengde` (WM_KandidatenGde.csv)
+  - `wm_wahl` (WM_Wahl.csv)
+  - `wmstatic_gemeinden` (WMStatic_Gemeinden.csv)
+- `[base_url]/upload-wabsti-proporz` for proporz elections with the fields
+  - `wp_gemeinden` (WP_Gemeinden.csv)
+  - `wp_kandidaten` (WP_Kandidaten.csv)
+  - `wp_kandidatengde` (WP_KandidatenGde.csv)
+  - `wp_listen` (WP_Listen.csv)
+  - `wp_listengde` (WP_ListenGde.csv)
+  - `wp_wahl` (WP_Wahl.csv)
+  - `wpstatic_gemeinden` (WPStatic_Gemeinden.csv)
+  - `wpstatic_kandidaten` (WPStatic_Kandidaten.csv)
+
+The token must be provided using the passwort part of HTTP basic authentication.
+An invalid authentication returns a `HTTP 403 Forbidden`, all other requests
+return a `HTTP 200 OK` together with a JSON body containing a status and a list
+of errors, for example:
+
+    {
+    	"status": "success",
+    	"errors": {}
+    }
+
+or
+
+    {
+        "status": "error",
+        "errors": {
+            "1": [{
+                "line": 2,
+                "filename": null,
+                "message": "1 is unknown"
+            }]
+        }
+    }
+
+It is possible to set the language used for the error messages by setting the
+`Accept-Language` header, possible values are: `de_CH`, `fr_CH`, `it_CH`, `rm_CH`.
+
+
+### cURL Examples
+
+    curl https://[base_url]/upload-wabsti-vote \
+      --user :[token] \
+      --header "Accept-Language: de_CH" \
+      --form "sg_gemeinden=@SG_Gemeinden.csv" \
+      --form "sg_geschaefte=@SG_Geschaefte.csv" \
+      --form "sgstatic_gemeinden=@SGStatic_Gemeinden.csv" \
+      --form "sgstatic_geschaefte=@SGStatic_Geschaefte.csv"
+
+    curl https://[base_url]/upload-wabsti-majorz \
+      --user :[token] \
+      --header "Accept-Language: de_CH" \
+      --form "wm_gemeinden=@WM_Gemeinden.csv" \
+      --form "wm_kandidaten=@WM_Kandidaten.csv" \
+      --form "wm_kandidatengde=@WM_KandidatenGde.csv" \
+      --form "wm_wahl=@WM_Wahl.csv" \
+      --form "wmstatic_gemeinden=@WMStatic_Gemeinden.csv"
+
+    curl https://[base_url]/upload-wabsti-proporz \
+      --user :[token] \
+      --header "Accept-Language: de_CH" \
+      --form "wp_gemeinden=@WP_Gemeinden.csv" \
+      --form "wp_kandidaten=@WP_Kandidaten.csv" \
+      --form "wp_kandidatengde=@WP_KandidatenGde.csv" \
+      --form "wp_listen=@WP_Listen.csv" \
+      --form "wp_listengde=@WP_ListenGde.csv" \
+      --form "wp_wahl=@WP_Wahl.csv" \
+      --form "wpstatic_gemeinden=@WPStatic_Gemeinden.csv" \
+      --form "wpstatic_kandidaten=@WPStatic_Kandidaten.csv"
+
+
+Testing
+-------
+
+See [here](testing.md)

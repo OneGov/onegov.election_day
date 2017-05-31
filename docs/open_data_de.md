@@ -1,4 +1,5 @@
-# Wahlen & Abstimmungen: Open Data
+Wahlen & Abstimmungen: Open Data
+================================
 
 ## Einleitung
 
@@ -6,13 +7,15 @@ Für jede wichtige Seite gibt es eine enstprechende JSON-Alternative. Alle Respo
 
 Eine "Gemeinde" kann auch ein Bezirk, ein Wahlkreis etc. sein.
 
-## Inhalt
+Inhalt
+------
 
-1. [Ergebnisübersicht](#ergebnisübersicht)
-2. [Wahlresultate](#wahlresultate)
-3. [Abstimmungsresultate](#abstimmungsresultate)
+1. [Ergebnisübersicht](#1-ergebnisübersicht)
+2. [Wahlresultate](#2-wahlresultate)
+3. [Abstimmungsresultate](#3-abstimmungsresultate)
 
-## Ergebnisübersicht
+1 Ergebnisübersicht
+-------------------
 
 ```
 URL (letzte): /json
@@ -31,7 +34,9 @@ Name|Beschreibung
 `date`|Das Datum (ISO 8601).
 `domain`|Einflussbereich (Bund, Kanton, ...).
 `url`|Ein Link zur Detailansicht.
+`completed`|True, falls die Abstimmung oder Wahl abgeschlossen ist.
 `progess`|Ein Objekt welches die Anzahl ausgezählter Gemeinden (`counted`) und die Gesamtzahl an Gemeinden (`total`) enthält.
+
 
 Abstimmungsresultate enthalten die folgenden zusätzlichen Informationen:
 
@@ -42,7 +47,8 @@ Name|Beschreibung
 `nays_percentage`|Nein-Stimmen in Prozent.
 `local` (*optional*)|Eidgenössische und kantonale Abstimmungen innerhalb kommunaler Instanzen können zusätzlich die Resultate dieser Gemeinde enthalten als zusätzliches Objekt mit den Feldern `answer`, `yeas_percentage` and `nays_percentage`.
 
-## Wahlresultate
+2 Wahlresultate
+---------------
 
 ### Aufbereitete Ergebnisse
 
@@ -75,6 +81,7 @@ Name|Beschreibung
 `election_type`|`proporz` falls Proporzwahl, `majorz` falls Majorzwahl
 `election_mandates`|Die Anzahl der Sitze.
 `election_absolute_majority`|Das absolute Mehr. Nur bei Majorzwahlen.
+`election_status`|Zwischenergebnisse (`interim`), Endergebnisse (`final`) oder unbekannt (`unknown`).
 `election_counted_entities`|Die Anzahl ausgezählter Gemeinden.
 `election_total_entities`|Die Gesamtanzahl an Gemeinden.
 `entity_name`|Der Name der Gemeinde
@@ -120,7 +127,8 @@ Name|Description
 `mandates`|Die Anzahl Mandate der Partei.
 `votes`|Die Anzahl Stimmen der Partei.
 
-## Abstimmungsresultate
+3 Abstimmungsresultate
+----------------------
 
 ### Aufbereitete Ergebnisse
 
@@ -152,6 +160,7 @@ Name|Beschreibung
 `date`|Das Datum der Abstimmung (ein ISO 8601 String).
 `shortcode`|Internes Kürzel (definiert die Reihenfolge von mehreren Abstimmungen an einem Tag).
 `domain`|`federation` für Nationale Abstimmungen, `canton` für Kantonale Abstimmungen
+`status`|Zwischenergebnisse (`interim`), Endergebnisse (`final`) oder unbekannt (`unknown`).
 `type`|`proposal` (Vorschlag), `counter-proposal` (Gegenvorschlag) or `tie-breaker` (Stichfrage).
 `group`|Woher das Resultat kommt. Das kann der Bezirk und die Gemeinde, getrennt mittels eines Schrägstrichs, der Name der Stadt und der Name des Kreises, ebenfalls getrennt mittels eines Schrägstrichts, oder ein einfacher Gemeinde Name sein. All dies hängt vom jeweiligen Kanton ab.
 `entity_id`|Die ID der Gemeinde. Der Wert `0` steht für Auslandschweizer.

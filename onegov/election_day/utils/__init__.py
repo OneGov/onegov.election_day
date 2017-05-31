@@ -1,6 +1,7 @@
 from hashlib import sha256
 from onegov.ballot import Election, Vote, Ballot
 from onegov.election_day.models import ArchivedResult
+from sqlalchemy.orm import object_session
 
 
 def handle_headerless_params(request):
@@ -30,6 +31,7 @@ def get_election_summary(election, request, url=None):
         last_modified = last_modified.isoformat()
 
     return {
+        'completed': election.completed,
         'date': election.date.isoformat(),
         'domain': election.domain,
         'elected': election.elected_candidates,
@@ -57,20 +59,24 @@ def get_vote_summary(vote, request, url=None):
     if last_modified:
         last_modified = last_modified.isoformat()
 
+    counted = vote.progress[0] or 0
+    nays_percentage = vote.nays_percentage if counted else None
+    yeas_percentage = vote.yeas_percentage if counted else None
     summary = {
-        'answer': vote.answer or "",
+        'answer': vote.answer or None,
+        'completed': vote.completed,
         'date': vote.date.isoformat(),
         'domain': vote.domain,
         'last_modified': last_modified,
-        'nays_percentage': vote.nays_percentage,
+        'nays_percentage': nays_percentage,
         'progress': {
-            'counted': (vote.progress[0] or 0) / divider,
+            'counted': counted / divider,
             'total': (vote.progress[1] or 0) / divider
         },
         'title': vote.title_translations,
         'type': 'vote',
         'url': url or request.link(vote),
-        'yeas_percentage': vote.yeas_percentage,
+        'yeas_percentage': yeas_percentage,
     }
     if 'local' in (vote.meta or {}):
         summary['local'] = {
@@ -221,3 +227,61 @@ def svg_filename(item, type_, locale=None):
         ts = int(item.last_result_change.timestamp())
 
     return '{}-{}.{}.{}.{}.svg'.format(name, hash, ts, type_, locale or 'any')
+
+
+def clear_election(election):
+    """ Clear the election of all of its results. """
+
+    election.counted_entities = 0
+    election.total_entities = 0
+    election.absolute_majority = None
+    election.status = None
+
+    session = object_session(election)
+    for connection in election.list_connections:
+        session.delete(connection)
+    for list_ in election.lists:
+        session.delete(list_)
+    for candidate in election.candidates:
+        session.delete(candidate)
+    for result in election.results:
+        session.delete(result)
+    for result in election.party_results:
+        session.delete(result)
+
+
+def clear_vote(vote):
+    """ Clear the vote of all of its ballots. """
+
+    session = object_session(vote)
+    vote.status = None
+    for ballot in vote.ballots:
+        session.delete(ballot)
+
+
+def clear_ballot(ballot):
+    """ Clear the ballot of all of its results. """
+
+    session = object_session(ballot)
+    for result in ballot.results:
+        session.delete(result)
+
+
+def guessed_group(entity, other):
+    """ Guess the grouping from another group name.
+
+    This should become soon obsolete
+    """
+
+    result = entity['name']
+
+    if other:
+        if '/' in other[0].group:
+            result = '/'.join(
+                p for p in (
+                    entity.get('district'),
+                    entity.get('name')
+                ) if p is not None
+            )
+
+    return result

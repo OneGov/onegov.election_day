@@ -1,4 +1,5 @@
-# Elections & Votes: Open Data
+Elections & Votes: Open Data
+============================
 
 ## Introduction
 
@@ -7,13 +8,15 @@ There are JSON alternatives for all important views. All responses contain the `
 "Municipality" might refer to a district, ward, etc.
 
 
-## Contents
+Contents
+--------
 
-1. [Summarized results](#summarized-results)
-2. [Election results](#election-results)
-3. [Vote results](#vote-results)
+1. [Summarized results](#1-summarized-results)
+2. [Election results](#2-election-results)
+3. [Vote results](#3-vote-results)
 
-## Summarized results
+1 Summarized results
+--------------------
 
 ```
 URL (latest): /json
@@ -32,6 +35,7 @@ Name|Description
 `date`|The date (ISO 8601).
 `domain`|The domain of influence (federation, canton, ...).
 `url`|A link to the detailed view.
+`completed`|True, if the vote or election is completed.
 `progess`|An object containing the number already counted municipalities (`counted`) and the total number of municipalities (`total`).
 
 Vote results contain the following additional information:
@@ -43,7 +47,8 @@ Name|Description
 `nays_percentage`|Nays percentage.
 `local` (*optional*)|Federal and cantonal votes within a communal instance may contain additionally the results of the municipality in the form of an object with `answer`, `yeas_percentage` and `nays_percentage`.
 
-## Election results
+2 Election results
+------------------
 
 ### Processed results
 
@@ -76,6 +81,7 @@ Name|Description
 `election_type`|`proporz` for proportional, `majorz` for majority system.
 `election_mandates`|The number of mandates.
 `election_absolute_majority`|The absolute majority. Only relevant for elections based on majority system.
+`election_status`|Interim results (`interim`), final results (`final`) or unknown (`unknown`).
 `election_counted_entities`|The number of already counted municipalities.
 `election_total_entities`|The total number of municipalities.
 `entity_name`|The name of the municipality.
@@ -121,7 +127,8 @@ Name|Description
 `mandates`|The number of mandates.
 `votes`|The number of votes.
 
-## Vote results
+3 Vote results
+--------------
 
 ### Processed results
 
@@ -153,6 +160,7 @@ Name|Description
 `date`|The date of the vote (an ISO 8601 date string).
 `shortcode`|Internal shortcode (defines the ordering of votes on the same day).
 `domain`|`federation` for federal, `canton` for cantonal votes.
+`status`|Interim results (`interim`), final results (`final`) or unknown (`unknown`).
 `type`|`proposal`, `counter-proposal` or `tie-breaker`.
 `group`|The designation of the result. May be the district, the town's name divided by a slash, the city's name and the city's district divided by a slash or simply the town's name. This depends entirely on the canton.
 `entity_id`|The id of the municipality/locale. A value `0` represents the expats.

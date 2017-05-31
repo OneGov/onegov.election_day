@@ -1,15 +1,17 @@
 from onegov.ballot import Ballot
 from onegov.ballot import BallotResult
 from onegov.election_day import _
-from onegov.election_day.formats import EXPATS
-from onegov.election_day.formats import FileImportError
-from onegov.election_day.formats import load_csv
-from onegov.election_day.formats.vote import BALLOT_TYPES
-from onegov.election_day.formats.vote import clear_ballot
-from onegov.election_day.formats.vote import guessed_group
+from onegov.election_day.formats.common import BALLOT_TYPES
+from onegov.election_day.formats.common import EXPATS
+from onegov.election_day.formats.common import FileImportError
+from onegov.election_day.formats.common import load_csv
+from onegov.election_day.formats.common import STATI
+from onegov.election_day.utils import clear_vote
+from onegov.election_day.utils import guessed_group
 
 
 HEADERS = [
+    'status',
     'type',
     'group',
     'entity_id',
@@ -22,7 +24,7 @@ HEADERS = [
 ]
 
 
-def import_file(entities, vote, file, mimetype):
+def import_vote_internal(entities, vote, file, mimetype):
     """ Tries to import the given csv, xls or xlsx file.
 
     :return:
@@ -38,10 +40,15 @@ def import_file(entities, vote, file, mimetype):
     added_entity_ids = {}
     added_groups = {}
     ballot_types = set()
+    status = 'unknown'
 
     for line in csv.lines:
 
         line_errors = []
+
+        status = line.status or 'unknown'
+        if status not in STATI:
+            line_errors.append(_("Invalid status"))
 
         ballot_type = line.type
         if ballot_type not in BALLOT_TYPES:
@@ -50,16 +57,6 @@ def import_file(entities, vote, file, mimetype):
         added_entity_ids.setdefault(ballot_type, set())
         added_groups.setdefault(ballot_type, set())
         ballot_results.setdefault(ballot_type, [])
-
-        # the name of the entity
-        group = line.group.strip()
-        if not group:
-            line_errors.append(_("Missing municipality/district"))
-        if group in added_groups[ballot_type]:
-            line_errors.append(_("${name} was found twice", mapping={
-                'name': group
-            }))
-        added_groups[ballot_type].add(group)
 
         # the id of the entity
         try:
@@ -83,6 +80,16 @@ def import_file(entities, vote, file, mimetype):
                     }))
             else:
                 added_entity_ids[ballot_type].add(entity_id)
+
+        # the name of the entity
+        group = line.group.strip()
+        if entity_id and not group:
+            line_errors.append(_("Missing municipality/district"))
+        if group in added_groups[ballot_type]:
+            line_errors.append(_("${name} was found twice", mapping={
+                'name': group
+            }))
+        added_groups[ballot_type].add(group)
 
         # Add the uncounted entity, but use the given group
         if line.counted.lower() != 'true':
@@ -163,6 +170,10 @@ def import_file(entities, vote, file, mimetype):
     if not any((len(results) for results in ballot_results.values())):
         return [FileImportError(_("No data found"))]
 
+    clear_vote(vote)
+
+    vote.status = status
+
     for ballot_type in ballot_types:
         remaining = (
             entities.keys() - added_entity_ids[ballot_type]
@@ -184,8 +195,6 @@ def import_file(entities, vote, file, mimetype):
             if not ballot:
                 ballot = Ballot(type=ballot_type)
                 vote.ballots.append(ballot)
-
-            clear_ballot(ballot)
 
             for result in ballot_results[ballot_type]:
                 ballot.results.append(result)

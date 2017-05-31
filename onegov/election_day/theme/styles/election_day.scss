@@ -96,6 +96,18 @@ html {
     }
 }
 
+@media #{$small-only} {
+    .homepage {
+        h2 {
+            margin-bottom: 1em;
+        }
+
+        h3 {
+            margin-bottom: 0;
+        }
+    }
+}
+
 .archive {
     ul {
         list-style-type: none;
@@ -143,8 +155,15 @@ table {
     }
 
     th {
-        border-bottom: 1px solid $white-smoke;
+        border-bottom: 1px solid $aluminum;
     }
+
+    tr.even,
+    tr.alt,
+    tr:nth-of-type(even) {
+        background: $white;
+    }
+
 
     th,
     td {
@@ -160,7 +179,7 @@ table {
     }
 
     tr.total {
-        border: 1px solid $gainsboro;
+        border: 1px solid $iron;
         border-width: 1px 0;
         font-weight: bold;
     }
@@ -240,7 +259,7 @@ table {
         }
 
         &.collapsed {
-            tr.sticky {
+            tr.sticky-row {
                 background-color: $white;
             }
 
@@ -268,13 +287,19 @@ table {
 
     .st-head-row {
         background-color: $white;
-        border-bottom: 5px solid $gainsboro;
+        border-bottom: 3px solid $gainsboro;
         font-size: 1.2em;
+        padding-top: 2em;
         text-align: center;
     }
 
     .stackable .answer {
         text-align: right;
+    }
+
+    table tr.total {
+        border: 0;
+        font-weight: bold;
     }
 }
 
@@ -469,45 +494,82 @@ footer {
     font-size: 85%;
     margin-top: 2rem;
     padding: 1rem 0;
-
-    .copyright::after {
-        content: ' |';
-    }
-
 }
 
 
 /*
-    Manage navigation
+    Navigation
 */
-.tabs {
-    background-color: $snow;
-    border-bottom: 4px solid $gainsboro;
-    margin-bottom: 2em !important;
+.tab-navigation {
+    margin-bottom: 2em;
+    margin-top: 1em;
 
-    .tab-title > a {
-        background-color: transparent;
+    .title-area {
+        border-bottom: 1px solid $aluminum;
+
+        .name {
+            background: $white-smoke;
+
+            span {
+                padding-left: 1em;
+            }
+        }
     }
 
-    .tab-title.active > a {
-        background-color: $gainsboro;
+    .top-bar {
+        &:not(.expanded) {
+            border-bottom: 1px solid $aluminum;
+        }
+
+        .title-area .name span {
+            color: $aluminum;
+        }
+
+        .left {
+            li.active {
+                border-left: 2px solid $primary-color;
+            }
+        }
     }
 }
 
-@media #{$small-only} {
-    .tabs {
-        border-bottom: 0;
-        border-left: 4px solid $gainsboro;
+@media #{$medium-up} {
+    .tab-navigation {
+        .top-bar {
 
-        li {
-            width: 100%;
-        }
+            &:not(.expanded) {
+                border-bottom: 0;
+            }
 
-        .tab-title a {
-            padding-left: 1em;
+            .title-area .name span {
+                display: none;
+            }
+
+            .left {
+                border-bottom: 1px solid $aluminum;
+                width: 100%;
+
+                li {
+                    border-bottom: 2px solid $white;
+                    position: relative;
+                    z-index: 10;
+
+                    &.active {
+                        border-bottom: 2px solid $primary-color;
+                        border-left: 0;
+                        top: 1px;
+                        z-index: 20;
+                    }
+                }
+            }
         }
     }
 }
+
+
+/*
+    Breadcrumbs
+*/
 
 ul.breadcrumbs {
     background: $white;
@@ -517,14 +579,36 @@ ul.breadcrumbs {
 }
 
 /*
+    Backend views
+*/
+
+tr.divider {
+    border-bottom: 1px solid $iron;
+}
+
+/*
     Manage view actions
 */
+th.row-actions {
+    width: 200px;
+}
+
+td.row-actions {
+    padding-right: 0;
+}
+
 ul.actions {
+    direction: rtl;
     list-style-type: circle;
+    margin: .2em 1.1em 1em 0;
 
     li {
         font-size: $table-row-font-size;
     }
+}
+
+.action-button {
+    margin-bottom: 0;
 }
 
 
@@ -629,7 +713,7 @@ form {
     display: inline-block;
     font-size: .875rem;
     list-style: none;
-    margin: 0;
+    margin: 0 0 1em;
 
     li {
         display: inline-block;
@@ -643,17 +727,12 @@ form {
 /*
     Link back to canton site
 */
-.back-to-election-day {
-    display: inline-block;
-    font-size: .875rem;
-    font-weight: bold;
-    margin-bottom: .875rem;
+ul.breadcrumbs.back-links {
+    background-color: $white-smoke;
+    margin-bottom: 1em;
 
-    &::before {
-        content: '\f100 ';
-        font-family: 'FontAwesome';
-        font-weight: normal;
-        margin-right: 1ex;
+    > * {
+        font-size: .875rem;
     }
 }
 
@@ -740,9 +819,6 @@ form {
     .open-data-link,
     .results-navigation a,
     .results-navigation h2::after,
-    .copyright::after {
-        display: none;
-    }
 
     p,
     td,

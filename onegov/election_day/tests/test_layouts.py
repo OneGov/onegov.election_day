@@ -73,23 +73,23 @@ def test_layout_links():
 
     assert layout_de.format_description_link == (
         'https://github.com/OneGov/onegov.election_day/blob/master/docs/'
-        'format_de.md'
+        'format__de.md'
     )
     assert layout_en.format_description_link == (
         'https://github.com/OneGov/onegov.election_day/blob/master/docs/'
-        'format_en.md'
+        'format__en.md'
     )
     assert layout_fr.format_description_link == (
         'https://github.com/OneGov/onegov.election_day/blob/master/docs/'
-        'format_fr.md'
+        'format__fr.md'
     )
     assert layout_it.format_description_link == (
         'https://github.com/OneGov/onegov.election_day/blob/master/docs/'
-        'format_it.md'
+        'format__it.md'
     )
     assert layout_rm.format_description_link == (
         'https://github.com/OneGov/onegov.election_day/blob/master/docs/'
-        'format_rm.md'
+        'format__rm.md'
     )
 
     assert layout_de.login_link == 'Auth/login'
@@ -105,15 +105,14 @@ def test_elections_layout(session):
     layout = ElectionsLayout(None, DummyRequest())
 
     assert layout.all_tabs == (
-        'lists', 'candidates', 'districts', 'connections', 'parties',
-        'statistics', 'panachage', 'data'
+        'lists', 'candidates', 'connections', 'parties', 'statistics',
+        'panachage', 'data'
     )
 
     assert layout.title() == ''
     assert layout.title('undefined') == ''
     assert layout.title('lists') == 'Lists'
     assert layout.title('candidates') == 'Candidates'
-    assert layout.title('districts') == '__entities'
     assert layout.title('connections') == 'List connections'
     assert layout.title('parties') == 'Parties'
     assert layout.title('statistics') == 'Election statistics'
@@ -125,7 +124,6 @@ def test_elections_layout(session):
     assert not layout.proporz
     assert layout.main_view == 'Election/candidates'
     assert not layout.has_results
-    assert not layout.counted
     assert list(layout.menu) == []
 
     layout = ElectionsLayout(Election(type='proporz'), DummyRequest())
@@ -133,7 +131,6 @@ def test_elections_layout(session):
     assert layout.proporz
     assert layout.main_view == 'Election/lists'
     assert not layout.has_results
-    assert not layout.counted
     assert list(layout.menu) == []
 
     with freeze_time("2014-01-01 12:00"):
@@ -207,7 +204,6 @@ def test_votes_layout(session):
     assert layout.title('data') == 'Downloads'
 
     assert not layout.has_results
-    assert not layout.counted
     assert list(layout.menu) == []
 
     with freeze_time("2014-01-01 12:00"):

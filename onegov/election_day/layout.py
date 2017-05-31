@@ -18,9 +18,15 @@ from onegov.user import Auth
 
 class Layout(ChameleonLayout):
 
+    day_long_format = 'dd. MMMM'
+
     def __init__(self, model, request):
         super().__init__(model, request)
         self.request.include('common')
+        self.request.include('custom')
+
+    def title(self):
+        return ''
 
     @cached_property
     def app_version(self):
@@ -47,7 +53,7 @@ class Layout(ChameleonLayout):
         lang = (self.request.locale or 'en')[:2]
         return (
             "https://github.com/OneGov/onegov.election_day"
-            "/blob/master/docs/format_{}.md"
+            "/blob/master/docs/format__{}.md"
         ).format(lang)
 
     @cached_property
@@ -114,6 +120,10 @@ class Layout(ChameleonLayout):
     def format_group(self, item):
         return item.group if item.entity_id else _("Expats")
 
+    @cached_property
+    def sentry_js(self):
+        return self.app.sentry_js
+
 
 class DefaultLayout(Layout):
     pass
@@ -130,7 +140,6 @@ class ElectionsLayout(Layout):
         return (
             'lists',
             'candidates',
-            'districts',
             'connections',
             'parties',
             'statistics',
@@ -145,8 +154,6 @@ class ElectionsLayout(Layout):
             return _("Lists")
         if tab == 'candidates':
             return _("Candidates")
-        if tab == 'districts':
-            return self.principal.label('entities')
         if tab == 'connections':
             return _("List connections")
         if tab == 'parties':
@@ -170,8 +177,6 @@ class ElectionsLayout(Layout):
             return self.proporz
         if tab == 'parties':
             return self.proporz and self.model.party_results.first()
-        if tab == 'districts':
-            return self.majorz and self.summarize
         if tab == 'connections':
             return self.proporz and self.model.list_connections.first()
         if tab == 'panachage':
@@ -198,12 +203,6 @@ class ElectionsLayout(Layout):
         return False
 
     @cached_property
-    def counted(self):
-        if self.has_results and self.model.counted:
-            return True
-        return False
-
-    @cached_property
     def summarize(self):
         return self.model.total_entities != 1
 
@@ -215,13 +214,13 @@ class ElectionsLayout(Layout):
 
     @cached_property
     def menu(self):
-        return (
+        return [
             (
                 self.title(tab),
                 self.request.link(self.model, tab),
                 'active' if self.tab == tab else ''
             ) for tab in self.all_tabs if self.visible(tab)
-        )
+        ]
 
     @cached_property
     def pdf_path(self):
@@ -308,17 +307,14 @@ class VotesLayout(Layout):
 
     @cached_property
     def has_results(self):
-        if self.model.ballots.first():
-            return True
-        return False
+        proposal = self.model.ballots.first()
+        if not proposal:
+            return False
+        return any((r.counted for r in proposal.results))
 
     @cached_property
     def counter_proposal(self):
         return self.model.counter_proposal
-
-    @cached_property
-    def counted(self):
-        return self.has_results and self.model.counted
 
     @cached_property
     def summarize(self):
@@ -440,9 +436,15 @@ class ManageLayout(DefaultLayout):
 
         return menu
 
+    def title(self):
+        try:
+            return self.breadcrumbs[-1][0]
+        except (IndexError, TypeError):
+            return ''
+
     def __init__(self, model, request):
         super().__init__(model, request)
-        self.request.include('form')
+        self.request.include('backend_common')
         self.breadcrumbs = [
             (_("Manage"), super().manage_link, 'unavailable'),
         ]

@@ -6,25 +6,17 @@ from onegov.ballot import Election
 from onegov.core.security import Private
 from onegov.election_day import ElectionDayApp
 from onegov.election_day.collections import ArchivedResultCollection
-from onegov.election_day.formats.election import import_party_results_file
+from onegov.election_day.formats import import_election_internal
+from onegov.election_day.formats import import_election_sesam
+from onegov.election_day.formats import import_election_wabsti_majorz
+from onegov.election_day.formats import import_election_wabsti_proporz
+from onegov.election_day.formats import import_election_wabstic_majorz
+from onegov.election_day.formats import import_election_wabstic_proporz
+from onegov.election_day.formats import import_party_results
 from onegov.election_day.forms import UploadElectionPartyResultsForm
 from onegov.election_day.forms import UploadMajorzElectionForm
 from onegov.election_day.forms import UploadProporzElectionForm
 from onegov.election_day.layout import ManageElectionsLayout
-from onegov.election_day.formats.election.internal import (
-    import_file as import_internal_file
-)
-from onegov.election_day.formats.election.wabsti.majorz import (
-    import_file as import_wabsti_file_majorz,
-    import_exporter_files as import_exporter_files_majorz
-)
-from onegov.election_day.formats.election.wabsti.proporz import (
-    import_file as import_wabsti_file_proporz,
-    import_exporter_files as import_exporter_files_proporz
-)
-from onegov.election_day.formats.election.sesam import (
-    import_file as import_sesam_file
-)
 from onegov.election_day.views.upload import unsupported_year_error
 
 
@@ -54,13 +46,13 @@ def view_upload_majorz_election(self, request, form):
         else:
             entities = principal.entities[self.date.year]
             if form.file_format.data == 'internal':
-                errors = import_internal_file(
+                errors = import_election_internal(
                     entities, self,
                     form.results.raw_data[0].file,
                     form.results.data['mimetype']
                 )
             elif form.file_format.data == 'sesam':
-                errors = import_sesam_file(
+                errors = import_election_sesam(
                     entities, self,
                     form.results.raw_data[0].file,
                     form.results.data['mimetype']
@@ -68,7 +60,7 @@ def view_upload_majorz_election(self, request, form):
                 self.absolute_majority = form.majority.data
             elif form.file_format.data == 'wabsti':
                 elected = len(form.elected.data)
-                errors = import_wabsti_file_majorz(
+                errors = import_election_wabsti_majorz(
                     entities, self,
                     form.results.raw_data[0].file,
                     form.results.data['mimetype'],
@@ -76,16 +68,17 @@ def view_upload_majorz_election(self, request, form):
                     form.elected.data['mimetype'] if elected else None,
                 )
                 self.absolute_majority = form.majority.data
-                if form.complete.data:
-                    self.total_entities = self.counted_entities
+                self.status = 'final' if form.complete.data else 'interim'
             elif form.file_format.data == 'wabsti_c':
                 for source in self.data_sources:
                     errors.extend(
-                        import_exporter_files_majorz(
+                        import_election_wabstic_majorz(
                             self,
                             source.district,
                             source.number,
                             entities,
+                            form.wm_wahl.raw_data[0].file,
+                            form.wm_wahl.data['mimetype'],
                             form.wmstatic_gemeinden.raw_data[0].file,
                             form.wmstatic_gemeinden.data['mimetype'],
                             form.wm_gemeinden.raw_data[0].file,
@@ -96,7 +89,6 @@ def view_upload_majorz_election(self, request, form):
                             form.wm_kandidatengde.data['mimetype']
                         )
                     )
-                self.absolute_majority = form.majority.data
             else:
                 raise NotImplementedError("Unsupported import format")
 
@@ -149,13 +141,13 @@ def view_upload(self, request, form):
         else:
             entities = principal.entities[self.date.year]
             if form.file_format.data == 'internal':
-                errors = import_internal_file(
+                errors = import_election_internal(
                     entities, self,
                     form.results.raw_data[0].file,
                     form.results.data['mimetype']
                 )
             elif form.file_format.data == 'sesam':
-                errors = import_sesam_file(
+                errors = import_election_sesam(
                     entities, self,
                     form.results.raw_data[0].file,
                     form.results.data['mimetype']
@@ -164,7 +156,7 @@ def view_upload(self, request, form):
                 connections = len(form.connections.data)
                 stats = len(form.statistics.data)
                 elected = len(form.elected.data)
-                errors = import_wabsti_file_proporz(
+                errors = import_election_wabsti_proporz(
                     entities, self,
                     form.results.raw_data[0].file,
                     form.results.data['mimetype'],
@@ -175,16 +167,17 @@ def view_upload(self, request, form):
                     form.statistics.raw_data[0].file if stats else None,
                     form.statistics.data['mimetype'] if stats else None
                 )
-                if form.complete.data:
-                    self.total_entities = self.counted_entities
+                self.status = 'final' if form.complete.data else 'interim'
             elif form.file_format.data == 'wabsti_c':
                 for source in self.data_sources:
                     errors.extend(
-                        import_exporter_files_proporz(
+                        import_election_wabstic_proporz(
                             self,
                             source.district,
                             source.number,
                             entities,
+                            form.wp_wahl.raw_data[0].file,
+                            form.wp_wahl.data['mimetype'],
                             form.wpstatic_gemeinden.raw_data[0].file,
                             form.wpstatic_gemeinden.data['mimetype'],
                             form.wp_gemeinden.raw_data[0].file,
@@ -243,7 +236,7 @@ def view_party_results_upload(self, request, form):
 
     status = 'open'
     if form.submitted(request):
-        errors = import_party_results_file(
+        errors = import_party_results(
             self,
             form.parties.raw_data[0].file,
             form.parties.data['mimetype']
