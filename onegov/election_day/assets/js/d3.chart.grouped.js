@@ -34,6 +34,22 @@
             if (params.interactive) interactive = params.interactive;
         }
 
+        var updateScales = function(scale) {
+            // Adjusts the x/dx scales to the current width. If there is not
+            // enough space to show all bars, layout all bars of one group
+            // to the same position.
+            scale.x.rangeRoundPoints([0, width], 1.0);
+            scale.simple = (width < data.groups.length * data.labels.length * options.barOuterWidth * 1.2);
+            if (scale.simple) {
+                scale.dx.range([-Math.round(options.barOuterWidth/2)]);
+            } else {
+                scale.dx.rangeRoundBands([
+                    -(data.labels.length * options.barOuterWidth)/2,
+                     (data.labels.length * options.barOuterWidth)/2
+                ]);
+            }
+        };
+
         var chart = function(container) {
 
             // Try to read a default width from the container if none is given
@@ -62,9 +78,10 @@
                     x: d3.scale.ordinal(),
                     dx: d3.scale.ordinal(),
                     y: {
-                        front: d3.scale.linear().range([height - options.axisHeight, 0]),
-                        back: d3.scale.linear().range([height - options.axisHeight, 0])
-                    }
+                        front: d3.scale.linear().rangeRound([height - options.axisHeight, 0]),
+                        back: d3.scale.linear().rangeRound([height - options.axisHeight, 0])
+                    },
+                    simple: false
                 };
 
                 var axis = {front: null, back: null, all: null};
@@ -74,17 +91,11 @@
                 if (data.results && data.labels && data.groups && data.maximum && data.axis_units) {
 
                     // Adjust the scales
-                    scale.x.domain(data.groups).rangeRoundPoints([0, width], 1.0);
-                    scale.dx
-                        .domain(data.labels)
-                        .rangeRoundBands(
-                            [
-                                -(data.labels.length * options.barOuterWidth)/2,
-                                (data.labels.length * options.barOuterWidth)/2
-                            ]
-                        );
+                    scale.x.domain(data.groups);
+                    scale.dx.domain(data.labels);
                     scale.y.front.domain([0, data.maximum.front]);
                     scale.y.back.domain([0, data.maximum.back]);
+                    updateScales(scale);
 
                     // Add the labels
                     label = canvas.selectAll('.label')
@@ -155,7 +166,10 @@
                         .enter().append('g')
                         .attr('class', 'bar back')
                         .attr('transform', function(d) {
-                            return 'translate(' + (scale.x(d.group) + scale.dx(d.item)) + ',' + scale.y.back(d.value.back) + ')';
+                            return 'translate(' + Math.round(scale.x(d.group) + scale.dx(d.item)) + ',' + scale.y.back(d.value.back) + ')';
+                        })
+                        .attr('visibility', function(d) {
+                            return (scale.simple && !d.active) ? 'hidden' : 'visible';
                         });
                     bar.back.append('rect')
                         .attr('width', options.barInnerWidth)
@@ -163,7 +177,11 @@
                             return height - options.axisHeight - scale.y.back(d.value.back) + 1;
                         })
                         .style('fill', function(d) {
+                            if (d.color) return d.color;
                             return d.active ? options.colorActive : options.colorInactive;
+                        })
+                        .style('fill-opacity', function(d) {
+                            if (d.color && !d.active) return 0.3;
                         });
 
                     // ... front
@@ -172,28 +190,37 @@
                         .enter().append('g')
                         .attr('class', 'bar front')
                         .attr('transform', function(d) {
-                            return 'translate(' + (scale.x(d.group) + scale.dx(d.item) + 1) + ',' + scale.y.front(d.value.front) + ')';
+                            return 'translate(' + Math.round(scale.x(d.group) + scale.dx(d.item)) + ',' + scale.y.front(d.value.front) + ')';
+                        })
+                        .attr('visibility', function(d) {
+                            return (scale.simple && !d.active) ? 'hidden' : 'visible';
                         });
                     bar.front.append('rect')
-                        .attr('width', options.barInnerWidth - 2)
+                        .attr('width', options.barInnerWidth - 1)
                         .attr('height', function(d) {
                             return height - options.axisHeight - scale.y.front(d.value.front) + 1;
                         })
                         .attr('fill-opacity', 0.0)
                         .attr('stroke', '#000')
-                        .attr('stroke-width', 2);
+                        .attr('stroke-dasharray', function(d) {
+                            return d.active ? 'initial' : '2 2';
+                        })
+                        .attr('stroke-width', 1);
                     bar.front.each(function(d) {
                         if (data.maximum.front / data.groups.length < 5) {
                             var value = 0;
                             for (value = 1; value < d.value.front; ++value) {
                                 var y = scale.y.front(value) - scale.y.front(d.value.front);
                                 d3.select(this).append('line')
-                                    .attr('x1', 2)
+                                    .attr('x1', 0)
                                     .attr('y1', y)
-                                    .attr('x2', options.barInnerWidth - 4)
+                                    .attr('x2', options.barInnerWidth - 1)
                                     .attr('y2', y)
-                                    .attr('stroke-width', 2)
-                                    .attr('stroke', '#000');
+                                    .attr('stroke', '#000')
+                                    .attr('stroke-dasharray', function(d) {
+                                        return d.active ? 'initial' : '2 2';
+                                    })
+                                    .attr('stroke-width', 1);
                             }
                         }
                     });
@@ -263,7 +290,13 @@
                                 // Resize
                                 width = $(container).width() - margin.left - margin.right;
                                 svg.attr('width', width + margin.left + margin.right);
-                                scale.x.rangeRoundPoints([0, width], 1.0);
+                                updateScales(scale);
+                                bar.front.attr('visibility', function(d) {
+                                    return (scale.simple && !d.active) ? 'hidden' : 'visible';
+                                });
+                                bar.back.attr('visibility', function(d) {
+                                    return (scale.simple && !d.active) ? 'hidden' : 'visible';
+                                });
 
                                 label.attr('transform', function(d) {
                                     return 'translate(' + scale.x(d) + ',' + height + ')';
@@ -272,10 +305,10 @@
                                     return 'translate(' + (width - options.tickWidth) + ',0)';
                                 });
                                 bar.front.attr('transform', function(d) {
-                                    return 'translate(' + (scale.x(d.group) + scale.dx(d.item) + 1) + ',' + scale.y.front(d.value.front) + ')';
+                                    return 'translate(' + Math.round(scale.x(d.group) + scale.dx(d.item)) + ',' + scale.y.front(d.value.front) + ')';
                                 });
                                 bar.back.attr('transform', function(d) {
-                                    return 'translate(' + (scale.x(d.group) + scale.dx(d.item)) + ',' + scale.y.back(d.value.back) + ')';
+                                    return 'translate(' + Math.round(scale.x(d.group) + scale.dx(d.item)) + ',' + scale.y.back(d.value.back) + ')';
                                 });
                             }
                         });
