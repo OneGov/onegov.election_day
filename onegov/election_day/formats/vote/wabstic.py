@@ -23,9 +23,10 @@ HEADERS_SG_GEMEINDEN = (
     'sperrung',  # counted
     'stimmberechtigte',   # eligible votes
     'stmungueltig',  # invalid
+    'stmleer',  # empty (proposal if simple)
     'stmhgja',  # yeas (proposal)
     'stmhgnein',  # nays (proposal)
-    'stmhgohneaw',  # empty (proposal)
+    'stmhgohneaw',  # empty (proposal if complex)
     'stmn1ja',  # yeas (counter-proposal)
     'stmn1nein',  # nays (counter-proposal)
     'stmn1ohneaw',  # empty (counter-proposal)
@@ -121,6 +122,7 @@ def import_vote_wabstic(vote, district, number, entities,
             continue
 
         # Parse the id of the entity
+        entity_id = None
         try:
             entity_id = int(line.sortgemeinde or 0)
             sub_entity_id = int(line.sortgemeindesub or 0)
@@ -148,12 +150,19 @@ def import_vote_wabstic(vote, district, number, entities,
             counted = False if int(line.sperrung or 0) == 0 else True
         except ValueError:
             line_errors.append(_("Invalid values"))
+        else:
+            if not counted:
+                continue
 
         # Parse the elegible voters
         try:
             elegible_voters = int(line.stimmberechtigte or 0)
         except ValueError:
             line_errors.append(_("Could not read the elegible voters"))
+        else:
+            # Ignore the expats if no eligible voters
+            if not entity_id and not elegible_voters:
+                continue
 
         # Parse the invalid votes
         try:
@@ -182,7 +191,9 @@ def import_vote_wabstic(vote, district, number, entities,
         # Parse the empty votes
         empty = {}
         try:
-            empty['proposal'] = int(line.stmhgohneaw or 0)
+            empty['proposal'] = (
+                int(line.stmleer or 0) or int(line.stmhgohneaw or 0)
+            )
             empty['counter-proposal'] = int(line.stmn1ohneaw or 0)
             empty['tie-breaker'] = int(line.stmn2ohneaw or 0)
         except ValueError:

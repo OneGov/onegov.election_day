@@ -146,6 +146,7 @@ def test_import_wabstic_vote_missing_headers(session):
                     'SortGemeindeSub',
                     'Stimmberechtigte',
                     'StmUngueltig',
+                    'StmLeer',
                     'StmHGJa',
                     'StmHGNein',
                     'StmHGOhneAw',
@@ -205,6 +206,7 @@ def test_import_wabstic_vote_invalid_values(session):
                     'Sperrung',
                     'Stimmberechtigte',
                     'StmUngueltig',
+                    'StmLeer',
                     'StmHGJa',
                     'StmHGNein',
                     'StmHGOhneAw',
@@ -224,6 +226,7 @@ def test_import_wabstic_vote_invalid_values(session):
                     'xxx',  # 'Sperrung',
                     'aaa',  # 'Stimmberechtigte',
                     'bbb',  # 'StmUngueltig',
+                    'bab',  # 'StmLeer',
                     'ccc',  # 'StmHGJa',
                     'ddd',  # 'StmHGNein',
                     'eee',  # 'StmHGOhneAw',
@@ -243,6 +246,7 @@ def test_import_wabstic_vote_invalid_values(session):
                     'xxx',  # 'Sperrung',
                     'aaa',  # 'Stimmberechtigte',
                     'bbb',  # 'StmUngueltig',
+                    'bab',  # 'StmLeer',
                     'ccc',  # 'StmHGJa',
                     'ddd',  # 'StmHGNein',
                     'eee',  # 'StmHGOhneAw',
@@ -276,3 +280,8 @@ def test_import_wabstic_vote_invalid_values(session):
         ('sg_gemeinden', 3, 'Invalid values'),
         ('sg_geschaefte', 2, 'Invalid values')
     ]
+
+
+# todo: test expats
+
+# todo: test temporary results

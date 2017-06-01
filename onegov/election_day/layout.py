@@ -18,9 +18,12 @@ from onegov.user import Auth
 
 class Layout(ChameleonLayout):
 
+    day_long_format = 'dd. MMMM'
+
     def __init__(self, model, request):
         super().__init__(model, request)
         self.request.include('common')
+        self.request.include('custom')
 
     def title(self):
         return ''
@@ -50,7 +53,7 @@ class Layout(ChameleonLayout):
         lang = (self.request.locale or 'en')[:2]
         return (
             "https://github.com/OneGov/onegov.election_day"
-            "/blob/master/docs/format_{}.md"
+            "/blob/master/docs/format__{}.md"
         ).format(lang)
 
     @cached_property
@@ -137,7 +140,6 @@ class ElectionsLayout(Layout):
         return (
             'lists',
             'candidates',
-            'districts',
             'connections',
             'parties',
             'statistics',
@@ -152,8 +154,6 @@ class ElectionsLayout(Layout):
             return _("Lists")
         if tab == 'candidates':
             return _("Candidates")
-        if tab == 'districts':
-            return self.principal.label('entities')
         if tab == 'connections':
             return _("List connections")
         if tab == 'parties':
@@ -177,8 +177,6 @@ class ElectionsLayout(Layout):
             return self.proporz
         if tab == 'parties':
             return self.proporz and self.model.party_results.first()
-        if tab == 'districts':
-            return self.majorz and self.summarize
         if tab == 'connections':
             return self.proporz and self.model.list_connections.first()
         if tab == 'panachage':
@@ -312,9 +310,7 @@ class VotesLayout(Layout):
         proposal = self.model.ballots.first()
         if not proposal:
             return False
-        if proposal.results.first():
-            return True
-        return False
+        return any((r.counted for r in proposal.results))
 
     @cached_property
     def counter_proposal(self):
@@ -448,7 +444,7 @@ class ManageLayout(DefaultLayout):
 
     def __init__(self, model, request):
         super().__init__(model, request)
-        self.request.include('form')
+        self.request.include('backend_common')
         self.breadcrumbs = [
             (_("Manage"), super().manage_link, 'unavailable'),
         ]

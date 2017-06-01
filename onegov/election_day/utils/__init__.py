@@ -59,21 +59,24 @@ def get_vote_summary(vote, request, url=None):
     if last_modified:
         last_modified = last_modified.isoformat()
 
+    counted = vote.progress[0] or 0
+    nays_percentage = vote.nays_percentage if counted else None
+    yeas_percentage = vote.yeas_percentage if counted else None
     summary = {
-        'answer': vote.answer or "",
+        'answer': vote.answer or None,
         'completed': vote.completed,
         'date': vote.date.isoformat(),
         'domain': vote.domain,
         'last_modified': last_modified,
-        'nays_percentage': vote.nays_percentage,
+        'nays_percentage': nays_percentage,
         'progress': {
-            'counted': (vote.progress[0] or 0) / divider,
+            'counted': counted / divider,
             'total': (vote.progress[1] or 0) / divider
         },
         'title': vote.title_translations,
         'type': 'vote',
         'url': url or request.link(vote),
-        'yeas_percentage': vote.yeas_percentage,
+        'yeas_percentage': yeas_percentage,
     }
     if 'local' in (vote.meta or {}):
         summary['local'] = {
@@ -248,13 +251,12 @@ def clear_election(election):
 
 
 def clear_vote(vote):
-    """ Clear the vote of all of its results. """
+    """ Clear the vote of all of its ballots. """
 
     session = object_session(vote)
     vote.status = None
     for ballot in vote.ballots:
-        for result in ballot.results:
-            session.delete(result)
+        session.delete(ballot)
 
 
 def clear_ballot(ballot):

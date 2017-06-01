@@ -13,14 +13,12 @@ from onegov.election_day.utils import handle_headerless_params
 def view_vote_proposal(self, request):
     """" The main view. """
 
-    request.include('ballot_map')
-
     handle_headerless_params(request)
 
     return {
         'vote': self,
         'layout': VotesLayout(self, request),
-        'use_maps': request.app.principal.use_maps
+        'show_map': request.app.principal.is_year_available(self.date.year)
     }
 
 
@@ -29,14 +27,12 @@ def view_vote_proposal(self, request):
 def view_vote_counter_proposal(self, request):
     """" The main view. """
 
-    request.include('ballot_map')
-
     handle_headerless_params(request)
 
     return {
         'vote': self,
         'layout': VotesLayout(self, request, 'counter-proposal'),
-        'use_maps': request.app.principal.use_maps
+        'show_map': request.app.principal.is_year_available(self.date.year)
     }
 
 
@@ -45,14 +41,12 @@ def view_vote_counter_proposal(self, request):
 def view_vote_tie_breaker(self, request):
     """" The main view. """
 
-    request.include('ballot_map')
-
     handle_headerless_params(request)
 
     return {
         'vote': self,
         'layout': VotesLayout(self, request, 'tie-breaker'),
-        'use_maps': request.app.principal.use_maps
+        'show_map': request.app.principal.is_year_available(self.date.year)
     }
 
 
@@ -64,30 +58,35 @@ def view_vote_json(self, request):
     def add_last_modified(response):
         add_last_modified_header(response, self.last_result_change)
 
-    media = {'maps': {}}
+    show_map = request.app.principal.is_year_available(self.date.year)
+    media = {}
     if VotesLayout(self, request).pdf_path:
         media['pdf'] = request.link(self, 'pdf')
-    if request.app.principal.use_maps:
+    if show_map:
+        media['maps'] = {}
         for ballot in self.ballots:
             if VotesLayout(self, request, tab=ballot.type).svg_path:
                 media['maps'][ballot.type] = request.link(ballot, 'svg')
 
+    counted = self.progress[0]
+    nays_percentage = self.nays_percentage if counted else None
+    yeas_percentage = self.yeas_percentage if counted else None
     return {
         'completed': self.completed,
         'date': self.date.isoformat(),
         'domain': self.domain,
         'last_modified': self.last_result_change.isoformat(),
         'progress': {
-            'counted': self.progress[0],
+            'counted': counted,
             'total': self.progress[1]
         },
         'related_link': (self.meta or {}).get('related_link', ''),
         'title': self.title_translations,
         'type': 'election',
-        'resuts': {
+        'results': {
             'answer': self.answer,
-            'nays_percentage': self.nays_percentage,
-            'yeas_percentage': self.yeas_percentage,
+            'nays_percentage': nays_percentage,
+            'yeas_percentage': yeas_percentage,
         },
         'ballots': [
             {
@@ -136,7 +135,7 @@ def view_vote_json(self, request):
         'url': request.link(self),
         'embed': {
             ballot.type: request.link(ballot, 'map')
-            for ballot in self.ballots if request.app.principal.use_maps
+            for ballot in self.ballots if show_map
 
         },
         'media': media,
