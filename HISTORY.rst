@@ -7,6 +7,9 @@ Changelog
 - Improves party results.
   [msom]
 
+- Shows the progress bar of the current ballot.
+  [msom]
+
 1.10.1 (2017-05-31)
 ~~~~~~~~~~~~~~~~~~~
 
