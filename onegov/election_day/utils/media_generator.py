@@ -1,40 +1,43 @@
 from babel.dates import format_date
-from base64 import b64decode, b64encode
+from babel.dates import format_time
+from base64 import b64decode
+from base64 import b64encode
 from copy import deepcopy
 from datetime import date
-from io import BytesIO, StringIO
+from io import BytesIO
+from io import StringIO
 from json import loads
-from onegov.ballot import Ballot, Election, Vote
+from onegov.ballot import Ballot
+from onegov.ballot import Election
+from onegov.ballot import Vote
 from onegov.core.utils import groupbylist
 from onegov.core.utils import module_path
 from onegov.election_day import _
-from onegov.election_day.utils import pdf_filename, svg_filename
+from onegov.election_day import log
+from onegov.election_day.utils import pdf_filename
+from onegov.election_day.utils import svg_filename
 from onegov.election_day.utils.pdf import Pdf
 from onegov.election_day.views.election import get_candidates_results
 from onegov.election_day.views.election import get_connection_results
-from onegov.election_day.views.election.candidates import (
+from onegov.election_day.views.election.candidates import \
     view_election_candidates_data
-)
-from onegov.election_day.views.election.connections import (
+from onegov.election_day.views.election.connections import \
     view_election_connections_data
-)
 from onegov.election_day.views.election.lists import view_election_lists_data
-from onegov.election_day.views.election.panachage import (
+from onegov.election_day.views.election.panachage import \
     view_election_panachage_data
-)
-from onegov.election_day.views.election.parties import (
-    view_election_parties_data,
-    get_party_results,
-    get_party_deltas
-)
+from onegov.election_day.views.election.parties import get_party_deltas
+from onegov.election_day.views.election.parties import get_party_results
+from onegov.election_day.views.election.parties import \
+    view_election_parties_data
+from os.path import basename
 from pdfdocument.document import MarkupParagraph
+from pytz import timezone
 from reportlab.lib.units import cm
 from requests import post
 from rjsmin import jsmin
 from shutil import copyfileobj
 from textwrap import shorten, wrap
-from onegov.election_day import log
-from os.path import basename
 
 
 class MediaGenerator():
@@ -243,6 +246,11 @@ class MediaGenerator():
                 ('ALIGN', (-2, 0), (-1, -1), 'RIGHT'),
             )
 
+            table_style_dates = pdf.style.table + (
+                ('ALIGN', (0, 0), (1, -1), 'LEFT'),
+                ('ALIGN', (-2, 0), (-1, -1), 'RIGHT'),
+            )
+
             def indent_style(level):
                 style = deepcopy(pdf.style.normal)
                 style.leftIndent = level * style.fontSize
@@ -250,7 +258,26 @@ class MediaGenerator():
 
             # Add Header
             pdf.h1(item.title_translations.get(locale) or item.title)
-            pdf.p(format_date(item.date, format='long', locale=locale))
+
+            # Add dates
+            changed = item.last_change
+            if getattr(changed, 'tzinfo', None) is not None:
+                tz = timezone('Europe/Zurich')
+                changed = tz.normalize(changed.astimezone(tz))
+
+            pdf.table(
+                [[
+                    format_date(item.date, format='long', locale=locale),
+                    '{}: {} {}'.format(
+                        translate(_('Last change')),
+                        format_date(changed, format='long', locale=locale),
+                        format_time(changed, format='short', locale=locale)
+
+                    )
+                ]],
+                'even',
+                style=table_style_dates
+            )
             pdf.spacer()
 
             # Election
@@ -329,12 +356,14 @@ class MediaGenerator():
                         pdf.table(
                             [[
                                 translate(_('Candidate')),
+                                translate(_('Party')),
                                 translate(_('Elected')),
                                 translate(_('single_votes')),
                             ]] + [[
                                 '{} {}'.format(r[0], r[1]),
-                                translate(_('Yes')) if r[2] else '',
                                 r[3],
+                                translate(_('Yes')) if r[2] else '',
+                                r[4],
                             ] for r in get_candidates_results(
                                 item, self.session
                             )],
@@ -350,9 +379,9 @@ class MediaGenerator():
                                 translate(_('single_votes')),
                             ]] + [[
                                 '{} {}'.format(r[0], r[1]),
-                                r[4],
+                                r[5],
                                 translate(_('Yes')) if r[2] else '',
-                                r[3],
+                                r[4],
                             ] for r in get_candidates_results(
                                 item, self.session
                             )],

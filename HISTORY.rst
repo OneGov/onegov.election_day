@@ -4,7 +4,17 @@ Changelog
 - Adds PDF signing.
   [msom]
 
+- Parses the party of candidates and displays them for majorz elections.
+  [msom]
+
 - Improves party results.
+  [msom]
+
+- Shows the progress bar of the current ballot.
+  [msom]
+
+- Shows the modification date of elections and votes in the detail view and
+  the PDF.
   [msom]
 
 1.10.1 (2017-05-31)
