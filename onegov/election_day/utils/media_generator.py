@@ -299,12 +299,14 @@ class MediaGenerator():
                         pdf.table(
                             [[
                                 translate(_('Candidate')),
+                                translate(_('Party')),
                                 translate(_('Elected')),
                                 translate(_('single_votes')),
                             ]] + [[
                                 '{} {}'.format(r[0], r[1]),
-                                translate(_('Yes')) if r[2] else '',
                                 r[3],
+                                translate(_('Yes')) if r[2] else '',
+                                r[4],
                             ] for r in get_candidates_results(
                                 item, self.session
                             )],
@@ -320,9 +322,9 @@ class MediaGenerator():
                                 translate(_('single_votes')),
                             ]] + [[
                                 '{} {}'.format(r[0], r[1]),
-                                r[4],
+                                r[5],
                                 translate(_('Yes')) if r[2] else '',
-                                r[3],
+                                r[4],
                             ] for r in get_candidates_results(
                                 item, self.session
                             )],
