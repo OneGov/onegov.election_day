@@ -1,51 +1,55 @@
 from babel.dates import format_date
+from babel.dates import format_time
 from base64 import b64decode
+from base64 import b64encode
 from copy import deepcopy
 from datetime import date
-from io import BytesIO, StringIO
+from io import BytesIO
+from io import StringIO
 from json import loads
-from onegov.ballot import Ballot, Election, Vote
+from onegov.ballot import Ballot
+from onegov.ballot import Election
+from onegov.ballot import Vote
 from onegov.core.utils import groupbylist
 from onegov.core.utils import module_path
 from onegov.election_day import _
-from onegov.election_day.utils import pdf_filename, svg_filename
+from onegov.election_day import log
+from onegov.election_day.utils import pdf_filename
+from onegov.election_day.utils import svg_filename
 from onegov.election_day.utils.pdf import Pdf
 from onegov.election_day.views.election import get_candidates_results
 from onegov.election_day.views.election import get_connection_results
-from onegov.election_day.views.election.candidates import (
+from onegov.election_day.views.election.candidates import \
     view_election_candidates_data
-)
-from onegov.election_day.views.election.connections import (
+from onegov.election_day.views.election.connections import \
     view_election_connections_data
-)
 from onegov.election_day.views.election.lists import view_election_lists_data
-from onegov.election_day.views.election.panachage import (
+from onegov.election_day.views.election.panachage import \
     view_election_panachage_data
-)
-from onegov.election_day.views.election.parties import (
-    view_election_parties_data,
-    get_party_results,
-    get_party_deltas
-)
+from onegov.election_day.views.election.parties import get_party_deltas
+from onegov.election_day.views.election.parties import get_party_results
+from onegov.election_day.views.election.parties import \
+    view_election_parties_data
+from os.path import basename
 from pdfdocument.document import MarkupParagraph
+from pytz import timezone
 from reportlab.lib.units import cm
+from requests import get
 from requests import post
 from rjsmin import jsmin
 from shutil import copyfileobj
 from textwrap import shorten, wrap
-from onegov.election_day import log
 
 
 class MediaGenerator():
 
-    def __init__(self, app, force, cleanup):
+    def __init__(self, app):
         self.app = app
-        self.force = force
-        self.cleanup = cleanup
         self.pdf_dir = 'pdf'
         self.svg_dir = 'svg'
         self.renderer = app.configuration.get('d3_renderer').rstrip('/')
         self.session = self.app.session()
+        self.pdf_signing = self.app.principal.pdf_signing
 
         self.supported_charts = {
             'bar': {
@@ -147,6 +151,56 @@ class MediaGenerator():
 
         return self.get_chart('map', fmt, data, width, params)
 
+    def signing_reasons(self):
+        if not self.pdf_signing:
+            return []
+
+        response = get(
+            '{}/{}'.format(
+                self.pdf_signing['host'].rstrip('/'),
+                'admin_interface/pdf_signature_reasons.json'
+            ),
+            headers={
+                'X-LEXWORK-LOGIN': self.pdf_signing['login'],
+                'X-LEXWORK-PASSWORD': self.pdf_signing['password']
+            }
+        )
+        response.raise_for_status()
+        return response.json().get('result')
+
+    def sign_pdf(self, path):
+        if self.pdf_signing:
+            filename = basename(path)
+            with self.app.filestorage.open(path, 'rb') as f:
+                data = b64encode(f.read()).decode('utf-8')
+
+            try:
+                response = post(
+                    '{}/{}'.format(
+                        self.pdf_signing['host'].rstrip('/'),
+                        'admin_interface/pdf_signature_jobs.json'
+                    ),
+                    headers={
+                        'X-LEXWORK-LOGIN': self.pdf_signing['login'],
+                        'X-LEXWORK-PASSWORD': self.pdf_signing['password']
+                    },
+                    json={
+                        'pdf_signature_job': {
+                            'file_name': filename,
+                            'data': data,
+                            'reason_for_signature': self.pdf_signing['reason']
+                        }
+                    }
+                )
+                data = response.json()['result']['signed_data']
+            except Exception as e:
+                log.error("Could not sign PDF {}: {}".format(filename, e))
+                return
+
+            self.app.filestorage.remove(path)
+            with self.app.filestorage.open(path, 'wb') as f:
+                f.write(b64decode(data))
+
     def generate_pdf(self, item, path, locale):
         """ Generates the PDF for an election or a vote. """
         principal = self.app.principal
@@ -213,6 +267,11 @@ class MediaGenerator():
                 ('ALIGN', (-2, 0), (-1, -1), 'RIGHT'),
             )
 
+            table_style_dates = pdf.style.table + (
+                ('ALIGN', (0, 0), (1, -1), 'LEFT'),
+                ('ALIGN', (-2, 0), (-1, -1), 'RIGHT'),
+            )
+
             def indent_style(level):
                 style = deepcopy(pdf.style.normal)
                 style.leftIndent = level * style.fontSize
@@ -220,7 +279,26 @@ class MediaGenerator():
 
             # Add Header
             pdf.h1(item.title_translations.get(locale) or item.title)
-            pdf.p(format_date(item.date, format='long', locale=locale))
+
+            # Add dates
+            changed = item.last_change
+            if getattr(changed, 'tzinfo', None) is not None:
+                tz = timezone('Europe/Zurich')
+                changed = tz.normalize(changed.astimezone(tz))
+
+            pdf.table(
+                [[
+                    format_date(item.date, format='long', locale=locale),
+                    '{}: {} {}'.format(
+                        translate(_('Last change')),
+                        format_date(changed, format='long', locale=locale),
+                        format_time(changed, format='short', locale=locale)
+
+                    )
+                ]],
+                'even',
+                style=table_style_dates
+            )
             pdf.spacer()
 
             # Election
@@ -299,12 +377,14 @@ class MediaGenerator():
                         pdf.table(
                             [[
                                 translate(_('Candidate')),
+                                translate(_('Party')),
                                 translate(_('Elected')),
                                 translate(_('single_votes')),
                             ]] + [[
                                 '{} {}'.format(r[0], r[1]),
-                                translate(_('Yes')) if r[2] else '',
                                 r[3],
+                                translate(_('Yes')) if r[2] else '',
+                                r[4],
                             ] for r in get_candidates_results(
                                 item, self.session
                             )],
@@ -320,9 +400,9 @@ class MediaGenerator():
                                 translate(_('single_votes')),
                             ]] + [[
                                 '{} {}'.format(r[0], r[1]),
-                                r[4],
+                                r[5],
                                 translate(_('Yes')) if r[2] else '',
-                                r[3],
+                                r[4],
                             ] for r in get_candidates_results(
                                 item, self.session
                             )],
@@ -684,7 +764,7 @@ class MediaGenerator():
         """ Generates all PDFs for the given application.
 
         Only generates PDFs if not already generated since the last change of
-        the election or vote. Allows to force the re-creation of the PDF.
+        the election or vote.
 
         Optionally cleans up unused PDFs.
 
@@ -704,12 +784,13 @@ class MediaGenerator():
         for locale in self.app.locales:
             for item in items:
                 filename = pdf_filename(item, locale)
-                if (self.force or filename not in existing) and item.completed:
+                if filename not in existing and item.completed:
                     path = '{}/{}'.format(self.pdf_dir, filename)
                     if fs.exists(path):
                         fs.remove(path)
                     try:
                         self.generate_pdf(item, path, locale)
+                        self.sign_pdf(path)
                         log.info("{} created".format(filename))
                     except Exception as ex:
                         # Don't leave probably broken PDFs laying around
@@ -718,24 +799,23 @@ class MediaGenerator():
                         raise ex
 
         # Delete old PDFs
-        if self.cleanup:
-            existing = fs.listdir(self.pdf_dir)
-            existing = dict(groupbylist(
-                sorted(existing),
-                key=lambda a: a.split('.')[0]
-            ))
+        existing = fs.listdir(self.pdf_dir)
+        existing = dict(groupbylist(
+            sorted(existing),
+            key=lambda a: a.split('.')[0]
+        ))
 
-            # Delete orphaned files
-            created = [
-                pdf_filename(item, '').split('.')[0] for item in items
-            ]
-            for id in set(existing.keys()) - set(created):
-                self.remove(self.pdf_dir, existing[id])
+        # ... orphaned files
+        created = [
+            pdf_filename(item, '').split('.')[0] for item in items
+        ]
+        for id in set(existing.keys()) - set(created):
+            self.remove(self.pdf_dir, existing[id])
 
-            # Delete old files
-            for files in existing.values():
-                files = sorted(files, reverse=True)
-                self.remove(self.pdf_dir, files[len(self.app.locales):])
+        # ... old files
+        for files in existing.values():
+            files = sorted(files, reverse=True)
+            self.remove(self.pdf_dir, files[len(self.app.locales):])
 
     def generate_svg(self, item, type_, locale=None):
         """ Creates the requested SVG. """
@@ -752,7 +832,7 @@ class MediaGenerator():
         existing = self.app.filestorage.listdir(self.svg_dir)
         filename = svg_filename(item, type_, locale)
 
-        if not (self.force or filename not in existing):
+        if filename in existing:
             return None
 
         path = '{}/{}'.format(self.svg_dir, filename)
@@ -804,7 +884,7 @@ class MediaGenerator():
         """ Generates all SVGs for the given application.
 
         Only generates SVGs if not already generated since the last change of
-        the election or vote. Allows to force the re-creation of the SVG.
+        the election or vote.
 
         Optionally cleans up unused SVGs.
 
@@ -831,35 +911,34 @@ class MediaGenerator():
                         self.generate_svg(ballot, 'map', locale)
 
         # Delete old SVGs
-        if self.cleanup:
-            existing = fs.listdir(self.svg_dir)
-            existing = dict(groupbylist(
-                sorted(existing),
-                key=lambda a: a.split('.')[0]
-            ))
+        existing = fs.listdir(self.svg_dir)
+        existing = dict(groupbylist(
+            sorted(existing),
+            key=lambda a: a.split('.')[0]
+        ))
 
-            # Delete orphaned files
-            created = [
-                svg_filename(item, '', '').split('.')[0]
-                for item in
-                self.session.query(Election).all() +
-                self.session.query(Ballot).all() +
-                self.session.query(Vote).all()
-            ]
-            diff = set(existing.keys()) - set(created)
-            files = ['{}*'.format(file) for file in diff if file]
-            self.remove(self.svg_dir, files)
-            if '' in existing:
-                self.remove(self.svg_dir, existing[''])
+        # ... orphaned files
+        created = [
+            svg_filename(item, '', '').split('.')[0]
+            for item in
+            self.session.query(Election).all() +
+            self.session.query(Ballot).all() +
+            self.session.query(Vote).all()
+        ]
+        diff = set(existing.keys()) - set(created)
+        files = ['{}*'.format(file) for file in diff if file]
+        self.remove(self.svg_dir, files)
+        if '' in existing:
+            self.remove(self.svg_dir, existing[''])
 
-            # Delete old files
-            for files in existing.values():
-                if len(files):
-                    files = sorted(files, reverse=True)
-                    try:
-                        ts = str(int(files[0].split('.')[1]))
-                    except (IndexError, ValueError):
-                        pass
-                    else:
-                        files = [f for f in files if ts not in f]
-                        self.remove(self.svg_dir, files)
+        # ... old files
+        for files in existing.values():
+            if len(files):
+                files = sorted(files, reverse=True)
+                try:
+                    ts = str(int(files[0].split('.')[1]))
+                except (IndexError, ValueError):
+                    pass
+                else:
+                    files = [f for f in files if ts not in f]
+                    self.remove(self.svg_dir, files)

@@ -1,7 +1,50 @@
 Changelog
 ---------
 
+- Fixes grouped bar chart.
+  [msom]
+
+1.11.3 (2017-06-07)
+~~~~~~~~~~~~~~~~~~~
+
+- Fixes failing upgrade steps.
+  [msom]
+
+1.11.2 (2017-06-07)
+~~~~~~~~~~~~~~~~~~~
+
+- Fixes tests.
+  [msom]
+
+1.11.1 (2017-06-07)
+~~~~~~~~~~~~~~~~~~~
+
+- Improves the status callouts.
+  [msom]
+
+- Makes the footer more visually more distinguishable from the content.
+  [msom]
+
+- Fixes failing upgrade steps.
+  [msom]
+
+1.11.0 (2017-06-06)
+~~~~~~~~~~~~~~~~~~~
+
+- Adds PDF signing.
+  [msom]
+
+- Parses the party of candidates and displays them for majorz elections.
+  [msom]
+
 - Improves party results.
+  [msom]
+
+- Shows the progress bar of the current ballot.
+  [msom]
+
+- Shows the modification date of elections and votes in the detail view and
+  the PDF.
   [msom]
 
 1.10.1 (2017-05-31)
