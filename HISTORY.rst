@@ -1,5 +1,7 @@
 Changelog
 ---------
+1.16.0 (2017-11-27)
+~~~~~~~~~~~~~~~~~~~
 
 - Allows to clear the results of elections and votes.
   [msom]
