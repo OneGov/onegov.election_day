@@ -4,6 +4,9 @@ Changelog
 - Adds titles for counter-proposal and tie-breakers.
   [msom]
 
+1.16.0 (2017-11-27)
+~~~~~~~~~~~~~~~~~~~
+
 - Allows to clear the results of elections and votes.
   [msom]
 
@@ -14,9 +17,6 @@ Changelog
   [msom]
 
 - Uses onegov.pdf.
-  [msom]
-
-- Updates RavenJs.
   [msom]
 
 - Uses a confirmation form for updating results.
