@@ -1,5 +1,9 @@
 Changelog
 ---------
+
+- Update dependent packages.
+  [msom]
+
 1.18.1 (2017-12-04)
 ~~~~~~~~~~~~~~~~~~~
 
