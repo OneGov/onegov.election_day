@@ -1,5 +1,7 @@
 Changelog
 ---------
+1.18.2 (2017-12-22)
+~~~~~~~~~~~~~~~~~~~
 
 - Update dependent packages.
   [msom]
