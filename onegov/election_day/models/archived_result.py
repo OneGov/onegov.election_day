@@ -1,5 +1,6 @@
 from copy import deepcopy
 from onegov.ballot.models.mixins import DomainOfInfluenceMixin
+from onegov.ballot.models.mixins import TitleTranslationsMixin
 from onegov.core.orm import Base
 from onegov.core.orm import translation_hybrid
 from onegov.core.orm.mixins import ContentMixin
@@ -20,8 +21,8 @@ from uuid import uuid4
 meta_local_property = dictionary_based_property_factory('local')
 
 
-class ArchivedResult(Base, DomainOfInfluenceMixin, ContentMixin,
-                     TimestampMixin):
+class ArchivedResult(Base, ContentMixin, TimestampMixin,
+                     DomainOfInfluenceMixin, TitleTranslationsMixin):
 
     """ Stores the result of an election or vote. """
 
@@ -166,7 +167,6 @@ class ArchivedResult(Base, DomainOfInfluenceMixin, ContentMixin,
         self.counted_entities = source.counted_entities
         self.url = source.url
         self.title_translations = deepcopy(dict(source.title_translations))
-        self.title = source.title
         self.shortcode = source.shortcode
         self.domain = source.domain
         self.meta = deepcopy(dict(source.meta))

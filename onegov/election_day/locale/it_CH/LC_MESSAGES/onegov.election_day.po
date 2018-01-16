@@ -196,9 +196,6 @@ msgstr "Ulteriori informazioni"
 msgid "Absolute majority"
 msgstr "Maggioranza assoluta"
 
-msgid "Provide at least one title."
-msgstr "Fornisci almeno un titolo."
-
 msgid "Election based on the simple majority system"
 msgstr "Elezione secondo il sistema maggioritario"
 
@@ -390,7 +387,7 @@ msgid "There are no elections or votes defined yet."
 msgstr "Non sono ancora state inserite elezioni o votazioni."
 
 msgid "Elections and votes on ${date}"
-msgstr "Elezioni e votazioni su ${date}"
+msgstr "Elezioni e votazioni del ${date}"
 
 msgid "Federal Elections"
 msgstr "Elezioni federali"

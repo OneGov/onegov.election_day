@@ -7,6 +7,19 @@ Changelog
 - Makes principal polymorphic.
   [msom]
 
+1.19.9 (2018-01-16)
+~~~~~~~~~~~~~~~~~~~
+
+- Requires that the title translations of election and votes for the default
+  locale is provided.
+  [msom]
+
+- Improves title translations fallbacks.
+  [msom]
+
+- Updates translations.
+  [msom]
+
 1.19.8 (2018-01-11)
 ~~~~~~~~~~~~~~~~~~~
 

@@ -196,9 +196,6 @@ msgstr "Ulteriuras infurmaziuns"
 msgid "Absolute majority"
 msgstr "Maioritad absoluta"
 
-msgid "Provide at least one title."
-msgstr "Endatai almain in titel."
-
 msgid "Election based on the simple majority system"
 msgstr "Elecziun da maiorz"
 
@@ -281,7 +278,7 @@ msgid "Panachage"
 msgstr "Statistica da panaschar"
 
 msgid "Downloads"
-msgstr "Telechargiadas"
+msgstr "Downloads"
 
 msgid "Votes"
 msgstr "Votaziuns"
