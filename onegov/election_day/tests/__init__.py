@@ -48,6 +48,7 @@ class DummyRequest(object):
         if app and session:
             self.app.session = Mock(return_value=session)
         self.params = {}
+        self.default_locale = 'de_CH'
 
     def link(self, model, name=''):
         return '{}/{}'.format(
