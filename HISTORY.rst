@@ -1,5 +1,7 @@
 Changelog
 ---------
+2.0.0 (2018-01-23)
+~~~~~~~~~~~~~~~~~~~
 
 - Splits the group of an entity into a name and a district.
   [msom]
