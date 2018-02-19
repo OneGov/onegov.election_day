@@ -45,7 +45,7 @@ Nom|Description
 `domain`|Le domaine d'influence (fédération, canton, ...).
 `url`|Un lien vers la vue détaillée.
 `completed`|True, if the vote or election is completed.
-`progess`|Un objet contenant le nombre de municipalités déjà comptées (`counted`) et le nombre total de municipalités (`total`).
+`progress`|Un objet contenant le nombre de municipalités déjà comptées (`counted`) et le nombre total de municipalités (`total`).
 
 Les résultats de la votation contiennent les informations supplémentaires suivantes :
 
@@ -96,7 +96,7 @@ Nom|Description
 `entity_name`|Le nom de la municipalité.
 `entity_district`|The district of the municipality.
 `entity_counted`|`True` si le résultat a été compté.
-`entity_elegible_voters`|Le nombre de personnes éligible à voter pour cette municipalité.
+`entity_eligible_voters`|Le nombre de personnes éligible à voter pour cette municipalité.
 `entity_received_ballots`|Le nombre de bulletins de vote reçus pour cette municipalité.
 `entity_blank_ballots`|Le nombre de bulletins blancs pour cette municipalité.
 `entity_invalid_ballots`|Le nombre de bulletins nuls pour cette municipalité.
@@ -179,4 +179,4 @@ Nom|Description
 `nays`|Nombre de votes non
 `invalid`|Nombre de votes invalides.
 `empty`|Nombre de votes blancs
-`elegible_voters`|Nombre de personne aptes à voter.
+`eligible_voters`|Nombre de personne aptes à voter.

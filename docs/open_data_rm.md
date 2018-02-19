@@ -47,7 +47,7 @@ Num|Descripziun
 `domain`|Champ d'influenza (confederaziun, chantun, ...).
 `url`|In link a la vista detagliada.
 `completed`|True, if the vote or election is completed.
-`progess`|In object che cuntegna il dumber da las vischnancas dumbradas ora (`counted`) ed il dumber total da vischnancas (`total`).
+`progress`|In object che cuntegna il dumber da las vischnancas dumbradas ora (`counted`) ed il dumber total da vischnancas (`total`).
 
 Ils resultats da la votaziun cuntegnan las suandantas infurmaziuns supplementaras:
 
@@ -98,7 +98,7 @@ Num|Descripziun
 `entity_name`|Il num da la vischnanca/dal lieu.
 `entity_district`|Wahlkreis/Bezirk/Region der Gemeinde.
 `entity_counted`|`True`, sch'il resultat è vegnì eruì.
-`entity_elegible_voters`|Il dumber da las votantas e dals votants da la vischnanca/dal lieu.
+`entity_eligible_voters`|Il dumber da las votantas e dals votants da la vischnanca/dal lieu.
 `entity_received_ballots`|Il dumber dals cedels electorals consegnads da la vischnanca/dal lieu.
 `entity_blank_ballots`|Il dumber dals cedels electorals vids da la vischnanca/dal lieu.
 `entity_invalid_ballots`|Il dumber dals cedels electorals nunvalaivels da la vischnanca/dal lieu.
@@ -182,4 +182,4 @@ Num|Descripziun
 `nays`|Il dumber da las vuschs negativas
 `invalid`|Il dumber da las vuschs nunvalaivlas
 `empty`|Il dumber da las vuschs vidas
-`elegible_voters`|Il dumber da las persunas cun dretg da votar
+`eligible_voters`|Il dumber da las persunas cun dretg da votar
