@@ -33,7 +33,7 @@ def create_election(self, request, form):
     """ Create a new election. """
 
     layout = ManageElectionsLayout(self, request)
-    archive = ArchivedResultCollection(request.app.session())
+    archive = ArchivedResultCollection(request.session)
 
     form.set_domain(request.app.principal)
 
@@ -61,7 +61,7 @@ def edit_election(self, request, form):
     """ Edit an existing election. """
 
     layout = ManageElectionsLayout(self, request)
-    archive = ArchivedResultCollection(request.app.session())
+    archive = ArchivedResultCollection(request.session)
 
     form.set_domain(request.app.principal)
 
@@ -92,7 +92,7 @@ def clear_election(self, request, form):
     """ Clear the results of an election. """
 
     layout = ManageElectionsLayout(self, request)
-    archive = ArchivedResultCollection(request.app.session())
+    archive = ArchivedResultCollection(request.session)
 
     if form.submitted(request):
         archive.clear(self, request)
@@ -125,7 +125,7 @@ def delete_election(self, request, form):
     """ Delete an existing election. """
 
     layout = ManageElectionsLayout(self, request)
-    archive = ArchivedResultCollection(request.app.session())
+    archive = ArchivedResultCollection(request.session)
 
     if form.submitted(request):
         archive.delete(self, request)
@@ -158,7 +158,7 @@ def delete_election(self, request, form):
 def trigger_election(self, request, form):
     """ Trigger the notifications related to an election. """
 
-    session = request.app.session()
+    session = request.session
     notifications = NotificationCollection(session)
     layout = ManageElectionsLayout(self, request)
 

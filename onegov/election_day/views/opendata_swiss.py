@@ -66,7 +66,7 @@ def view_rdf(self, request):
     })
     catalog = sub(rdf, 'dcat:Catalog')
 
-    session = request.app.session()
+    session = request.session
     items = session.query(Election).all()
     items.extend(session.query(Vote).all())
 
