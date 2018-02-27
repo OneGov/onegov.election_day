@@ -796,7 +796,7 @@ msgstr "Token"
 msgid "Regenerate token"
 msgstr "Generar da nov il token"
 
-msgid "New Election"
+msgid "New election"
 msgstr "Nova elecziun"
 
 msgid "View"
@@ -817,7 +817,7 @@ msgstr "Anc nagins abunents."
 msgid "Locale"
 msgstr "Regiun linguistica"
 
-msgid "New Vote"
+msgid "New vote"
 msgstr "Nova votaziun"
 
 msgid "Empty"
