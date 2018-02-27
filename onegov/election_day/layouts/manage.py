@@ -22,7 +22,7 @@ class ManageLayout(DefaultLayout):
     @cached_property
     def menu(self):
         menu = []
-        session = self.request.app.session()
+        session = self.request.session
 
         link = self.request.link(VoteCollection(session))
         class_ = 'active' if link == self.manage_model_link else ''
@@ -76,7 +76,7 @@ class ManageElectionsLayout(ManageLayout):
     @cached_property
     def manage_model_link(self):
         return self.request.link(
-            ElectionCollection(self.request.app.session())
+            ElectionCollection(self.request.session)
         )
 
     def __init__(self, model, request):
@@ -106,7 +106,7 @@ class ManageVotesLayout(ManageLayout):
     @cached_property
     def manage_model_link(self):
         return self.request.link(
-            VoteCollection(self.request.app.session())
+            VoteCollection(self.request.session)
         )
 
     def __init__(self, model, request):
@@ -125,11 +125,11 @@ class ManageSubscribersLayout(ManageLayout):
 
         if isinstance(self.model, SmsSubscriber):
             return self.request.link(
-                SmsSubscriberCollection(self.request.app.session())
+                SmsSubscriberCollection(self.request.session)
             )
         elif isinstance(self.model, EmailSubscriber):
             return self.request.link(
-                EmailSubscriberCollection(self.request.app.session())
+                EmailSubscriberCollection(self.request.session)
             )
 
         raise NotImplementedError()
@@ -155,7 +155,7 @@ class ManageDataSourcesLayout(ManageLayout):
     @cached_property
     def manage_model_link(self):
         return self.request.link(
-            DataSourceCollection(self.request.app.session())
+            DataSourceCollection(self.request.session)
         )
 
     def __init__(self, model, request):
@@ -171,7 +171,7 @@ class ManageDataSourceItemsLayout(ManageLayout):
     def manage_model_link(self):
         return self.request.link(
             DataSourceItemCollection(
-                self.request.app.session(),
+                self.request.session,
                 self.model.id
             )
         )
@@ -182,7 +182,7 @@ class ManageDataSourceItemsLayout(ManageLayout):
             (
                 _("Data sources"),
                 self.request.link(
-                    DataSourceCollection(self.request.app.session())
+                    DataSourceCollection(self.request.session)
                 ),
                 ''
             ),
