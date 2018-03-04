@@ -316,7 +316,7 @@ def test_upload_vote_available_formats_municipality(election_day_app_bern):
     ]
 
 
-def test_upload_vote_notify_hipchat(election_day_app):
+def test_upload_vote_notify_zulip(election_day_app):
     client = Client(election_day_app)
     client.get('/locale/de_CH').follow()
 
@@ -335,7 +335,7 @@ def test_upload_vote_notify_hipchat(election_day_app):
 
     with patch('urllib.request.urlopen') as urlopen:
 
-        # Hipchat not set
+        # No settings
         upload = client.get('/vote/vote/upload')
         upload.form['proposal'] = Upload('data.csv', csv, 'text/plain')
         assert 'erfolgreich hochgeladen' in upload.form.submit()
@@ -344,8 +344,10 @@ def test_upload_vote_notify_hipchat(election_day_app):
 
         assert not urlopen.called
 
-        election_day_app.hipchat_token = 'abcd'
-        election_day_app.hipchat_room_id = '1234'
+        election_day_app.zulip_url = 'https://xx.zulipchat.com/api/v1/messages'
+        election_day_app.zulip_stream = 'WAB'
+        election_day_app.zulip_user = 'wab-bot@seantis.zulipchat.com'
+        election_day_app.zulip_key = 'aabbcc'
 
         upload = client.get('/vote/vote/upload')
         upload.form['proposal'] = Upload('data.csv', csv, 'text/plain')
@@ -354,7 +356,7 @@ def test_upload_vote_notify_hipchat(election_day_app):
         sleep(5)
 
         assert urlopen.called
-        assert 'api.hipchat.com' in urlopen.call_args[0][0].get_full_url()
+        assert 'xx.zulipchat.com' in urlopen.call_args[0][0].get_full_url()
 
 
 def test_upload_vote_all_or_nothing(election_day_app):

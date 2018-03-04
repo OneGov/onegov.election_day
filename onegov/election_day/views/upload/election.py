@@ -115,10 +115,10 @@ def view_upload_majorz_election(self, request, form):
             else:
                 status = 'success'
                 request.app.pages_cache.invalidate()
-                request.app.send_hipchat(
+                request.app.send_zulip(
                     request.app.principal.name,
-                    'New results available: <a href="{}">{}</a>'.format(
-                        request.link(self), self.title
+                    'New results available: [{}]({})'.format(
+                        self.title, request.link(self)
                     )
                 )
 
@@ -221,10 +221,10 @@ def view_upload_proporz_election(self, request, form):
             else:
                 status = 'success'
                 request.app.pages_cache.invalidate()
-                request.app.send_hipchat(
+                request.app.send_zulip(
                     request.app.principal.name,
-                    'New results available: <a href="{}">{}</a>'.format(
-                        request.link(self), self.title
+                    'New results available: [{}]({})'.format(
+                        self.title, request.link(self)
                     )
                 )
 
