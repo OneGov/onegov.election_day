@@ -1,5 +1,7 @@
 Changelog
 ---------
+3.0.0 (2018-03-08)
+~~~~~~~~~~~~~~~~~~~
 
 - Harmonizes the progress implementation of elections and votes.
   [msom]
