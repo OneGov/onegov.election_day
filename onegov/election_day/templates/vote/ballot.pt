@@ -41,35 +41,25 @@
             </div>
 
             <h4 tal:condition="show_map" i18n:translate="">${layout.principal.label('entities')}</h4>
-            <table class="ballot-results stackable sortable">
+            <table
+                class="results tablesaw sortable"
+                data-tablesaw-mode="columntoggle"
+                data-tablesaw-mode-switch="" data-tablesaw-mode-exclude="swipe"
+                data-tablesaw-minimap="">
                 <thead>
                     <tr>
-                        <th i18n:translate="" class="left-aligned">${layout.principal.label('entity')}</th>
-                        <th i18n:translate="" class="left-aligned" tal:condition="layout.principal.has_districts">${layout.principal.label('district')}</th>
-                        <th i18n:translate="" class="left-aligned">Result</th>
-                        <th i18n:translate="" class="right-aligned">Yeas</th>
-                        <th i18n:translate="" class="right-aligned">Nays</th>
-                        <th i18n:translate="" class="right-aligned">Empty</th>
-                        <th i18n:translate="" class="right-aligned">Invalid</th>
-                        <th i18n:translate="" class="right-aligned">Yes %</th>
-                        <th i18n:translate="" class="right-aligned">No %</th>
+                        <th data-tablesaw-priority="persist" i18n:translate="" class="left-aligned">${layout.principal.label('entity')}</th>
+                        <th data-tablesaw-priority="3" i18n:translate="" class="left-aligned" tal:condition="layout.principal.has_districts">${layout.principal.label('district')}</th>
+                        <th data-tablesaw-priority="1" i18n:translate="" class="left-aligned">Result</th>
+                        <th data-tablesaw-priority="5" i18n:translate="" class="right-aligned">Yeas</th>
+                        <th data-tablesaw-priority="5" i18n:translate="" class="right-aligned">Nays</th>
+                        <th data-tablesaw-priority="4" i18n:translate="" class="right-aligned">Empty</th>
+                        <th data-tablesaw-priority="4" i18n:translate="" class="right-aligned">Invalid</th>
+                        <th data-tablesaw-priority="2" i18n:translate="" class="right-aligned">Yes %</th>
+                        <th data-tablesaw-priority="2" i18n:translate="" class="right-aligned">No %</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="total static" tal:condition="layout.summarize">
-                        <td i18n:translate="">Total</td>
-                        <td tal:condition="layout.principal.has_districts"></td>
-                        <td class="answer" tal:condition="not:layout.completed" i18n:translate="">Not yet counted.</td>
-                        <td class="answer accepted" tal:condition="layout.completed and ballot.accepted" i18n:translate="">Accepted</td>
-                        <td class="answer rejected" tal:condition="layout.completed and not ballot.accepted" i18n:translate="">Rejected</td>
-                        <td class="right-aligned">${layout.format_number(ballot.yeas)}</td>
-                        <td class="right-aligned">${layout.format_number(ballot.nays)}</td>
-                        <td class="right-aligned">${layout.format_number(ballot.empty)}</td>
-                        <td class="right-aligned">${layout.format_number(ballot.invalid)}</td>
-                        <td class="right-aligned">${layout.format_number(ballot.yeas_percentage)}</td>
-                        <td class="right-aligned">${layout.format_number(ballot.nays_percentage)}</td>
-                    </tr>
-
                     <tr tal:repeat="result ballot.results" data-municipality-id="${result.entity_id}">
                         <tal:block condition="not: result.counted">
                             <td>${layout.format_name(result)}</td>
@@ -89,8 +79,9 @@
                             <td class="right-aligned">${layout.format_number(result.nays_percentage)}</td>
                         </tal:block>
                     </tr>
-
-                    <tr class="total static" tal:condition="layout.summarize">
+                </tbody>
+                <tfoot tal:condition="layout.summarize">
+                    <tr class="total">
                         <td i18n:translate="">Total</td>
                         <td tal:condition="layout.principal.has_districts"></td>
                         <td class="answer" tal:condition="not:layout.completed" i18n:translate="">Not yet counted.</td>
@@ -103,7 +94,7 @@
                         <td class="right-aligned">${layout.format_number(ballot.yeas_percentage)}</td>
                         <td class="right-aligned">${layout.format_number(ballot.nays_percentage)}</td>
                     </tr>
-                </tbody>
+                </tfoot>
             </table>
 
         </tal:block>
