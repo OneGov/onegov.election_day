@@ -7,6 +7,12 @@ Changelog
 - Adds map data of ZG 2004-2012.
   [msom]
 
+- Fixes PDF styles.
+  [msom]
+
+- Fixes pages cache.
+  [msom]
+
 3.4.0 (2018-03-29)
 ~~~~~~~~~~~~~~~~~~~
 
