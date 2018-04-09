@@ -22,7 +22,7 @@ def view_vote_proposal(self, request):
     return {
         'vote': self,
         'layout': layout,
-        'show_map': request.app.principal.is_year_available(self.date.year)
+        'show_map': layout.principal.is_year_available(self.date.year)
     }
 
 
@@ -41,7 +41,7 @@ def view_vote_counter_proposal(self, request):
     return {
         'vote': self,
         'layout': layout,
-        'show_map': request.app.principal.is_year_available(self.date.year)
+        'show_map': layout.principal.is_year_available(self.date.year)
     }
 
 
@@ -60,7 +60,7 @@ def view_vote_tie_breaker(self, request):
     return {
         'vote': self,
         'layout': layout,
-        'show_map': request.app.principal.is_year_available(self.date.year)
+        'show_map': layout.principal.is_year_available(self.date.year)
     }
 
 
