@@ -108,7 +108,13 @@ class VoteLayout(DetailLayout):
         """ Returns the path to the PDF file or None, if it is not available.
         """
 
-        path = 'pdf/{}'.format(pdf_filename(self.model, self.request.locale))
+        path = 'pdf/{}'.format(
+            pdf_filename(
+                self.model,
+                self.request.locale,
+                last_modified=self.last_modified
+            )
+        )
         if self.request.app.filestorage.exists(path):
             return path
 
@@ -123,7 +129,12 @@ class VoteLayout(DetailLayout):
             return None
 
         path = 'svg/{}'.format(
-            svg_filename(self.ballot, 'map', self.request.locale)
+            svg_filename(
+                self.ballot,
+                'map',
+                self.request.locale,
+                last_modified=self.last_modified
+            )
         )
         if self.request.app.filestorage.exists(path):
             return path

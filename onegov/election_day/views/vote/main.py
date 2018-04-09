@@ -73,18 +73,24 @@ def view_vote_json(self, request):
 
     """" The main view as JSON. """
 
+    last_modified = self.last_modified
+
     @request.after
     def add_last_modified(response):
-        add_last_modified_header(response, self.last_modified)
+        add_last_modified_header(response, last_modified)
 
     show_map = request.app.principal.is_year_available(self.date.year)
     media = {}
-    if VoteLayout(self, request).pdf_path:
+    layout = VoteLayout(self, request)
+    layout.last_modified = last_modified
+    if layout.pdf_path:
         media['pdf'] = request.link(self, 'pdf')
     if show_map:
         media['maps'] = {}
         for ballot in self.ballots:
-            if VoteLayout(self, request, tab=ballot.type).svg_path:
+            layout = VoteLayout(self, request, tab=ballot.type)
+            layout.last_modified = last_modified
+            if layout.svg_path:
                 media['maps'][ballot.type] = request.link(ballot, 'svg')
 
     counted = self.progress[0]
@@ -94,7 +100,7 @@ def view_vote_json(self, request):
         'completed': self.completed,
         'date': self.date.isoformat(),
         'domain': self.domain,
-        'last_modified': self.last_modified.isoformat(),
+        'last_modified': last_modified.isoformat(),
         'progress': {
             'counted': counted,
             'total': self.progress[1]
