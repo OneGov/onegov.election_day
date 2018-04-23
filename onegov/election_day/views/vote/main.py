@@ -4,6 +4,7 @@ from onegov.core.security import Public
 from onegov.core.utils import normalize_for_url
 from onegov.election_day import ElectionDayApp
 from onegov.election_day.layouts import VoteLayout
+from onegov.election_day.utils import add_cors_header
 from onegov.election_day.utils import add_last_modified_header
 from onegov.election_day.utils import get_vote_summary
 
@@ -76,7 +77,8 @@ def view_vote_json(self, request):
     last_modified = self.last_modified
 
     @request.after
-    def add_last_modified(response):
+    def add_headers(response):
+        add_cors_header(response)
         add_last_modified_header(response, last_modified)
 
     show_map = request.app.principal.is_year_available(self.date.year)
@@ -184,7 +186,8 @@ def view_vote_summary(self, request):
     """ View the summary of the vote as JSON. """
 
     @request.after
-    def add_last_modified(response):
+    def add_headers(response):
+        add_cors_header(response)
         add_last_modified_header(response, self.last_modified)
 
     return get_vote_summary(self, request)
