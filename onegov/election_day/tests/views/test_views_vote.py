@@ -1,5 +1,5 @@
 from freezegun import freeze_time
-from onegov.election_day.tests import login, upload_vote
+from onegov.election_day.tests.common import login, upload_vote
 from webtest import TestApp as Client
 
 
