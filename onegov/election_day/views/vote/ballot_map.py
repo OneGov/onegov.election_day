@@ -43,7 +43,7 @@ def view_ballot_as_map(self, request):
     }
 
 
-@ElectionDayApp.json(
+@ElectionDayApp.view(
     model=Ballot,
     name='svg',
     permission=Public
