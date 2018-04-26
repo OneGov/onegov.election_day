@@ -264,6 +264,7 @@ def create_election_compound(client):
     new.form['date'] = date(2015, 1, 1)
     new.form['election_type'] = 'proporz'
     new.form['domain'] = 'region'
+    new.form['distinct'] = True
     new.form['mandates'] = 10
     new.form.submit()
 
@@ -272,6 +273,7 @@ def create_election_compound(client):
     new.form['date'] = date(2015, 1, 1)
     new.form['election_type'] = 'proporz'
     new.form['domain'] = 'region'
+    new.form['distinct'] = True
     new.form['mandates'] = 5
     new.form.submit()
 
@@ -292,6 +294,7 @@ def upload_election_compound(client, create=True, canton='gr'):
         new.form['date'] = date(2015, 1, 1)
         new.form['election_type'] = 'proporz'
         new.form['domain'] = 'region'
+        new.form['distinct'] = True
         new.form['mandates'] = 10
         new.form.submit()
 
@@ -300,6 +303,7 @@ def upload_election_compound(client, create=True, canton='gr'):
         new.form['date'] = date(2015, 1, 1)
         new.form['election_type'] = 'proporz'
         new.form['domain'] = 'region'
+        new.form['distinct'] = True
         new.form['mandates'] = 5
         new.form.submit()
 
