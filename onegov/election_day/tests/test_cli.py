@@ -15,7 +15,7 @@ from unittest.mock import patch
 from uuid import uuid4
 
 
-def write_config(path, postgres_dsn, temporary_directory):
+def write_config(path, postgres_dsn, temporary_directory, redis_url):
     cfg = {
         'applications': [
             {
@@ -24,6 +24,7 @@ def write_config(path, postgres_dsn, temporary_directory):
                 'namespace': 'onegov_election_day',
                 'configuration': {
                     'dsn': postgres_dsn,
+                    'redis_url': redis_url,
                     'depot_backend': 'depot.io.memory.MemoryFileStorage',
                     'filestorage': 'fs.osfs.OSFS',
                     'filestorage_options': {
@@ -37,7 +38,6 @@ def write_config(path, postgres_dsn, temporary_directory):
                     ),
                     'lockfile_path': temporary_directory,
                     'd3_renderer': 'http://localhost:1337',
-                    'disable_memcached': True
                 },
             }
         ]
@@ -76,10 +76,10 @@ def run_command(cfg_path, principal, commands):
     ] + commands)
 
 
-def test_add_instance(postgres_dsn, temporary_directory):
+def test_add_instance(postgres_dsn, temporary_directory, redis_url):
 
     cfg_path = os.path.join(temporary_directory, 'onegov.yml')
-    write_config(cfg_path, postgres_dsn, temporary_directory)
+    write_config(cfg_path, postgres_dsn, temporary_directory, redis_url)
     write_principal(temporary_directory, 'Govikon')
 
     result = run_command(cfg_path, 'govikon', ['add'])
@@ -91,10 +91,11 @@ def test_add_instance(postgres_dsn, temporary_directory):
     assert "This selector may not reference an existing path" in result.output
 
 
-def test_add_instance_missing_config(postgres_dsn, temporary_directory):
+def test_add_instance_missing_config(postgres_dsn, temporary_directory,
+                                     redis_url):
 
     cfg_path = os.path.join(temporary_directory, 'onegov.yml')
-    write_config(cfg_path, postgres_dsn, temporary_directory)
+    write_config(cfg_path, postgres_dsn, temporary_directory, redis_url)
 
     result = run_command(cfg_path, 'govikon', ['add'])
     assert result.exit_code == 0
@@ -102,10 +103,10 @@ def test_add_instance_missing_config(postgres_dsn, temporary_directory):
     assert "Instance was created successfully" in result.output
 
 
-def test_fetch(postgres_dsn, temporary_directory, session_manager):
+def test_fetch(postgres_dsn, temporary_directory, session_manager, redis_url):
 
     cfg_path = os.path.join(temporary_directory, 'onegov.yml')
-    write_config(cfg_path, postgres_dsn, temporary_directory)
+    write_config(cfg_path, postgres_dsn, temporary_directory, redis_url)
 
     assert 'onegov_election_day-thun' not in session_manager.list_schemas()
     assert 'onegov_election_day-bern' not in session_manager.list_schemas()
@@ -282,10 +283,10 @@ def test_fetch(postgres_dsn, temporary_directory, session_manager):
     assert get_session('thun').query(ArchivedResult).count() == 4
 
 
-def test_send_sms(postgres_dsn, temporary_directory):
+def test_send_sms(postgres_dsn, temporary_directory, redis_url):
 
     cfg_path = os.path.join(temporary_directory, 'onegov.yml')
-    write_config(cfg_path, postgres_dsn, temporary_directory)
+    write_config(cfg_path, postgres_dsn, temporary_directory, redis_url)
     write_principal(temporary_directory, 'Govikon')
     assert run_command(cfg_path, 'govikon', ['add']).exit_code == 0
 
@@ -318,7 +319,8 @@ def test_send_sms(postgres_dsn, temporary_directory):
         }
 
 
-def test_generate_media(postgres_dsn, temporary_directory, session_manager):
+def test_generate_media(postgres_dsn, temporary_directory, session_manager,
+                        redis_url):
     session_manager.set_locale('de_CH', 'de_CH')
 
     def add_vote(number):
@@ -342,7 +344,7 @@ def test_generate_media(postgres_dsn, temporary_directory, session_manager):
         transaction.commit()
 
     cfg_path = os.path.join(temporary_directory, 'onegov.yml')
-    write_config(cfg_path, postgres_dsn, temporary_directory)
+    write_config(cfg_path, postgres_dsn, temporary_directory, redis_url)
     write_principal(temporary_directory, 'Govikon', entity='1200')
     assert run_command(cfg_path, 'govikon', ['add']).exit_code == 0
 
@@ -370,9 +372,9 @@ def test_generate_media(postgres_dsn, temporary_directory, session_manager):
     assert os.listdir(svg_path) == []
 
 
-def test_manage_tokens(postgres_dsn, temporary_directory):
+def test_manage_tokens(postgres_dsn, temporary_directory, redis_url):
     cfg_path = os.path.join(temporary_directory, 'onegov.yml')
-    write_config(cfg_path, postgres_dsn, temporary_directory)
+    write_config(cfg_path, postgres_dsn, temporary_directory, redis_url)
     write_principal(temporary_directory, 'Govikon')
     assert run_command(cfg_path, 'govikon', ['add']).exit_code == 0
 
