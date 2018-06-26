@@ -1,6 +1,10 @@
 from datetime import date
+from onegov.ballot import Election
+from onegov.ballot import ElectionAssociation
 from onegov.election_day import _
 from onegov.form import Form
+from onegov.form.fields import MultiCheckboxField
+from sqlalchemy import or_
 from wtforms import BooleanField
 from wtforms import IntegerField
 from wtforms import RadioField
@@ -26,6 +30,28 @@ class ElectionForm(Form):
         default='majorz'
     )
 
+    majority_type = RadioField(
+        label=_("Majority Type"),
+        choices=[
+            ('absolute', _("Absolute")),
+            ('relative', _("Relative")),
+        ],
+        default='absolute',
+        validators=[
+            InputRequired()
+        ],
+        depends_on=('election_type', 'majorz'),
+    )
+
+    absolute_majority = IntegerField(
+        label=_("Absolute majority"),
+        validators=[
+            Optional(),
+            NumberRange(min=1)
+        ],
+        depends_on=('majority_type', 'absolute'),
+    )
+
     domain = RadioField(
         label=_("Type"),
         validators=[
@@ -38,6 +64,12 @@ class ElectionForm(Form):
         render_kw=dict(force_simple=True)
     )
 
+    distinct = BooleanField(
+        label=_("Distinct district"),
+        render_kw=dict(force_simple=True),
+        depends_on=('domain', 'region'),
+    )
+
     date = DateField(
         label=_("Date"),
         validators=[
@@ -47,7 +79,7 @@ class ElectionForm(Form):
     )
 
     mandates = IntegerField(
-        label=_("Mandates"),
+        label=_("Mandates / Seats"),
         validators=[
             InputRequired(),
             NumberRange(min=1)
@@ -83,13 +115,9 @@ class ElectionForm(Form):
         label=_("Related link")
     )
 
-    absolute_majority = IntegerField(
-        label=_("Absolute majority"),
-        validators=[
-            Optional(),
-            NumberRange(min=1)
-        ],
-        depends_on=('election_type', 'majorz'),
+    related_elections = MultiCheckboxField(
+        label=_("Related elections"),
+        choices=[]
     )
 
     def on_request(self):
@@ -108,6 +136,11 @@ class ElectionForm(Form):
         if default_locale.startswith('rm'):
             self.election_de.validators.append(InputRequired())
 
+        query = self.request.session.query(Election)
+        query = query.order_by(Election.date, Election.shortcode)
+        choices = [(election.id, election.title) for election in query]
+        self.related_elections.choices = choices
+
     def set_domain(self, principal):
         self.domain.choices = [
             (key, text) for key, text in principal.domains_election.items()
@@ -119,9 +152,11 @@ class ElectionForm(Form):
         model.type = self.election_type.data
         model.shortcode = self.shortcode.data
         model.number_of_mandates = self.mandates.data
-        model.absolute_majority = self.absolute_majority.data
+        model.majority_type = self.majority_type.data
+        model.absolute_majority = self.absolute_majority.data or None
         model.related_link = self.related_link.data
         model.tacit = self.tacit.data
+        model.distinct = self.distinct.data
 
         titles = {}
         if self.election_de.data:
@@ -133,6 +168,24 @@ class ElectionForm(Form):
         if self.election_rm.data:
             titles['rm_CH'] = self.election_rm.data
         model.title_translations = titles
+
+        # use symetric relationships
+        session = self.request.session
+        query = session.query(ElectionAssociation)
+        query = query.filter(
+            or_(
+                ElectionAssociation.source_id == model.id,
+                ElectionAssociation.target_id == model.id
+            )
+        )
+        for association in query:
+            session.delete(association)
+
+        for id_ in self.related_elections.data:
+            if not model.id:
+                model.id = model.id_from_title(session)
+            session.add(ElectionAssociation(source_id=model.id, target_id=id_))
+            session.add(ElectionAssociation(source_id=id_, target_id=model.id))
 
     def apply_model(self, model):
         titles = model.title_translations or {}
@@ -146,9 +199,11 @@ class ElectionForm(Form):
         self.shortcode.data = model.shortcode
         self.election_type.data = model.type
         self.mandates.data = model.number_of_mandates
+        self.majority_type.data = model.majority_type
         self.absolute_majority.data = model.absolute_majority
         self.related_link.data = model.related_link
         self.tacit.data = model.tacit
+        self.distinct.data = model.distinct
 
         if model.type == 'majorz':
             self.election_type.choices = [
@@ -161,3 +216,11 @@ class ElectionForm(Form):
                 ('proporz', _("Election based on proportional representation"))
             ]
             self.election_type.data = 'proporz'
+
+        self.related_elections.choices = [
+            choice for choice in self.related_elections.choices
+            if choice[0] != model.id
+        ]
+        self.related_elections.data = [
+            association.target_id for association in model.related_elections
+        ]

@@ -97,6 +97,17 @@
     </div>
 </metal:related_link>
 
+<metal:related_elections define-macro="related_elections" i18n:domain="onegov.election_day">
+    <div class="row related" tal:condition="layout.related_elections">
+        <div class="columns small-12">
+            <h2 i18n:translate="">Related elections</h2>
+            <p tal:repeat="(title, link) layout.related_elections">
+                <a href="${link}" class="related-link">${title}</a>
+            </p>
+        </div>
+    </div>
+</metal:related_elections>
+
 <metal:pagination define-macro="pagination" i18n:domain="onegov.election_day">
     <ul class="pagination" role="menubar" aria-label="Pagination">
         <tal:block repeat="page collection.pages">
@@ -155,7 +166,7 @@
 </metal:tab_menu>
 
 <metal:status_callout define-macro="status_callout" i18n:domain="onegov.election_day">
-    <div class="panel callout radius" tal:condition="not:layout.completed">
+    <div class="panel" tal:condition="not:layout.completed">
          <h5 i18n:translate="" tal:condition="not layout.has_results">No results yet</h5>
          <h5 i18n:translate="" tal:condition="layout.has_results">Intermediate results</h5>
          <p tal:condition="layout.has_results">
@@ -163,7 +174,7 @@
              <strong>${layout.format_date(layout.last_result_change, 'relative')} / ${layout.format_date(layout.last_result_change, 'datetime_long')}</strong>
          </p>
     </div>
-    <div class="panel radius" tal:condition="layout.completed">
+    <div class="panel" tal:condition="layout.completed">
         <span i18n:translate="">Last change</span>: ${layout.format_date(layout.last_result_change, 'datetime_long')}
     </div>
 </metal:status_callout>
@@ -291,10 +302,11 @@
         </ul>
         <ul class="small-block-grid-1 medium-block-grid-4 factoids">
             <li>
-                <span i18n:translate="">Mandates</span>
+                <span i18n:translate="" tal:condition="layout.majorz">Seats</span>
+                <span i18n:translate="" tal:condition="layout.proporz">Mandates</span>
                 <strong><span metal:use-macro="layout.macros['progress']" tal:define="progress (election.allocated_mandates, election.number_of_mandates)" /></strong>
             </li>
-            <li tal:condition="layout.majorz">
+            <li tal:condition="layout.majorz and election.majority_type=='absolute'">
                 <span i18n:translate="">Absolute majority</span>
                 <strong tal:condition="election.absolute_majority">${layout.format_number(election.absolute_majority or 0)}</strong>
             </li>
@@ -309,7 +321,8 @@
             <strong><span metal:use-macro="layout.macros['progress']" tal:define="progress election_compound.progress" /></strong>
         </li>
         <li>
-            <span i18n:translate="">Mandates</span>
+            <span i18n:translate="" tal:condition="layout.majorz">Seats</span>
+            <span i18n:translate="" tal:condition="layout.proporz">Mandates</span>
             <strong><span metal:use-macro="layout.macros['progress']" tal:define="progress (election_compound.allocated_mandates, election_compound.number_of_mandates)" /></strong>
         </li>
     </ul>
@@ -350,7 +363,6 @@
         <ol>
             <li><a href="${request.link(model, 'data-json')}">JSON</a></li>
             <li><a href="${request.link(model, 'data-csv')}">CSV</a></li>
-            <li><a href="${request.link(model, 'data-xlsx')}">XLSX</a></li>
         </ol>
     </p>
     <p><span i18n:translate="">The format of the data is described here:</span> <a href="${layout.opendata_link}"><span i18n:translate="">Format Description</span></a>.</p>
@@ -398,6 +410,7 @@
                 modeStack: '<tal:block i18n:translate>Stack</tal:block>',
                 modeToggle: '<tal:block i18n:translate>Toggle</tal:block>',
                 modeSwitchColumns: '<tal:block i18n:translate>Columns</tal:block>',
+                modeSwitchColumnsAbbreviated: '<tal:block i18n:translate>Columns</tal:block>',
             }
         };
     </script>
@@ -416,7 +429,7 @@
         </a>
         <figcaption i18n:translate="figcaption_party_strengths">
             The diagram shows the votes and mandates of the parties. The rimmed bars
-            (left scale) correspond to the number of seats, the colored bars (right scale)
+            (left scale) correspond to the number of mandates, the colored bars (right scale)
             to the voices (percentages).
         </figcaption>
     </figure>

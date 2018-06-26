@@ -7,7 +7,7 @@ class ElectionDayTheme(BaseTheme):
 
     # don't touch this number, it's incremented using bumpversion, so every
     # release will automatically trigger a rebuild of the theme
-    version = '3.4.0'
+    version = '3.5.9'
 
     @property
     def post_imports(self):
@@ -30,9 +30,7 @@ class ElectionDayTheme(BaseTheme):
             'subheader-line-height': '1.3',
             'h1-font-reduction': 'rem-calc(15)',
             'h2-font-reduction': 'rem-calc(12)',
-            'callout-panel-bg': 'scale-color({}, $lightness: 75%)'.format(
-                options['primary-color']
-            ),
+            'callout-panel-bg': '#ecfaff',
             'topbar-bg-color': '#fff',
             'topbar-dropdown-bg': '#fff',
             'topbar-link-color': '#999',

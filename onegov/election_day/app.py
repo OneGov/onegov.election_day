@@ -13,9 +13,10 @@ from onegov.election_day.directives import ManageFormAction
 from onegov.election_day.directives import ManageHtmlAction
 from onegov.election_day.models import Principal
 from onegov.election_day.theme import ElectionDayTheme
+from onegov.form import FormApp
 
 
-class ElectionDayApp(Framework):
+class ElectionDayApp(Framework, FormApp):
     """ The election day application. Include this in your onegov.yml to serve
     it with onegov-server.
 
@@ -91,7 +92,8 @@ class ElectionDayApp(Framework):
 
     @property
     def theme_options(self):
-        assert self.principal.color is not None, """ No color defined, be
+        color = self.principal.color
+        assert color is not None, """ No color defined, be
         sure to define one in your principal.yml like this:
 
             color: '#123456'
@@ -99,14 +101,12 @@ class ElectionDayApp(Framework):
         Note how you need to add apostrophes around the definition!
         """
 
-        return {
-            'primary-color': self.principal.color
-        }
+        return {'primary-color': color}
 
     @property
     def pages_cache(self):
         """ A five minute cache for pages. """
-        return self.get_cache(self.application_id + ':5m', expiration_time=300)
+        return self.get_cache('pages', expiration_time=300)
 
     def configure_sentry(self, **cfg):
         self.sentry_js = cfg.get('sentry_js')
@@ -242,7 +242,6 @@ def get_common_asset():
     yield 'tablesaw-init.js'
 
     # other frameworks
-    yield 'fastclick.js'
     yield 'foundation.js'
     yield 'underscore.js'
     yield 'iframeResizer.contentWindow.js'

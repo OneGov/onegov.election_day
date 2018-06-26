@@ -1,7 +1,7 @@
 from datetime import date
-from onegov.election_day.tests import login
-from onegov.election_day.tests import upload_majorz_election
-from onegov.election_day.tests import upload_vote
+from onegov.election_day.tests.common import login
+from onegov.election_day.tests.common import upload_majorz_election
+from onegov.election_day.tests.common import upload_vote
 from webtest import TestApp as Client
 
 
@@ -27,9 +27,12 @@ def test_view_notifications_votes(election_day_app):
 
     assert "Benachrichtigungen auslösen" in client.get('/manage/votes')
     assert "Benachrichtigungen auszulösen" in upload_vote(client, False)
-
     assert "erneut auslösen" not in client.get('/vote/vote/trigger')
-    client.get('/vote/vote/trigger').form.submit()
+
+    trigger = client.get('/vote/vote/trigger')
+    trigger.form['notifications'] = ['webhooks']
+    trigger.form.submit()
+
     assert "erneut auslösen" in client.get('/vote/vote/trigger')
 
     upload_vote(client, False)
@@ -46,7 +49,9 @@ def test_view_notifications_votes(election_day_app):
     subscribe.form['email'] = 'hans@example.org'
     subscribe.form.submit()
 
-    client.get('/vote/vote/trigger').form.submit()
+    trigger = client.get('/vote/vote/trigger')
+    trigger.form['notifications'] = ['email']
+    trigger.form.submit()
 
     message = election_day_app.smtp.outbox.pop()
     assert message['To'] == 'hans@example.org'
@@ -91,11 +96,14 @@ def test_view_notifications_elections(election_day_app_gr):
     assert "Benachrichtigungen auszulösen" in upload_majorz_election(
         client, False
     )
-
     assert "erneut auslösen" not in client.get(
         '/election/majorz-election/trigger'
     )
-    client.get('/election/majorz-election/trigger').form.submit()
+
+    trigger = client.get('/election/majorz-election/trigger')
+    trigger.form['notifications'] = ['webhooks']
+    trigger.form.submit()
+
     assert "erneut auslösen" in client.get('/election/majorz-election/trigger')
 
     upload_majorz_election(client, False)
@@ -114,7 +122,9 @@ def test_view_notifications_elections(election_day_app_gr):
     subscribe.form['email'] = 'hans@example.org'
     subscribe.form.submit()
 
-    client.get('/election/majorz-election/trigger').form.submit()
+    trigger = client.get('/election/majorz-election/trigger')
+    trigger.form['notifications'] = ['email']
+    trigger.form.submit()
 
     message = election_day_app_gr.smtp.outbox.pop()
     assert message['To'] == 'hans@example.org'
@@ -128,7 +138,9 @@ def test_view_notifications_elections(election_day_app_gr):
     message = message.decode('utf-8')
     assert "http://localhost/unsubscribe-email" in message
     assert "Majorz Election - Nouveaux résultats intermédiaires" in message
+    assert unsubscribe in message
 
     assert 'hans@example.org' in client.get('/manage/subscribers/email')
+    assert 'hans@example.org' in anom.get(unsubscribe)
     anom.post(unsubscribe)
     assert 'hans@example.org' not in client.get('/manage/subscribers/email')

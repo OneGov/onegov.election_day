@@ -80,7 +80,6 @@ Format|URL
 ---|---
 JSON|`/data-json`
 CSV|`/data-csv`
-XLSX|`/data-xlsx`
 
 Les champs suivants sont inclus dans tous les formats:
 
@@ -90,7 +89,7 @@ Nom|Description
 `election_date`|La date de l'élection (an ISO 8601 date string).
 `election_domain`|fédéral (`federation`), cantonal (`canton`), régional (`region`) ou municipal (`municipality`)
 `election_type`|proportionnelle (`proporz`) ou système majoritaire (`majorz`).
-`election_mandates`|Nombre de mandats.
+`election_mandates`|Nombre de mandats/sièges.
 `election_absolute_majority`|La majorité absolue. Uniquement valable pour les élections basées sur le système majoritaire.
 `election_status`|Résultats intermédiaires (`interim`), résultats finaux (`final`) or inconnu (`unknown`).
 `entity_id`|L'identifiant de la municipalité. A value `0` represents the expats.
@@ -163,7 +162,6 @@ Format|URL
 ---|---
 JSON|`/data-json`
 CSV|`/data-csv`
-XLSX|`/data-xlsx`
 
 Les champs suivants sont inclus dans tous les formats:
 

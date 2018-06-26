@@ -4,7 +4,7 @@ from onegov.ballot import Election
 from onegov.ballot import ElectionCompound
 from onegov.ballot import Vote
 from onegov.election_day.collections import ArchivedResultCollection
-from onegov.election_day.tests import DummyRequest
+from onegov.election_day.tests.common import DummyRequest
 from onegov.election_day.utils import get_election_summary
 from onegov.election_day.utils import get_election_compound_summary
 from onegov.election_day.utils import get_summaries
@@ -48,26 +48,26 @@ def test_get_election_compound_summary(session):
         archive = ArchivedResultCollection(session)
         request = DummyRequest()
 
-        session.add(
-            Election(
-                title="e1",
-                domain='region',
-                date=date(2011, 1, 1),
-            )
+        e1 = Election(
+            title="e1",
+            domain='region',
+            date=date(2011, 1, 1),
         )
-        session.add(
-            Election(
-                title="e2",
-                domain='region',
-                date=date(2011, 1, 1),
-            )
+        e2 = Election(
+            title="e2",
+            domain='region',
+            date=date(2011, 1, 1),
         )
+        session.add(e1)
+        session.add(e2)
+        session.flush()
         compound = ElectionCompound(
             title="Elections",
             domain='canton',
             date=date(2011, 1, 1),
-            elections=['e1', 'e2']
         )
+
+        compound.elections = [e1, e2]
         session.add(compound)
         session.flush()
 
@@ -147,7 +147,6 @@ def test_get_summary(session):
             title="Elections",
             domain='canton',
             date=date(2011, 1, 1),
-            elections=['election']
         )
         vote = Vote(
             title="Vote",
@@ -158,6 +157,8 @@ def test_get_summary(session):
         session.add(election_compound)
         session.add(vote)
         session.flush()
+
+        election_compound.elections = [election]
 
         election_result = archive.update(election, request)
         election_compound_result = archive.update(election_compound, request)
@@ -218,8 +219,7 @@ def test_get_summaries(session):
         election_compound = ElectionCompound(
             title="Elections",
             domain='canton',
-            date=date(2011, 1, 1),
-            elections=['election']
+            date=date(2011, 1, 1)
         )
         vote = Vote(
             title="Vote",
@@ -230,6 +230,8 @@ def test_get_summaries(session):
         session.add(election)
         session.add(vote)
         session.flush()
+
+        election_compound.elections = [election]
 
         election_result = archive.update(election, request)
         election_compound_result = archive.update(election_compound, request)

@@ -3,11 +3,11 @@ import onegov.election_day
 from datetime import date
 from freezegun import freeze_time
 from onegov.ballot import Ballot
-from onegov.election_day.tests import create_election_compound
-from onegov.election_day.tests import login
-from onegov.election_day.tests import upload_majorz_election
-from onegov.election_day.tests import upload_proporz_election
-from onegov.election_day.tests import upload_vote
+from onegov.election_day.tests.common import create_election_compound
+from onegov.election_day.tests.common import login
+from onegov.election_day.tests.common import upload_majorz_election
+from onegov.election_day.tests.common import upload_proporz_election
+from onegov.election_day.tests.common import upload_vote
 from onegov_testing import utils
 from unittest.mock import patch
 from webtest import TestApp as Client
@@ -154,17 +154,14 @@ def test_view_last_modified(election_day_app):
             '/election/election/json',
             '/election/election/data-json',
             '/election/election/data-csv',
-            '/election/election/data-xlsx',
             '/elections/elections/summary',
             '/elections/elections/json',
             '/elections/elections/data-json',
             '/elections/elections/data-csv',
-            '/elections/elections/data-xlsx',
             '/vote/vote/summary',
             '/vote/vote/json',
             '/vote/vote/data-json',
             '/vote/vote/data-csv',
-            '/vote/vote/data-xlsx',
         ):
             assert client.get(path).headers.get('Last-Modified') == \
                 'Wed, 01 Jan 2014 12:00:00 GMT'

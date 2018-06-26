@@ -43,13 +43,17 @@ class Notification(Base, TimestampMixin):
     last_modified = Column(UTCDateTime, nullable=True)
 
     #: The corresponding election id
-    election_id = Column(Text, ForeignKey(Election.id), nullable=True)
+    election_id = Column(
+        Text, ForeignKey(Election.id, onupdate='CASCADE'), nullable=True
+    )
 
     #: The corresponding election
     election = relationship('Election', backref=backref('notifications'))
 
     #: The corresponding vote id
-    vote_id = Column(Text, ForeignKey(Vote.id), nullable=True)
+    vote_id = Column(
+        Text, ForeignKey(Vote.id, onupdate='CASCADE'), nullable=True
+    )
 
     #: The corresponding vote
     vote = relationship('Vote', backref=backref('notifications'))
@@ -180,16 +184,15 @@ class EmailNotification(Notification):
             )
 
             for address in addresses:
+                token = request.new_url_safe_token({'address': address})
+                optout_custom = f'{optout}?opaque={token}'
                 request.app.send_marketing_email(
                     subject=subject,
                     receivers=(address, ),
                     reply_to=reply_to,
-                    content=content,
+                    content=content.replace(optout, optout_custom),
                     headers={
-                        'List-Unsubscribe': '<{}?opaque={}>'.format(
-                            optout,
-                            request.new_url_safe_token({'address': address})
-                        ),
+                        'List-Unsubscribe': f'<{optout_custom}>',
                         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'
                     }
                 )

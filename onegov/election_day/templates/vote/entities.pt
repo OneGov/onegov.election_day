@@ -23,8 +23,8 @@
                 <div class="small-12 small-centered medium-8 large-6 columns map-container">
                     <div class="entities-map"
                         data-type="${ballot.type}"
-                        data-canton="${layout.app.principal.id}"
-                        data-mapurl="${layout.get_topojson_link(layout.app.principal.id, vote.date.year)}"
+                        data-canton="${layout.principal.id}"
+                        data-mapurl="${layout.get_topojson_link(layout.principal.id, vote.date.year)}"
                         data-dataurl="${request.link(ballot, name='by-entity')}"
                         data-embed-link="Embed"
                         data-embed-source="${request.link(ballot, name='entities-map')}"
@@ -71,10 +71,10 @@
                             <td tal:condition="layout.principal.has_districts">${result.district}</td>
                             <td class="answer accepted" tal:condition="result.accepted" i18n:translate="">Accepted</td>
                             <td class="answer rejected" tal:condition="not: result.accepted" i18n:translate="">Rejected</td>
-                            <td class="right-aligned">${layout.format_number(result.yeas)}</td>
-                            <td class="right-aligned">${layout.format_number(result.nays)}</td>
-                            <td class="right-aligned">${layout.format_number(result.empty)}</td>
-                            <td class="right-aligned">${layout.format_number(result.invalid)}</td>
+                            <td class="right-aligned" data-text="${result.yeas}">${layout.format_number(result.yeas)}</td>
+                            <td class="right-aligned" data-text="${result.nays}">${layout.format_number(result.nays)}</td>
+                            <td class="right-aligned" data-text="${result.empty}">${layout.format_number(result.empty)}</td>
+                            <td class="right-aligned" data-text="${result.invalid}">${layout.format_number(result.invalid)}</td>
                             <td class="right-aligned">${layout.format_number(result.yeas_percentage)}</td>
                             <td class="right-aligned">${layout.format_number(result.nays_percentage)}</td>
                         </tal:block>

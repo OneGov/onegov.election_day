@@ -1,4 +1,3 @@
-from csv import excel
 from onegov.ballot import Candidate
 from onegov.ballot import CandidateResult
 from onegov.ballot import ElectionResult
@@ -151,7 +150,7 @@ def parse_candidate(line, errors):
         id = int(line.candidate_id or 0)
         family_name = line.candidate_family_name
         first_name = line.candidate_first_name
-        elected = line.candidate_elected == 'True'
+        elected = str(line.candidate_elected or '').lower() == 'true'
         party = line.candidate_party
 
     except ValueError:
@@ -213,7 +212,7 @@ def import_election_internal_proporz(election, principal, file, mimetype):
     filename = _("Results")
     csv, error = load_csv(
         file, mimetype, expected_headers=HEADERS, filename=filename,
-        dialect=excel
+        dialect='excel'
     )
     if error:
         return [error]
@@ -288,13 +287,13 @@ def import_election_internal_proporz(election, principal, file, mimetype):
 
     # Check if all results are from the same district if regional election
     districts = set([result.district for result in results.values()])
-    if election.domain == 'region':
+    if election.domain == 'region' and election.distinct:
         if principal.has_districts:
             if len(districts) != 1:
-                errors.append(FileImportError(_("No distinct region")))
+                errors.append(FileImportError(_("No clear district")))
         else:
             if len(results) != 1:
-                errors.append(FileImportError(_("No distinct region")))
+                errors.append(FileImportError(_("No clear district")))
 
     if errors:
         return errors
@@ -305,6 +304,8 @@ def import_election_internal_proporz(election, principal, file, mimetype):
         entity = entities[entity_id]
         district = entity.get('district', '')
         if election.domain == 'region':
+            if not election.distinct:
+                continue
             if not principal.has_districts:
                 continue
             if district not in districts:

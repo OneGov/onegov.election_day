@@ -165,6 +165,7 @@ class PdfGenerator():
             return item.name if item.entity_id else pdf.translate(_("Expats"))
 
         majorz = election.type == 'majorz'
+        show_majority = majorz and election.majority_type == 'absolute'
 
         # Factoids
         pdf.factoids(
@@ -177,10 +178,14 @@ class PdfGenerator():
         )
         pdf.spacer()
         pdf.factoids(
-            [_('Mandates'), _('Absolute majority') if majorz else '', ''],
+            [
+                _('Seats') if majorz else _('Mandates'),
+                _('Absolute majority') if show_majority else '',
+                ''
+            ],
             [
                 election.allocated_mandates,
-                election.absolute_majority if majorz else '',
+                election.absolute_majority if show_majority else '',
                 ''
             ],
         )
@@ -519,13 +524,16 @@ class PdfGenerator():
             majorz = True
 
         districts = {
-            election.id: election.results.first().district
+            election.id: (
+                election.results.first().district or
+                election.results.first().name
+            )
             for election in compound.elections if election.results.first()
         }
 
         # Factoids
         pdf.factoids(
-            [_('Mandates'), '', ''],
+            [_('Seats') if majorz else _('Mandates'), '', ''],
             [compound.allocated_mandates, '', '']
         )
         pdf.spacer()
@@ -946,9 +954,14 @@ class PdfGenerator():
         existing = fs.listdir(self.pdf_dir)
 
         # Generate the PDFs
+        created = []
         for locale in self.app.locales:
             for item in items:
-                filename = pdf_filename(item, locale)
+                last_modified = item.last_modified
+                filename = pdf_filename(
+                    item, locale, last_modified=last_modified
+                )
+                created.append(filename.split('.')[0])
                 if filename not in existing and item.completed:
                     path = '{}/{}'.format(self.pdf_dir, filename)
                     if fs.exists(path):
@@ -971,9 +984,6 @@ class PdfGenerator():
         ))
 
         # ... orphaned files
-        created = [
-            pdf_filename(item, '').split('.')[0] for item in items
-        ]
         for id in set(existing.keys()) - set(created):
             self.remove(self.pdf_dir, existing[id])
 

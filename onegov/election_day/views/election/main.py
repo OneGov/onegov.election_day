@@ -5,6 +5,7 @@ from onegov.core.security import Public
 from onegov.core.utils import normalize_for_url
 from onegov.election_day import ElectionDayApp
 from onegov.election_day.layouts import ElectionLayout
+from onegov.election_day.utils import add_cors_header
 from onegov.election_day.utils import add_last_modified_header
 from onegov.election_day.utils import get_election_summary
 from onegov.election_day.utils.election import get_candidates_results
@@ -32,19 +33,25 @@ def view_election(self, request):
 def view_election_json(self, request):
     """" The main view as JSON. """
 
+    last_modified = self.last_modified
+
     @request.after
-    def add_last_modified(response):
-        add_last_modified_header(response, self.last_modified)
+    def add_headers(response):
+        add_cors_header(response)
+        add_last_modified_header(response, last_modified)
 
     embed = {}
     media = {'charts': {}}
-    if ElectionLayout(self, request).pdf_path:
+    layout = ElectionLayout(self, request)
+    layout.last_modified = last_modified
+    if layout.pdf_path:
         media['pdf'] = request.link(self, 'pdf')
     for tab in (
         'candidates', 'lists', 'connections', 'lists-panachage',
         'party-strengths', 'parties-panachage',
     ):
         layout = ElectionLayout(self, request, tab=tab)
+        layout.last_modified = last_modified
         if layout.visible:
             embed[tab] = request.link(self, '{}-chart'.format(tab))
         if layout.svg_path:
@@ -54,7 +61,7 @@ def view_election_json(self, request):
         'completed': self.completed,
         'date': self.date.isoformat(),
         'domain': self.domain,
-        'last_modified': self.last_modified.isoformat(),
+        'last_modified': last_modified.isoformat(),
         'mandates': {
             'allocated': self.allocated_mandates or 0,
             'total': self.number_of_mandates or 0,
@@ -98,14 +105,14 @@ def view_election_json(self, request):
         'data': {
             'json': request.link(self, 'data-json'),
             'csv': request.link(self, 'data-csv'),
-            'xlsx': request.link(self, 'data-xlsx'),
         }
     }
 
     session = object_session(self)
 
     if self.type == 'majorz':
-        data['absolute_majority'] = self.absolute_majority
+        if self.majority_type == 'absolute':
+            data['absolute_majority'] = self.absolute_majority
         data['candidates'] = [
             {
                 'family_name': candidate[0],
@@ -177,7 +184,8 @@ def view_election_summary(self, request):
     """ View the summary of the election as JSON. """
 
     @request.after
-    def add_last_modified(response):
+    def add_headers(response):
+        add_cors_header(response)
         add_last_modified_header(response, self.last_modified)
 
     return get_election_summary(self, request)

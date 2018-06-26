@@ -5,6 +5,7 @@ from onegov.core.security import Public
 from onegov.core.utils import normalize_for_url
 from onegov.election_day import ElectionDayApp
 from onegov.election_day.layouts import VoteLayout
+from onegov.election_day.utils import add_cors_header
 from onegov.election_day.utils import add_last_modified_header
 from onegov.election_day.utils import get_vote_summary
 
@@ -29,22 +30,30 @@ def view_vote_json(self, request):
 
     """" The main view as JSON. """
 
+    last_modified = self.last_modified
+
     @request.after
-    def add_last_modified(response):
-        add_last_modified_header(response, self.last_modified)
+    def add_headers(response):
+        add_cors_header(response)
+        add_last_modified_header(response, last_modified)
 
     embed = {}
-    media = {'maps': {}}
-    if VoteLayout(self, request).pdf_path:
+    media = {}
+    layout = VoteLayout(self, request)
+    layout.last_modified = last_modified
+    if layout.pdf_path:
         media['pdf'] = request.link(self, 'pdf')
-    for map in ('entities', 'districts'):
+    if layout.show_map:
+        media['maps'] = {}
         for ballot in ('', 'proposal-', 'counter-proposal-', 'tie-breaker-'):
-            tab = f'{ballot}{map}'
-            layout = VoteLayout(self, request, tab)
-            if layout.visible:
-                embed[tab] = request.link(layout.ballot, name=f'{map}-map')
-                if layout.svg_path:
-                    media['maps'][tab] = layout.svg_link
+            for map in ('entities', 'districts'):
+                tab = f'{ballot}{map}'
+                layout = VoteLayout(self, request, tab)
+                layout.last_modified = last_modified
+                if layout.visible:
+                    embed[tab] = request.link(layout.ballot, name=f'{map}-map')
+                    if layout.svg_path:
+                        media['maps'][tab] = layout.svg_link
 
     counted = self.progress[0]
     nays_percentage = self.nays_percentage if counted else None
@@ -53,7 +62,7 @@ def view_vote_json(self, request):
         'completed': self.completed,
         'date': self.date.isoformat(),
         'domain': self.domain,
-        'last_modified': self.last_modified.isoformat(),
+        'last_modified': last_modified.isoformat(),
         'progress': {
             'counted': counted,
             'total': self.progress[1]
@@ -119,7 +128,6 @@ def view_vote_json(self, request):
         'data': {
             'json': request.link(self, 'data-json'),
             'csv': request.link(self, 'data-csv'),
-            'xlsx': request.link(self, 'data-xlsx'),
         }
     }
 
@@ -134,7 +142,8 @@ def view_vote_summary(self, request):
     """ View the summary of the vote as JSON. """
 
     @request.after
-    def add_last_modified(response):
+    def add_headers(response):
+        add_cors_header(response)
         add_last_modified_header(response, self.last_modified)
 
     return get_vote_summary(self, request)

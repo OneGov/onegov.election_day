@@ -31,6 +31,27 @@ PROPORZ_HEADER = (
 )
 
 
+MAJORZ_HEADER = (
+    'election_status,'
+    'election_absolute_majority,'
+    'entity_id,'
+    'entity_counted,'
+    'entity_eligible_voters,'
+    'entity_received_ballots,'
+    'entity_invalid_ballots,'
+    'entity_blank_ballots,'
+    'entity_blank_votes,'
+    'entity_invalid_votes,'
+    'candidate_id,'
+    'candidate_elected,'
+    'candidate_family_name,'
+    'candidate_first_name,'
+    'candidate_votes,'
+    'candidate_party,'
+    '\n'
+)
+
+
 class DummyPostData(dict):
     def getlist(self, key):
         v = self[key]
@@ -318,6 +339,7 @@ def create_election_compound(client):
     new.form['date'] = date(2015, 1, 1)
     new.form['election_type'] = 'proporz'
     new.form['domain'] = 'region'
+    new.form['distinct'] = True
     new.form['mandates'] = 10
     new.form.submit()
 
@@ -326,6 +348,7 @@ def create_election_compound(client):
     new.form['date'] = date(2015, 1, 1)
     new.form['election_type'] = 'proporz'
     new.form['domain'] = 'region'
+    new.form['distinct'] = True
     new.form['mandates'] = 5
     new.form.submit()
 
@@ -346,6 +369,7 @@ def upload_election_compound(client, create=True, canton='gr'):
         new.form['date'] = date(2015, 1, 1)
         new.form['election_type'] = 'proporz'
         new.form['domain'] = 'region'
+        new.form['distinct'] = True
         new.form['mandates'] = 10
         new.form.submit()
 
@@ -354,6 +378,7 @@ def upload_election_compound(client, create=True, canton='gr'):
         new.form['date'] = date(2015, 1, 1)
         new.form['election_type'] = 'proporz'
         new.form['domain'] = 'region'
+        new.form['distinct'] = True
         new.form['mandates'] = 5
         new.form.submit()
 

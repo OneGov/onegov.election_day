@@ -30,6 +30,7 @@ def parse_election(line, errors):
         mandates = int(line.anzmandate or 0)
         if hasattr(line, 'absolutesmehr'):
             majority = int(line.absolutesmehr or 0)
+            majority = majority if majority > 0 else None
     except ValueError:
         errors.append(_("Invalid election values"))
 
@@ -70,9 +71,6 @@ def parse_election_result(line, errors, entities, added_entities):
                     blank_votes = votes
                 elif name == 'Ungültige Stimmen':
                     invalid_votes = votes
-
-        if not eligible_voters or blank_votes is None or invalid_votes is None:
-            raise ValueError()
 
     except ValueError:
         errors.append(_("Invalid entity values"))
@@ -259,13 +257,13 @@ def import_election_wabsti_majorz(
 
     # Check if all results are from the same district if regional election
     districts = set([result.district for result in results.values()])
-    if election.domain == 'region':
+    if election.domain == 'region' and election.distinct:
         if principal.has_districts:
             if len(districts) != 1:
-                errors.append(FileImportError(_("No distinct region")))
+                errors.append(FileImportError(_("No clear district")))
         else:
             if len(results) != 1:
-                errors.append(FileImportError(_("No distinct region")))
+                errors.append(FileImportError(_("No clear district")))
 
     if errors:
         return errors
@@ -276,6 +274,8 @@ def import_election_wabsti_majorz(
         entity = entities[entity_id]
         district = entity.get('district', '')
         if election.domain == 'region':
+            if not election.distinct:
+                continue
             if not principal.has_districts:
                 continue
             if district not in districts:

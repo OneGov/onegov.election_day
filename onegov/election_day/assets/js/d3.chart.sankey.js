@@ -132,6 +132,7 @@
                 var node = canvas.append('g').selectAll('.node')
                     .data(data.nodes)
                     .enter().append('g')
+                    .filter(function(d) { return d.value; })
                     .attr('class', 'node')
                     .attr('id', function(d) { return 'node-' + count++; })
                     .filter(function(d) { return d.sourceLinks.length || d.targetLinks.length; });
@@ -206,6 +207,7 @@
                 var link = canvas.append('g').selectAll('.link')
                     .data(data.links)
                     .enter().append('path')
+                    .filter(function(d) { return d.value; })
                     .attr('class', 'link')
                     .attr('d', path)
                     .attr('style', function(d) {
@@ -216,7 +218,12 @@
                     .sort(function(a, b) { return b.dy - a.dy; });
 
                 link.append('title')
-                    .text(function(d) { return d.value; });
+                    .text(function(d) {
+                        if (d.source.name && d.target.name) {
+                          return d.source.name + ' -> ' + d.target.name + ': ' + d.value;
+                        }
+                        return d.value;
+                      });
 
                 // Fade-Effect on mouseover
                 if (interactive) {

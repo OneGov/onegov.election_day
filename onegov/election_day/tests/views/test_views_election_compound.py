@@ -1,8 +1,8 @@
 from freezegun import freeze_time
-from onegov.election_day.tests import create_election_compound
-from onegov.election_day.tests import login
-from onegov.election_day.tests import upload_election_compound
-from onegov.election_day.tests import upload_party_results
+from onegov.election_day.tests.common import create_election_compound
+from onegov.election_day.tests.common import login
+from onegov.election_day.tests.common import upload_election_compound
+from onegov.election_day.tests.common import upload_party_results
 from webtest import TestApp as Client
 from webtest.forms import Upload
 
@@ -200,8 +200,9 @@ def test_view_election_compound_json(election_day_app_gr):
     login(client)
     upload_election_compound(client)
 
-    data = str(client.get('/elections/elections/json').json)
-    assert all((expected in data for expected in (
+    response = client.get('/elections/elections/json')
+    assert response.headers['Access-Control-Allow-Origin'] == '*'
+    assert all((expected in str(response.json) for expected in (
         "Carol", "Winner", "Hans", "Sieger"
     )))
 
@@ -215,7 +216,9 @@ def test_view_election_compound_summary(election_day_app_gr):
     with freeze_time("2014-01-01 12:00"):
         upload_election_compound(client)
 
-        assert client.get('/elections/elections/summary').json == {
+        response = client.get('/elections/elections/summary')
+        assert response.headers['Access-Control-Allow-Origin'] == '*'
+        assert response.json == {
             'completed': False,
             'date': '2015-01-01',
             'domain': 'canton',
@@ -243,6 +246,3 @@ def test_view_election_compound_data(election_day_app_gr):
 
     export = client.get('/elections/elections/data-csv')
     assert all((expected in export for expected in ("3503", "Sieger", "153")))
-
-    export = client.get('/elections/elections/data-xlsx')
-    assert export.status == '200 OK'
