@@ -4,6 +4,9 @@ Changelog
 - Adds vote views for districts.
   [msom]
 
+- Adds entities and districts heatmaps for candidates and lists.
+  [msom]
+
 - Fixes throwing an error on unexpected principal configuration options.
   [msom]
 
