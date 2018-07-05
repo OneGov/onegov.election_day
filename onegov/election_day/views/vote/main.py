@@ -1,3 +1,4 @@
+from morepath import redirect
 from morepath.request import Response
 from onegov.ballot import Vote
 from onegov.core.security import Public
@@ -11,58 +12,13 @@ from onegov.election_day.utils import get_vote_summary
 
 @ElectionDayApp.html(
     model=Vote,
-    template='vote/ballot.pt',
     permission=Public
 )
-def view_vote_proposal(self, request):
+def view_vote(self, request):
 
-    """" The main view (proposal). """
+    """" The main view. """
 
-    layout = VoteLayout(self, request)
-
-    return {
-        'vote': self,
-        'layout': layout,
-        'show_map': layout.principal.is_year_available(self.date.year)
-    }
-
-
-@ElectionDayApp.html(
-    model=Vote,
-    name='counter-proposal',
-    template='vote/ballot.pt',
-    permission=Public
-)
-def view_vote_counter_proposal(self, request):
-
-    """" The main view (counter-proposal). """
-
-    layout = VoteLayout(self, request, 'counter-proposal')
-
-    return {
-        'vote': self,
-        'layout': layout,
-        'show_map': layout.principal.is_year_available(self.date.year)
-    }
-
-
-@ElectionDayApp.html(
-    model=Vote,
-    name='tie-breaker',
-    template='vote/ballot.pt',
-    permission=Public
-)
-def view_vote_tie_breaker(self, request):
-
-    """" The main view (tie-breaker). """
-
-    layout = VoteLayout(self, request, 'tie-breaker')
-
-    return {
-        'vote': self,
-        'layout': layout,
-        'show_map': layout.principal.is_year_available(self.date.year)
-    }
+    return redirect(VoteLayout(self, request).main_view)
 
 
 @ElectionDayApp.json(
@@ -81,19 +37,23 @@ def view_vote_json(self, request):
         add_cors_header(response)
         add_last_modified_header(response, last_modified)
 
-    show_map = request.app.principal.is_year_available(self.date.year)
+    embed = {}
     media = {}
     layout = VoteLayout(self, request)
     layout.last_modified = last_modified
     if layout.pdf_path:
         media['pdf'] = request.link(self, 'pdf')
-    if show_map:
+    if layout.show_map:
         media['maps'] = {}
-        for ballot in self.ballots:
-            layout = VoteLayout(self, request, tab=ballot.type)
-            layout.last_modified = last_modified
-            if layout.svg_path:
-                media['maps'][ballot.type] = request.link(ballot, 'svg')
+        for ballot in ('', 'proposal-', 'counter-proposal-', 'tie-breaker-'):
+            for map in ('entities', 'districts'):
+                tab = f'{ballot}{map}'
+                layout = VoteLayout(self, request, tab)
+                layout.last_modified = last_modified
+                if layout.visible:
+                    embed[tab] = request.link(layout.ballot, name=f'{map}-map')
+                    if layout.svg_path:
+                        media['maps'][tab] = layout.svg_link
 
     counted = self.progress[0]
     nays_percentage = self.nays_percentage if counted else None
@@ -163,11 +123,7 @@ def view_vote_json(self, request):
             } for ballot in self.ballots
         ],
         'url': request.link(self),
-        'embed': {
-            ballot.type: request.link(ballot, 'map')
-            for ballot in self.ballots if show_map
-
-        },
+        'embed': embed,
         'media': media,
         'data': {
             'json': request.link(self, 'data-json'),

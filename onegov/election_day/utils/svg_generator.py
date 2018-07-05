@@ -55,14 +55,16 @@ class SvgGenerator():
             chart = self.renderer.get_connections_chart(item, 'svg')
         if type_ == 'lists':
             chart = self.renderer.get_lists_chart(item, 'svg')
-        if type_ == 'map':
-            chart = self.renderer.get_map_chart(item, 'svg', locale)
         if type_ == 'lists-panachage':
             chart = self.renderer.get_lists_panachage_chart(item, 'svg')
         if type_ == 'party-strengths':
             chart = self.renderer.get_party_strengths_chart(item, 'svg')
         if type_ == 'parties-panachage':
             chart = self.renderer.get_parties_panachage_chart(item, 'svg')
+        if type_ == 'entities-map':
+            chart = self.renderer.get_entities_map(item, 'svg', locale)
+        if type_ == 'districts-map':
+            chart = self.renderer.get_districts_map(item, 'svg', locale)
         if chart:
             with self.app.filestorage.open(path, 'w') as f:
                 copyfileobj(chart, f)
@@ -113,7 +115,13 @@ class SvgGenerator():
                 )
                 if principal.is_year_available(ballot.vote.date.year):
                     for locale in self.app.locales:
-                        self.generate_svg(ballot, 'map', last_modified, locale)
+                        self.generate_svg(
+                            ballot, 'entities-map', last_modified, locale
+                        )
+                        if principal.has_districts:
+                            self.generate_svg(
+                                ballot, 'districts-map', last_modified, locale
+                            )
 
         # Delete old SVGs
         existing = fs.listdir(self.svg_dir)

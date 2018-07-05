@@ -19,19 +19,20 @@
                 ${layout.title()}<span tal:condition="ballot.title">: ${ballot.title}</span>
             </h3>
 
-            <div class="row" tal:condition="show_map">
+            <div class="row" tal:condition="layout.show_map">
                 <div class="small-12 small-centered medium-8 large-6 columns map-container">
-                    <div class="ballot-map"
-                        data-type="${ballot.type}"
+                    <div class="entities-map"
                         data-canton="${layout.principal.id}"
                         data-mapurl="${layout.get_topojson_link(layout.principal.id, vote.date.year)}"
                         data-dataurl="${request.link(ballot, name='by-entity')}"
                         data-embed-link="Embed"
-                        data-embed-source="${request.link(ballot, name='map')}"
-                        data-left-hand="Yay"
-                        data-right-hand="Nay"
-                        data-expats="Expats"
-                        i18n:attributes="data-embed-link; data-left-hand; data-right-hand; data-expats"
+                        data-embed-source="${request.link(ballot, name='entities-map')}"
+                        data-thumbs="true"
+                        data-color-scale="rb"
+                        data-label-left-hand="Nay"
+                        data-label-right-hand="Yay"
+                        data-label-expats="Expats"
+                        i18n:attributes="data-embed-link; data-label-left-hand; data-label-right-hand; data-label-expats"
                         >
                     </div>
                     <a class="svg-download" tal:condition="layout.svg_path" href="${layout.svg_link}">
@@ -40,7 +41,7 @@
                 </div>
             </div>
 
-            <h4 tal:condition="show_map" i18n:translate="">${layout.principal.label('entities')}</h4>
+            <h4 tal:condition="layout.show_map" i18n:translate="">${layout.principal.label('entities')}</h4>
             <table
                 class="results tablesaw sortable"
                 data-tablesaw-mode="columntoggle"
@@ -49,7 +50,7 @@
                 <thead>
                     <tr>
                         <th data-tablesaw-priority="persist" i18n:translate="" class="left-aligned">${layout.principal.label('entity')}</th>
-                        <th data-tablesaw-priority="3" i18n:translate="" class="left-aligned" tal:condition="layout.principal.has_districts">${layout.principal.label('district')}</th>
+                        <th data-tablesaw-priority="3" i18n:translate="" class="left-aligned" tal:condition="layout.has_districts">${layout.principal.label('district')}</th>
                         <th data-tablesaw-priority="1" i18n:translate="" class="left-aligned">Result</th>
                         <th data-tablesaw-priority="5" i18n:translate="" class="right-aligned">Yeas</th>
                         <th data-tablesaw-priority="5" i18n:translate="" class="right-aligned">Nays</th>
@@ -60,15 +61,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr tal:repeat="result ballot.results" data-municipality-id="${result.entity_id}">
+                    <tr tal:repeat="result ballot.results">
                         <tal:block condition="not: result.counted">
                             <td>${layout.format_name(result)}</td>
-                            <td tal:condition="layout.principal.has_districts">${result.district}</td>
+                            <td tal:condition="layout.has_districts">${result.district}</td>
                             <td class="answer" colspan="7" i18n:translate="">Not yet counted</td>
                         </tal:block>
                         <tal:block condition="result.counted">
                             <td>${layout.format_name(result)}</td>
-                            <td tal:condition="layout.principal.has_districts">${result.district}</td>
+                            <td tal:condition="layout.has_districts">${result.district}</td>
                             <td class="answer accepted" tal:condition="result.accepted" i18n:translate="">Accepted</td>
                             <td class="answer rejected" tal:condition="not: result.accepted" i18n:translate="">Rejected</td>
                             <td class="right-aligned" data-text="${result.yeas}">${layout.format_number(result.yeas)}</td>
@@ -83,7 +84,7 @@
                 <tfoot tal:condition="layout.summarize">
                     <tr class="total">
                         <td i18n:translate="">Total</td>
-                        <td tal:condition="layout.principal.has_districts"></td>
+                        <td tal:condition="layout.has_districts"></td>
                         <td class="answer" tal:condition="not:layout.completed" i18n:translate="">Not yet counted</td>
                         <td class="answer accepted" tal:condition="layout.completed and ballot.accepted" i18n:translate="">Accepted</td>
                         <td class="answer rejected" tal:condition="layout.completed and not ballot.accepted" i18n:translate="">Rejected</td>

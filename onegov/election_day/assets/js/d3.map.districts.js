@@ -5,7 +5,7 @@
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     module.exports = factory;
   } else {
-    root.ballotMap = factory(root.d3, root.topojson);
+    root.districtsMap = factory(root.d3, root.topojson);
   }
 }(this, function(d3, topojson) {
     return function(params) {
@@ -16,9 +16,11 @@
         var height = 0;
         var width = 0;
         var interactive = false;
-        var yay = 'Yay';
-        var nay = 'Nay';
-        var expats = 'Expats';
+        var thumbs = false;
+        var colorScale = 'rb';
+        var labelLeftHand = '0%';
+        var labelRightHand = '100%';
+        var labelExpats = 'Expats';
         var options = {
             legendHeight: 10,
             legendMargin: 30,
@@ -27,19 +29,45 @@
         };
 
         if (params) {
-            if (params.data) data = params.data;
-            if (params.mapdata) mapdata = params.mapdata;
-            if (params.canton) canton = params.canton;
-            if (params.interactive) interactive = params.interactive;
-            if (params.width) width = params.width;
-            if (params.yay) yay = params.yay;
-            if (params.nay) nay = params.nay;
-            if (params.expats) expats = params.expats;
-            if (params.options) options = params.options;
+            if ('data' in params) data = params.data;
+            if ('mapdata' in params) mapdata = params.mapdata;
+            if ('canton' in params) canton = params.canton;
+            if ('interactive' in params) interactive = params.interactive;
+            if ('width' in params) width = params.width;
+            if ('thumbs' in params) thumbs = params.thumbs;
+            if ('colorScale' in params) colorScale = params.colorScale;
+            if ('labelRightHand' in params) labelRightHand = params.labelRightHand;
+            if ('labelLeftHand' in params) labelLeftHand = params.labelLeftHand;
+            if ('labelExpats' in params) labelExpats = params.labelExpats;
+            if ('options' in params) options = params.options;
         }
 
         var isUndefined = function(obj) {
             return obj === void 0;
+        };
+
+        var scale = d3.scale.linear();
+        if (colorScale === 'r') {
+            scale.domain([10, 70]).range(['#f4a582', '#ca0020']);
+        }
+        else if (colorScale === 'b') {
+            scale.domain([10, 70]).range(['#92c5de', '#0571b0']);
+        } else {
+            scale.domain([30, 49.9999999, 50.000001, 70])
+                .range(['#ca0020', '#f4a582', '#92c5de', '#0571b0']);
+        }
+
+
+        var districts;
+        var applyData = function(districts) {
+            if (districts && scale) {
+                districts.attr('fill', function(d) {
+                    return d.value.counted ? scale(d.value.percentage) : 'url(#uncounted)';
+                })
+                .attr('class', function(d) {
+                    return d.value.counted ? 'counted' : 'uncounted';
+                });
+            }
         };
 
         var chart = function(container) {
@@ -69,79 +97,62 @@
                        .attr('stroke', '#999')
                        .attr('stroke-width', 1);
 
-                var scale = d3.scale.linear()
-                    .domain([30, 49.9999999, 50.000001, 70])
-                    .range(['#ca0020', '#f4a582', '#92c5de', '#0571b0']);
-
                 // Add tooltips
                 var tooltip = null;
                 if (interactive) {
                     tooltip = d3.tip()
                         .attr('class', 'd3-tip')
                         .direction(function(d) {
-                            if (isUndefined(d.id)) return 'ne';
                             var b = this.getBBox();
-                            var p = this.parentNode.getBBox();
+                            var p = this.parentNode.parentNode.getBBox();
                             return ((b.y - p.y > p.y + p.height - b.y - b.height) ? 'n' : 's') +
                                    ((b.x - p.x > p.x + p.width - b.x - b.width) ? 'w' : 'e');
                         })
                         .html(function(d) {
-                            if (isUndefined(d.properties.result) ||
-                                isUndefined(d.properties.result.yeas_percentage)) {
-                                return '<strong>' + d.properties.name + '</strong>';
+                            var name = '<strong>' + d.key + '</strong>';
+                            if (d.value.counted) {
+                                var percentage =  Math.round(d.value.percentage * 100) / 100;
+                                if (!thumbs) return name + '<br/>' + percentage + '%';
+                                if (percentage > 50) return name + '<br/><i class="fa fa-thumbs-up"></i> ' + percentage + '%';
+                                percentage =  Math.round((100 - percentage) * 100) / 100;
+                                return name + '<br/><i class="fa fa-thumbs-down"></i> ' + percentage + '%';
                             }
-                            var yeas_percentage =  Math.round(d.properties.result.yeas_percentage * 100) / 100;
-                            var nays_percentage =  Math.round(d.properties.result.nays_percentage * 100) / 100;
-
-                            // use symbols to avoid text which we would have to translate
-                            // also, only show the winning side, not both
-                            if (yeas_percentage > nays_percentage) {
-                                return [
-                                    '<strong>' + d.properties.name + '</strong>',
-                                    '<i class="fa fa-thumbs-up"></i> ' + yeas_percentage + '%'
-                                ].join('<br/>');
-                            } else {
-                                return [
-                                    '<strong>' + d.properties.name + '</strong>',
-                                    '<i class="fa fa-thumbs-down"></i> ' + nays_percentage + '%'
-                                ].join('<br/>');
-                            }
+                            return name;
                         });
                 }
 
-                // Add municipalties
-                mapdata.transform.translate=[0,0];
-                var municipalities = svg.append('g')
-                    .attr('class', 'municipality')
-                    .style('fill', 'transparent')
-                    .selectAll('path')
-                    .data(
-                        topojson.feature(mapdata, mapdata.objects.municipalities).features
-                    )
-                    .enter().append('path')
-                    .attr('d', path)
-                    .attr('fill', function(d) {
-                        // store the result for the tooltip
-                        d.properties.result = data[d.properties.id];
-                        if (!isUndefined(d.properties.result)) {
-                            if (d.properties.result.counted) {
-                                return scale(d.properties.result.yeas_percentage);
-                            } else {
-                                return 'url(#uncounted)';
-                            }
-                        }
-                    })
-                    .attr('class', function(d) {
-                        if (!isUndefined(d.properties.result)) {
-                            if (d.properties.result.counted) {
-                                return 'counted';
-                            } else {
-                                return 'uncounted';
-                            }
-                        }
+                // Add districts
+                mapdata.transform.translate = [0,0];
+                extraneous = mapdata.objects.municipalities.geometries.map(function(x) {return x.id;});
+                districts = svg.selectAll('g')
+                    .data(d3.entries(data))
+                    .enter().append('g')
+                    .attr('class', 'district')
+                    .append("path")
+                    .attr('d', function(d) {
+                        var selected = d3.set(d.value.entities);
+                        extraneous = extraneous.filter(function(x) { return !selected.has(x); });
+                        var features = mapdata.objects.municipalities.geometries.filter(function(s) { return selected.has(s.id); });
+                        return path(topojson.merge(mapdata, features));
                     });
+                applyData(districts);
+
+                // Add the unused map data as a single block
+                extraneous = d3.set(extraneous);
+                if (!extraneous.empty()) {
+                    svg.append('g')
+                        .attr('class', 'district')
+                        .append('path')
+                        .attr('class', 'extraneous')
+                        .attr('fill', '#eee')
+                        .attr('d', function(d) {
+                           var features = mapdata.objects.municipalities.geometries.filter(function(s) { return extraneous.has(s.id); });
+                           return path(topojson.merge(mapdata, features));
+                        });
+                }
+
                 if (interactive) {
-                    municipalities
+                    districts
                         .on('mouseover.tooltip', tooltip.show)
                         .on('mouseout.tooltip', tooltip.hide)
                         .on('mouseover.highlight', function(d) {
@@ -172,22 +183,9 @@
                         .attr('d', path);
                 }
 
-                // Add Borders
-                svg.append('g')
-                    .append('path')
-                    .datum(topojson.mesh(
-                        mapdata, mapdata.objects.municipalities, function(a, b) {
-                            return a !== b;
-                        }
-                    ))
-                    .attr('class', 'border')
-                    .style('stroke-width', '1px')
-                    .style('fill', 'none')
-                    .attr('d', path);
-
                 // Add the expats
                 var bboxMap = svg[0][0].getBBox();
-                if (0 in data) {
+                if ("" in data) {
                     // the globe is 230px unscaled, we place it in the lower
                     // left corner for now
                     globe = svg.append('g')
@@ -196,10 +194,8 @@
                             'translate(0,' + Math.round(bboxMap.y + 3 / 4 * bboxMap.height) +  ')'
                         )
                         .property('__data__', {
-                            'properties': {
-                              'name': expats,
-                              'result': data[0]
-                            }
+                            'key': labelExpats,
+                            'value': data[""]
                           }
                         )
                         .append('g')
@@ -211,7 +207,7 @@
                     globe.append('g')
                         .append('path')
                         .attr('fill', 'white')
-                        .attr('fill', scale(data[0].yeas_percentage))
+                        .attr('fill', scale(data[""].percentage))
                         .attr('stroke', 'none')
                         .attr('d', "M 306.11308,163.17191 C 306.11308,224.93199 256.04569,274.99881 194.2941,274.99881 C 132.53683,274.99881 82.472286,224.93144 82.472286,163.17191 C 82.472286,101.41465 132.53683,51.352937 194.2941,51.352937 C 256.04569,51.352937 306.11308,101.41465 306.11308,163.17191 L 306.11308,163.17191 z ");
 
@@ -232,7 +228,7 @@
                 // Add the the legend (we need to up/downscale the elements)
                 var unitScale = d3.scale.linear()
                     .rangeRound([0, (bboxMap.width - bboxMap.x) / (width - margin.left - margin.right)]);
-                var legendValues = [80, 70, 60, 50.001, 49.999, 40, 30, 20];
+                var legendValues = [0, 20, 40, 49.999, 50.001, 60, 80, 100];
                 var legendScale = d3.scale.ordinal()
                     .domain(legendValues)
                     .rangeRoundBands([0.2 * (bboxMap.width - bboxMap.x), 0.8 * (bboxMap.width - bboxMap.x)]);
@@ -247,19 +243,19 @@
                     .attr('width', legendScale.rangeBand())
                     .attr('height', unitScale(options.legendHeight))
                     .style('fill', function(d) {return scale(d);});
-                var text_yay = legend.append('text')
-                    .attr('x', legendScale(80))
+                var textLeftHand = legend.append('text')
+                    .attr('x', legendScale(0))
                     .attr('y', unitScale(options.legendHeight + 1.5 * options.fontSizePx))
                     .style('font-size', unitScale(options.fontSizePx) + 'px')
                     .style('font-family', options.fontFamily)
-                    .text(yay);
-                var text_nay = legend.append('text')
-                    .attr('x', legendScale(20) + legendScale.rangeBand())
+                    .text(labelLeftHand);
+                var textRightHand = legend.append('text')
+                    .attr('x', legendScale(100) + legendScale.rangeBand())
                     .attr('y', unitScale(options.legendHeight + 1.5 * options.fontSizePx))
                     .style('text-anchor', 'end')
-                    .style('font-size',unitScale(options.fontSizePx) + 'px')
+                    .style('font-size', unitScale(options.fontSizePx) + 'px')
                     .style('font-family', options.fontFamily)
-                    .text(nay);
+                    .text(labelRightHand);
 
                 // Set size
                 bbox = svg[0][0].getBBox();
@@ -291,10 +287,10 @@
                             .attr('width', legendScale.rangeBand())
                             .attr('height', unitScale(options.legendHeight))
                             .style('fill', function(d) {return scale(d);});
-                        text_yay.attr('x', legendScale(80))
+                        textLeftHand.attr('x', legendScale(0))
                             .attr('y', unitScale(options.legendHeight + 1.5 * options.fontSizePx))
                             .style('font-size', unitScale(options.fontSizePx) + 'px');
-                        text_nay.attr('x', legendScale(20) + legendScale.rangeBand())
+                        textRightHand.attr('x', legendScale(100) + legendScale.rangeBand())
                             .attr('y', unitScale(options.legendHeight + 1.5 * options.fontSizePx))
                             .style('font-size', unitScale(options.fontSizePx) + 'px');
 
@@ -325,6 +321,13 @@
 
         chart.height = function() {
             return height;
+        };
+
+        chart.update = function(url) {
+            d3.json(url, function(data)  {
+                districts.data(d3.entries(data));
+                applyData(districts);
+            });
         };
 
         return chart;

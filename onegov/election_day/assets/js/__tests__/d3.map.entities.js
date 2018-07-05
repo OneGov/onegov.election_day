@@ -1,20 +1,20 @@
 const jsdom = require('jsdom');
 const d3 = require('../d3');
 const topojson = require('../topojson');
-const mapChart = require('../d3.chart.map')(d3, topojson);
+const mapChart = require('../d3.map.entities')(d3, topojson);
 const mapdata = require('../../../static/mapdata/2017/zg.json');
 const data = {
-  1701: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-  1702: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-  1703: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-  1704: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-  1705: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-  1706: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-  1707: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-  1708: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-  1709: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-  1710: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-  1711: {counted: true, nays_percentage: 40, yeas_percentage: 60}
+  1701: {counted: true, percentage: 60},
+  1702: {counted: true, percentage: 60},
+  1703: {counted: true, percentage: 60},
+  1704: {counted: true, percentage: 60},
+  1705: {counted: true, percentage: 60},
+  1706: {counted: true, percentage: 60},
+  1707: {counted: true, percentage: 60},
+  1708: {counted: true, percentage: 60},
+  1709: {counted: true, percentage: 60},
+  1710: {counted: true, percentage: 60},
+  1711: {counted: true, percentage: 60}
 };
 
 describe('Map', () => {
@@ -103,6 +103,59 @@ describe('Map', () => {
     expect(chart.width()).toBe(2000);
   });
 
+  it('renders a svg @700 with the red colorscale', () => {
+    var document = jsdom.jsdom();
+    var chart = mapChart({
+      width: 700,
+      mapdata: mapdata,
+      data: data,
+      canton: 'zg',
+      colorScale: 'r'
+    });
+
+    chart(document.body);
+    // require('fs').writeFile("map@r.svg", document.svg());
+    expect(document.svg()).toMatchSnapshot();
+    expect(chart.width()).toBe(700);
+  });
+
+  it('renders a svg @700 with the blue colorscale', () => {
+    var document = jsdom.jsdom();
+    var chart = mapChart({
+      width: 700,
+      mapdata: mapdata,
+      data: data,
+      canton: 'zg',
+      colorScale: 'b'
+    });
+
+    chart(document.body);
+    // require('fs').writeFile("map@b.svg", document.svg());
+    expect(document.svg()).toMatchSnapshot();
+    expect(chart.width()).toBe(700);
+  });
+
+  it('renders a partial svg @700', () => {
+    var document = jsdom.jsdom();
+    var chart = mapChart({
+      width: 700,
+      mapdata: mapdata,
+      data: {
+        1701: {counted: true, percentage: 60},
+        1702: {counted: true, percentage: 60},
+        1703: {counted: false, percentage: 60},
+        1704: {counted: false, percentage: 60},
+      },
+      canton: 'zg',
+      colorScale: 'b'
+    });
+
+    chart(document.body);
+    // require('fs').writeFile("map@partial.svg", document.svg());
+    expect(document.svg()).toMatchSnapshot();
+    expect(chart.width()).toBe(700);
+  });
+
   it('renders the translations', () => {
     var document = jsdom.jsdom();
     var chart = mapChart({
@@ -110,8 +163,8 @@ describe('Map', () => {
       mapdata: mapdata,
       data: data,
       canton: 'zg',
-      yay: 'Ja',
-      nay: 'Nein'
+      labelLeftHand: 'Nein',
+      labelRightHand: 'Ja'
     });
 
     chart(document.body);
@@ -123,12 +176,12 @@ describe('Map', () => {
   it('renders a communal svg', () => {
     const communalMapdata = require('../../../static/mapdata/2017/351.json');
     const communalData = {
-      1: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-      2: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-      3: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-      4: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-      5: {counted: true, nays_percentage: 40, yeas_percentage: 60},
-      6: {counted: true, nays_percentage: 40, yeas_percentage: 60},
+      1: {counted: true, percentage: 60},
+      2: {counted: true, percentage: 60},
+      3: {counted: true, percentage: 60},
+      4: {counted: true, percentage: 60},
+      5: {counted: true, percentage: 60},
+      6: {counted: true, percentage: 60},
     };
 
     var document = jsdom.jsdom();
