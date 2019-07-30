@@ -30,12 +30,12 @@ def groupbydict(items, keyfunc, sortfunc=None):
 
 class ArchivedResultCollection(object):
 
-    def __init__(self, session, date=None):
+    def __init__(self, session, date_=None):
         self.session = session
-        self.date = date
+        self.date = date_
 
-    def for_date(self, date):
-        return self.__class__(self.session, date)
+    def for_date(self, date_):
+        return self.__class__(self.session, date_)
 
     def query(self):
         return self.session.query(ArchivedResult)
