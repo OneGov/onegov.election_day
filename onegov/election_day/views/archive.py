@@ -1,6 +1,8 @@
 from onegov.core.security import Public
 from onegov.election_day import ElectionDayApp
 from onegov.election_day.collections import ArchivedResultCollection
+from onegov.election_day.collections.archived_results import SearchableArchivedResultCollection
+from onegov.election_day.forms.archive import ArchiveSearchForm
 from onegov.election_day.layouts import DefaultLayout
 from onegov.election_day.models import Principal
 from onegov.election_day.utils import add_cors_header
@@ -115,4 +117,30 @@ def view_principal_json(self, request):
             str(year): request.link(archive.for_date(year))
             for year in archive.get_years()
         }
+    }
+
+
+@ElectionDayApp.form(
+    model=SearchableArchivedResultCollection,
+    template='archive_search.pt',
+    form=ArchiveSearchForm,
+    permission=Public,
+)
+def view_archive_search(self, request, form):
+
+    """ Shows all the results from the elections and votes of the last election
+    day. It's the landing page.
+
+    """
+
+    layout = DefaultLayout(self, request)
+
+    if not form.errors:
+        form.apply_model()
+
+    return {
+        'layout': layout,
+        'form': form,
+        'form_method': 'GET',
+        'archive_items': None
     }
