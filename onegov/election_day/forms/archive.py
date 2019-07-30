@@ -39,7 +39,7 @@ class ArchiveSearchForm(Form):
 
     )
 
-    type = MultiCheckboxField(
+    type_ = MultiCheckboxField(
         label=_("Type"),
         render_kw={'size': 4, 'clear': False},
         choices=(
@@ -72,5 +72,5 @@ class ArchiveSearchForm(Form):
     def apply_model(self):
         # self.domain.data = [c[1] for c in self.domain.choices]
         self.select_all('domain')
-        self.select_all('type')
+        self.select_all('type_')
         self.select_all('result')
