@@ -278,7 +278,7 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
     ):
         super().__init__(session, date_=date_)
         self.from_date = from_date
-        self.to_date = to_date
+        self.to_date = to_date or extended_date_encode(utcnow())
         self.type = type_
         self.domain = domain
         self.term = term
