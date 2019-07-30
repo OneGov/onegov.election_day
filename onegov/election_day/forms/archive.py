@@ -69,7 +69,8 @@ class ArchiveSearchForm(Form):
 
     def select_all(self, name):
         field = getattr(self, name)
-        field.data = list(next(zip(*field.choices)))
+        if not field.data:
+            field.data = list(next(zip(*field.choices)))
 
     def apply_model(self):
         self.select_all('domain')
