@@ -136,7 +136,7 @@ def view_archive_search(self, request, form):
     layout = DefaultLayout(self, request)
 
     if not form.errors:
-        form.apply_model()
+        form.apply_model(self)
 
     return {
         'layout': layout,

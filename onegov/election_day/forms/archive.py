@@ -72,9 +72,18 @@ class ArchiveSearchForm(Form):
         if not field.data:
             field.data = list(next(zip(*field.choices)))
 
-    def apply_model(self):
+    def apply_model(self, model):
+
+        self.term.data = model.term
+        self.from_date.data = model.from_date
+        self.to_date.data = model.to_date
+        self.result.data = model.answer
+        self.type_.data = model.type
+        self.domain.data = model.domain
+
         self.select_all('domain')
         self.select_all('type_')
         self.select_all('result')
-        self.to_date.data = utcnow()
+
+
 

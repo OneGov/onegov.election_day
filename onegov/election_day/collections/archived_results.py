@@ -7,7 +7,9 @@ from onegov.ballot import ElectionCompound
 from onegov.ballot import ElectionCompoundCollection
 from onegov.ballot import Vote
 from onegov.ballot import VoteCollection
+from onegov.core.converters import extended_date_encode
 from onegov.election_day.models import ArchivedResult
+from sedate import utcnow
 from sqlalchemy import cast
 from sqlalchemy import desc
 from sqlalchemy import distinct
@@ -283,23 +285,26 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
         self.answer = answer
 
     def query(self):
-
+        allowed_domains = (d[0] for d in ArchivedResult.types_of_domains)
         query = self.session.query(ArchivedResult)
-        assert self.to_date, 'Set the to_date always in the form with the current date'
-
-        if self.date:
-            pass
+        if self.domain and self.domain != allowed_domains:
+            query = query.filter(ArchivedResult.domain.in_(self.domain))
+            print('domain filtered')
         if self.from_date:
-            pass
-        if self.to_date:
-            pass
-        if self.type:
-            pass
-        if self.domain:
-            pass
-        if self.term:
-            pass
-        if self.answer:
-            pass
-
+            query = query.filter(ArchivedResult.date >= self.from_date)
+            print('from_date filtered')
+        if self.to_date != extended_date_encode(utcnow()):
+            query = query.filter(ArchivedResult.date <= self.to_date)
+            print('to_date filtered')
+        # if self.type and self.type != [t[0] for t in ArchivedResult.types_of_results]:
+        #     query = query.filter(ArchivedResult.type.in_(self.type))
+        #
+        # if self.term:
+        #     pass
+        # if self.answer:
+        #     pass
+        # print(query)
+        print('domain', self.domain)
+        print('type', self.type)
         return query
+

@@ -10,6 +10,7 @@ from onegov.ballot import List
 from onegov.ballot import ListCollection
 from onegov.ballot import Vote
 from onegov.ballot import VoteCollection
+from onegov.core.converters import extended_date_converter
 from onegov.core.i18n import SiteLocale
 from onegov.election_day import ElectionDayApp
 from onegov.election_day.collections import ArchivedResultCollection
@@ -146,6 +147,8 @@ def get_archive_by_year(app, date):
     model=SearchableArchivedResultCollection,
     path='archive-search',
     converters=dict(
+        from_date=extended_date_converter,
+        to_date=extended_date_converter,
         type_=[str],
         domain=[str],
         result=[int]
