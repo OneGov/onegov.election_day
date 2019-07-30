@@ -65,7 +65,7 @@ class ArchivedResult(Base, ContentMixin, TimestampMixin,
 
     @property
     def progress(self):
-        return (self.counted_entities or 0, self.total_entities or 0)
+        return self.counted_entities or 0, self.total_entities or 0
 
     #: The link to the detailed results
     url = Column(Text, nullable=False)
