@@ -16,6 +16,7 @@ from sqlalchemy import Enum
 from sqlalchemy import Integer
 from sqlalchemy import Text
 from uuid import uuid4
+from onegov.election_day import _
 
 
 meta_local_property = dictionary_based_property_factory('local')
@@ -27,6 +28,13 @@ class ArchivedResult(Base, ContentMixin, TimestampMixin,
     """ Stores the result of an election or vote. """
 
     __tablename__ = 'archived_results'
+
+    types_of_results = (
+            ('vote', _("Vote")),
+            ('election', _("Election")),
+            ('election_compound', _("Compounds of elections"))
+        )
+
 
     #: Identifies the result
     id = Column(UUID, primary_key=True, default=uuid4)
@@ -43,9 +51,7 @@ class ArchivedResult(Base, ContentMixin, TimestampMixin,
     #: Type of the result
     type = Column(
         Enum(
-            'election',
-            'election_compound',
-            'vote',
+            *(f[0] for f in types_of_results),
             name='type_of_result'
         ),
         nullable=False
