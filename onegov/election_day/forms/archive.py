@@ -1,5 +1,7 @@
+from onegov.core.converters import extended_date_encode
 from onegov.form import Form
 from onegov.form.fields import MultiCheckboxField
+from sedate import utcnow
 from wtforms.fields.html5 import DateField
 from wtforms import StringField
 from onegov.election_day import _
@@ -70,7 +72,8 @@ class ArchiveSearchForm(Form):
         field.data = list(next(zip(*field.choices)))
 
     def apply_model(self):
-        # self.domain.data = [c[1] for c in self.domain.choices]
         self.select_all('domain')
         self.select_all('type_')
         self.select_all('result')
+        self.to_date.data = utcnow()
+
