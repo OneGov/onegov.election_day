@@ -27,7 +27,7 @@ class ArchiveSearchForm(Form):
 
     result = MultiCheckboxField(
         label=_("Voting result"),
-        coerce=bool,
+        coerce=int,
         choices=(
             (1, _("Yes")),
             (0, _("No")),
