@@ -259,3 +259,46 @@ class ArchivedResultCollection(object):
 
         self.session.delete(item)
         self.session.flush()
+
+
+class SearchableArchivedResultCollection(ArchivedResultCollection):
+
+    def __init__(
+            self,
+            session,
+            date_=None,
+            from_date=None,
+            to_date=None,
+            type_=None,
+            domain=None,
+            term=None,
+            answer=None
+    ):
+        super().__init__(session, date_=date_)
+        self.from_date = from_date
+        self.to_date = to_date
+        self.type = type_
+        self.domain = domain
+        self.term = term
+        self.answer = answer
+
+    def query(self):
+
+        query = self.session.query(ArchivedResult)
+
+        if self.date:
+            pass
+        if self.from_date:
+            pass
+        if self.to_date:
+            pass
+        if self.type:
+            pass
+        if self.domain:
+            pass
+        if self.term:
+            pass
+        if self.answer:
+            pass
+
+        return query

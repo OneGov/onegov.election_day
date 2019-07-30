@@ -19,6 +19,7 @@ from onegov.election_day.collections import EmailSubscriberCollection
 from onegov.election_day.collections import SmsSubscriberCollection
 from onegov.election_day.collections import SubscriberCollection
 from onegov.election_day.collections import UploadTokenCollection
+from onegov.election_day.collections.archived_results import SearchableArchivedResultCollection
 from onegov.election_day.models import DataSource
 from onegov.election_day.models import DataSourceItem
 from onegov.election_day.models import Principal
@@ -139,6 +140,44 @@ def get_data_source_item(app, id):
 @ElectionDayApp.path(model=ArchivedResultCollection, path='/archive/{date}')
 def get_archive_by_year(app, date):
     return ArchivedResultCollection(app.session(), date)
+
+
+@ElectionDayApp.path(
+    model=SearchableArchivedResultCollection,
+    path='archive-search',
+    converters=dict(
+        type_=[str],
+        domain=[str],
+        result=[int]
+    )
+)
+def get_archive_search(
+        app,
+        date_=None,
+        from_date=None,
+        to_date=None,
+        result=None,
+        type_=None,
+        domain=None,
+        term=None
+                       ):
+    # print('result', result)
+    # print('from_date', from_date)
+    # print('to_date', to_date)
+    # print('type_', type_)
+    # print('domain', domain)
+    # print('term', term)
+
+    return SearchableArchivedResultCollection(
+        app.session(),
+        date_=date_,
+        to_date=to_date,
+        from_date=from_date,
+        answer=result,
+        type_=type_,
+        domain=domain,
+        term=term
+    )
 
 
 @ElectionDayApp.path(model=SiteLocale, path='/locale/{locale}')
