@@ -111,13 +111,14 @@ html {
     ul {
         list-style-type: none;
         margin: 0;
+        }
+}
+.archive-breadcrumbs {
+    li {
+        display: inline-block;
 
-        li {
-            display: inline-block;
-
-            + li::before {
-                content: '/ ';
-            }
+        + li::before {
+            content: '/ ';
         }
     }
 }
