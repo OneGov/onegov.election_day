@@ -285,6 +285,7 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
     def query(self):
 
         query = self.session.query(ArchivedResult)
+        assert self.to_date, 'Set the to_date always in the form with the current date'
 
         if self.date:
             pass
