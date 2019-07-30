@@ -34,6 +34,13 @@ class ArchivedResult(Base, ContentMixin, TimestampMixin,
             ('election', _("Election")),
             ('election_compound', _("Compounds of elections"))
         )
+    # see also the DomainOfInfluenceMixin.allowed_domains
+    types_of_domains = (
+            ('federation', _("Federal")),
+            ('canton', _("Cantonal")),
+            ('region', _("Regional")),
+            ('municipality', _("Municipality"))
+        )
 
 
     #: Identifies the result
