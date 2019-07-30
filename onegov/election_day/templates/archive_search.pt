@@ -24,7 +24,7 @@
                         <strong i18n:translate="">No results could be found.</strong>
                     </tal:block>
                     <tal:block condition="archive_items">
-                        <strong i18n:translate="">Items found.</strong>
+                        <strong i18n:translate="">${len(archive_items)} Items found.</strong>
                     </tal:block>
                 </div>
         </div>
