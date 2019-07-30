@@ -1,4 +1,5 @@
 from onegov.core.converters import extended_date_encode
+from onegov.election_day.models import ArchivedResult
 from onegov.form import Form
 from onegov.form.fields import MultiCheckboxField
 from sedate import utcnow
@@ -44,22 +45,13 @@ class ArchiveSearchForm(Form):
     type_ = MultiCheckboxField(
         label=_("Type"),
         render_kw={'size': 4, 'clear': False},
-        choices=(
-            ('vote', _("Vote")),
-            ('election', _("Election")),
-            ('election_compound', _("Compounds of elections"))
-        )
+        choices=ArchivedResult.types_of_results
     )
 
     domain = MultiCheckboxField(
         label=_("Domain"),
         render_kw={'size': 4, 'clear': False},
-        choices=(
-            ('federation', _("Federal")),
-            ('canton', _("Cantonal")),
-            ('region', _("Regional")),
-            ('municipality', _("Municipality"))
-        )
+        choices=ArchivedResult.types_of_domains
     )
 
     def on_request(self):
