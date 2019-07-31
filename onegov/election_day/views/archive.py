@@ -1,7 +1,9 @@
 from onegov.core.security import Public
 from onegov.election_day import ElectionDayApp
 from onegov.election_day.collections import ArchivedResultCollection
-from onegov.election_day.collections.archived_results import SearchableArchivedResultCollection
+from onegov.election_day.collections.archived_results import (
+    SearchableArchivedResultCollection
+)
 from onegov.election_day.forms.archive import ArchiveSearchForm
 from onegov.election_day.layouts import DefaultLayout
 from onegov.election_day.models import Principal

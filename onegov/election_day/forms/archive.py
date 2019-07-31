@@ -77,6 +77,3 @@ class ArchiveSearchForm(Form):
         self.select_all('domain')
         self.select_all('type_')
         self.select_all('result')
-
-
-

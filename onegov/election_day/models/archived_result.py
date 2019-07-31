@@ -30,18 +30,17 @@ class ArchivedResult(Base, ContentMixin, TimestampMixin,
     __tablename__ = 'archived_results'
 
     types_of_results = (
-            ('vote', _("Vote")),
-            ('election', _("Election")),
-            ('election_compound', _("Compounds of elections"))
-        )
+        ('vote', _("Vote")),
+        ('election', _("Election")),
+        ('election_compound', _("Compounds of elections"))
+    )
     # see also the DomainOfInfluenceMixin.allowed_domains
     types_of_domains = (
-            ('federation', _("Federal")),
-            ('canton', _("Cantonal")),
-            ('region', _("Regional")),
-            ('municipality', _("Municipality"))
-        )
-
+        ('federation', _("Federal")),
+        ('canton', _("Cantonal")),
+        ('region', _("Regional")),
+        ('municipality', _("Municipality"))
+    )
 
     #: Identifies the result
     id = Column(UUID, primary_key=True, default=uuid4)
