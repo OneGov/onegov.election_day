@@ -1,5 +1,5 @@
 from collections import OrderedDict
-import datetime
+from datetime import date
 from itertools import groupby
 from onegov.ballot import Election
 from onegov.ballot import ElectionCollection
@@ -7,15 +7,14 @@ from onegov.ballot import ElectionCompound
 from onegov.ballot import ElectionCompoundCollection
 from onegov.ballot import Vote
 from onegov.ballot import VoteCollection
-from onegov.core.converters import extended_date_encode
 from onegov.election_day.models import ArchivedResult
-from sedate import utcnow
 from sqlalchemy import cast
 from sqlalchemy import desc
 from sqlalchemy import distinct
 from sqlalchemy import extract
 from sqlalchemy import func
-from sqlalchemy import Integer
+from sqlalchemy import Integer, REAL
+from sqlalchemy import or_
 from time import mktime
 from time import strptime
 
@@ -274,37 +273,105 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
             type_=None,
             domain=None,
             term=None,
-            answer=None
+            answer=None,
+            locale='de_CH'
     ):
         super().__init__(session, date_=date_)
         self.from_date = from_date
-        self.to_date = to_date or datetime.date.today()
+        self.to_date = to_date or date.today()
         self.type = type_
         self.domain = domain
         self.term = term
         self.answer = answer
+        self.locale = locale
+
+    @staticmethod
+    def term_to_tsquery_string(term):
+        """ Returns the current search term transformed to use within
+        Postgres ``to_tsquery`` function.
+
+        Removes all unwanted characters, replaces prefix matching, joins
+        word together using FOLLOWED BY.
+        """
+
+        def cleanup(word, whitelist_chars=',.-_'):
+            result = ''.join(
+                (c for c in word if c.isalnum() or c in whitelist_chars)
+            )
+            return f'{result}:*' if word.endswith('*') else result
+
+        parts = [cleanup(part) for part in (term or '').split()]
+        return ' <-> '.join([part for part in parts if part])
+
+    @staticmethod
+    def match_term(column, language, term):
+        """ Usage:
+         model.filter(match_term(model.col, 'german', 'my search term')) """
+        document_tsvector = func.to_tsvector(language, column)
+        ts_query_object = func.to_tsquery(language, term)
+        return document_tsvector.op('@@')(ts_query_object)
+
+    @staticmethod
+    def filter_text_by_locale(column, term, locale=None):
+        """ Returns an SqlAlchemy filter statement based on the search term.
+        If no locale is provided, it will use english as language.
+
+        ``to_tsquery`` creates a tsquery value from term, which must consist of
+         single tokens separated by the Boolean operators
+        & (AND), | (OR) and ! (NOT).
+
+        ``to_tsvector`` parses a textual document into tokens, reduces the
+        tokens to lexemes, and returns a tsvector which lists the lexemes
+        together with their positions in the document. The document is
+        processed according to the specified or default text search
+        configuration. """
+        mapping = {'de_CH': 'german', 'fr_CH': 'french', 'it_CH': 'italian'}
+        return SearchableArchivedResultCollection.match_term(
+            column, mapping.get(locale, 'english'), term
+        )
+
+    @property
+    def term_filter(self):
+        assert self.term
+        assert self.locale
+        term = SearchableArchivedResultCollection.term_to_tsquery_string(
+            self.term)
+        return [
+            SearchableArchivedResultCollection.filter_text_by_locale(
+                ArchivedResult.shortcode, term)
+        ]
 
     def query(self):
-        allowed_domains = (d[0] for d in ArchivedResult.types_of_domains)
+
+        allowed_domains = [d[0] for d in ArchivedResult.types_of_domains]
+        allowed_types = [t[0] for t in ArchivedResult.types_of_results]
+        allowed_answers = [0, 1]
+
         query = self.session.query(ArchivedResult)
-        if self.domain and self.domain != allowed_domains:
+
+        if self.domain and (len(self.domain) != len(allowed_domains)):
             query = query.filter(ArchivedResult.domain.in_(self.domain))
-            print('domain filtered')
         if self.from_date:
             query = query.filter(ArchivedResult.date >= self.from_date)
-            print('from_date filtered')
-        if self.to_date != datetime.date.today():
+        if self.to_date != date.today():
             query = query.filter(ArchivedResult.date <= self.to_date)
-            print('to_date filtered')
-        # if self.type and self.type != [t[0] for t in ArchivedResult.types_of_results]:
-        #     query = query.filter(ArchivedResult.type.in_(self.type))
-        #
-        # if self.term:
-        #     pass
-        # if self.answer:
-        #     pass
-        # print(query)
-        print('domain', self.domain)
-        print('type', self.type)
-        return query
+        if self.type and len(self.type) != len(allowed_types):
+            query = query.filter(ArchivedResult.type.in_(self.type))
+        if (self.answer and len(self.answer) != len(allowed_answers)
+                and 'vote' in self.type):
+            yeas = ArchivedResult.meta['yeas_percentage'].astext
+            if self.answer[0] == 0:
+                # comma-separated filters are equivalent to and_(...)
+                query = query.filter(
+                    ArchivedResult.type == 'vote',
+                    cast(yeas, REAL) <= 50,
+                )
+            else:
+                query = query.filter(
+                    ArchivedResult.type == 'vote',
+                    cast(yeas, REAL) >= 50,
+                )
+        if self.term:
+            query = query.filter(or_(*self.term_filter))
 
+        return query

@@ -136,6 +136,7 @@ def view_archive_search(self, request, form):
     """
 
     layout = DefaultLayout(self, request)
+    archive_items = self.query().all() or []
 
     if not form.errors:
         form.apply_model(self)
@@ -144,5 +145,5 @@ def view_archive_search(self, request, form):
         'layout': layout,
         'form': form,
         'form_method': 'GET',
-        'archive_items': None
+        'archive_items': archive_items
     }
