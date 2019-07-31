@@ -42,6 +42,12 @@ class ArchivedResult(Base, ContentMixin, TimestampMixin,
         ('municipality', _("Municipality"))
     )
 
+    types_of_answers = (
+        ('accepted', _("Accepted")),
+        ('rejected', _("Rejected")),
+        ('counter_proposal', _("Counter Proposal"))
+    )
+
     #: Identifies the result
     id = Column(UUID, primary_key=True, default=uuid4)
 
