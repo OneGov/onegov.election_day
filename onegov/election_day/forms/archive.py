@@ -15,6 +15,7 @@ class ArchiveSearchForm(Form):
         render_kw={'size': 4, 'clear': True},
         description=_(
             "Searches the title of the election/vote and the short code."
+            "Use Wilcards (*) to find not exact results, e.g Nationalrat*."
         ),
     )
 
