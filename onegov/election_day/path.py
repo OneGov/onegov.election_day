@@ -154,7 +154,7 @@ def get_archive_by_year(app, date):
         to_date=extended_date_converter,
         type_=[str],
         domain=[str],
-        result=[int]
+        result=[str]
     )
 )
 def get_archive_search(

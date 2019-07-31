@@ -29,11 +29,7 @@ class ArchiveSearchForm(Form):
 
     result = MultiCheckboxField(
         label=_("Voting result"),
-        coerce=int,
-        choices=(
-            (1, _("Yes")),
-            (0, _("No")),
-        ),
+        choices=ArchivedResult.types_of_answers,
         render_kw={'size': 4},
         description=_(
             "Has effect if votes is checked."

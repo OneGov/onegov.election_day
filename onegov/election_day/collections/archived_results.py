@@ -13,7 +13,7 @@ from sqlalchemy import desc
 from sqlalchemy import distinct
 from sqlalchemy import extract
 from sqlalchemy import func
-from sqlalchemy import Integer, REAL
+from sqlalchemy import Integer
 from sqlalchemy import or_
 from time import mktime
 from time import strptime
@@ -342,10 +342,10 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
         ]
 
     def query(self):
-
+        assert self.to_date, 'to_date must have a datetime.date value'
         allowed_domains = [d[0] for d in ArchivedResult.types_of_domains]
         allowed_types = [t[0] for t in ArchivedResult.types_of_results]
-        allowed_answers = [0, 1]
+        allowed_answers = [a[0] for a in ArchivedResult.types_of_answers]
 
         query = self.session.query(ArchivedResult)
 
@@ -359,18 +359,10 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
             query = query.filter(ArchivedResult.type.in_(self.type))
         if (self.answer and len(self.answer) != len(allowed_answers)
                 and 'vote' in self.type):
-            yeas = ArchivedResult.meta['yeas_percentage'].astext
-            if self.answer[0] == 0:
-                # comma-separated filters are equivalent to and_(...)
-                query = query.filter(
-                    ArchivedResult.type == 'vote',
-                    cast(yeas, REAL) <= 50,
-                )
-            else:
-                query = query.filter(
-                    ArchivedResult.type == 'vote',
-                    cast(yeas, REAL) >= 50,
-                )
+            vote_answer = ArchivedResult.meta['answer'].astext
+            query = query.filter(
+                ArchivedResult.type == 'vote',
+                vote_answer.in_(self.answer))
         if self.term:
             query = query.filter(or_(*self.term_filter))
 
