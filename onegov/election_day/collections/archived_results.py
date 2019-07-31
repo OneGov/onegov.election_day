@@ -375,3 +375,12 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
             query = query.filter(or_(*self.term_filter))
 
         return query
+
+    def reset_query_params(self):
+        self.from_date = None
+        self.to_date = date.today()
+        self.type = None
+        self.domain = None
+        self.term = None
+        self.answer = None
+        self.locale = 'de_CH'
