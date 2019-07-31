@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from datetime import date
+import datetime
 from itertools import groupby
 from onegov.ballot import Election
 from onegov.ballot import ElectionCollection
@@ -278,7 +278,7 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
     ):
         super().__init__(session, date_=date_)
         self.from_date = from_date
-        self.to_date = to_date or extended_date_encode(utcnow())
+        self.to_date = to_date or datetime.date.today()
         self.type = type_
         self.domain = domain
         self.term = term
@@ -293,7 +293,7 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
         if self.from_date:
             query = query.filter(ArchivedResult.date >= self.from_date)
             print('from_date filtered')
-        if self.to_date != extended_date_encode(utcnow()):
+        if self.to_date != datetime.date.today():
             query = query.filter(ArchivedResult.date <= self.to_date)
             print('to_date filtered')
         # if self.type and self.type != [t[0] for t in ArchivedResult.types_of_results]:
