@@ -376,3 +376,6 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
         self.term = None
         self.answer = None
         self.locale = 'de_CH'
+
+    def group_items(self, items, request):
+        return len(items), super().group_items(items, request)

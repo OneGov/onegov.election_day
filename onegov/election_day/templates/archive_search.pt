@@ -12,21 +12,103 @@
 
     <tal:block metal:fill-slot="content">
 
-        <div class="row archive" tal:define="years layout.archive.get_years()" tal:condition="years">
-            <div class="columns small-12 small-centered clearfix">
-                <div class="" tal:condition="form|nothing">
-                    <h3 i18n:translate>Archiv Filter</h3>
-                    <div metal:use-macro="layout.macros['form']" tal:define="form_method 'GET';button_class 'right'"/>
+        <div class="row archive">
+            <div class="columns small-12 small-centered">
+                <div class="row" tal:condition="form|nothing">
+                    <div class="columns small-12">
+                        <h3 i18n:translate>Archiv Filter</h3>
+                        <div metal:use-macro="layout.macros['form']" tal:define="form_method 'GET';button_class 'right'"/>
+
+                    </div>
+                </div>
+                <strong tal:condition="archive_items">Found ${item_count} items.</strong>
+                <hr>
+            </div>
+
+            <div class="columns small-12 small-centered">
+                <div tal:repeat="date archive_items" class="date-${date}">
+                <h4 i18n:translate="">
+                    Elections and votes on <a href="${request.link(layout.archive.for_date(date))}" tal:content="layout.format_date(date, 'date_long')" i18n:name='date' />
+                </h4>
+                <div tal:repeat="domain archive_items[date]" class="domain-${domain}">
+                    <div tal:repeat="type archive_items[date][domain]" class="type-${type}">
+                        <h5 i18n:translate="" tal:condition="type == 'election' and domain == 'federation'">Federal Elections</h5>
+                        <h5 i18n:translate="" tal:condition="type == 'election' and domain == 'region'">Regional Elections</h5>
+                        <h5 i18n:translate="" tal:condition="type == 'election' and domain == 'canton'">Cantonal Elections</h5>
+                        <h5 i18n:translate="" tal:condition="type == 'election' and domain == 'municipality'">Communal Elections</h5>
+                        <h5 i18n:translate="" tal:condition="type == 'vote' and domain == 'federation'">Federal Votes</h5>
+                        <h5 i18n:translate="" tal:condition="type == 'vote' and domain == 'region'">Regional Votes</h5>
+                        <h5 i18n:translate="" tal:condition="type == 'vote' and domain == 'canton'">Cantonal Votes</h5>
+                        <h5 i18n:translate="" tal:condition="type == 'vote' and domain == 'municipality'">Communal Votes</h5>
+
+                        <table class="overview election tablesaw" data-tablesaw-mode="stack" tal:condition="type == 'election'">
+                            <thead>
+                                <tr>
+                                    <th i18n:translate="">Election</th>
+                                    <th i18n:translate="" class="right-aligned" tal:condition="not: communal_instance">Counted</th>
+                                    <th i18n:translate="" class="right-aligned">Updated</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr tal:repeat="election archive_items[date][domain][type]">
+                                    <td tal:define="prefix election.title_prefix(request)">
+                                        <a href="${election.url}"><span tal:condition="prefix">${prefix}: </span>${election.title}</a>
+                                    </td>
+                                    <td class="right-aligned" tal:condition="not: communal_instance">
+                                        <div metal:use-macro="layout.macros['progress']" tal:define="progress election.progress" />
+                                    </td>
+                                    <td class="right-aligned">
+                                        ${layout.format_date(election.last_result_change, 'datetime')}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="overview vote tablesaw" data-tablesaw-mode="stack"  tal:condition="type == 'vote'">
+                            <thead>
+                                <tr>
+                                    <th i18n:translate="">Vote</th>
+                                    <th i18n:translate="">Result</th>
+                                    <th i18n:translate="" class="right-aligned">Yes %</th>
+                                    <th i18n:translate="" class="right-aligned">No %</th>
+                                    <th i18n:translate="" class="right-aligned" tal:condition="not: communal_instance">Counted</th>
+                                    <th i18n:translate="" class="right-aligned">Updated</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr tal:repeat="vote archive_items[date][domain][type]">
+                                    <td tal:define="prefix vote.title_prefix(request)">
+                                        <a href="${vote.url}"><span tal:condition="prefix">${prefix}: </span>${vote.title}</a>
+                                    </td>
+                                    <td>
+                                        <div metal:use-macro="layout.macros['answer']" tal:define="answer vote.display_answer(request)" />
+                                    </td>
+                                    <td class="right-aligned">
+                                        <tal:block tal:condition="vote.progress[0]">
+                                            ${layout.format_number(vote.display_yeas_percentage(request))}
+                                        </tal:block>
+                                    </td>
+                                    <td class="right-aligned">
+                                        <tal:block tal:condition="vote.progress[0]">
+                                            ${layout.format_number(vote.display_nays_percentage(request))}
+                                        </tal:block>
+                                    </td>
+                                    <td class="right-aligned" tal:condition="not: communal_instance">
+                                        <tal:block tal:condition="vote.progress[0]">
+                                            <div metal:use-macro="layout.macros['progress']" tal:define="progress vote.progress" />
+                                        </tal:block>
+                                    </td>
+                                    <td class="right-aligned">
+                                        ${layout.format_date(vote.last_result_change, 'datetime')}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
                 </div>
             </div>
-            <div class="archive-results columns small-12 small-centered">
-                    <tal:block condition="not:archive_items">
-                        <strong i18n:translate="">No results could be found.</strong>
-                    </tal:block>
-                    <tal:block condition="archive_items">
-                        <strong i18n:translate="">${len(archive_items)} Items found.</strong>
-                    </tal:block>
-                </div>
+            </div>
         </div>
 
     </tal:block>

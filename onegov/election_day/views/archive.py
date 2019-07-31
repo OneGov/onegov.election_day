@@ -136,7 +136,8 @@ def view_archive_search(self, request, form):
     """
 
     layout = DefaultLayout(self, request)
-    archive_items = self.query().all() or []
+    results = self.query().all()
+    item_count, grouped_results = self.group_items(results, request)
 
     if not form.errors:
         form.apply_model(self)
@@ -145,5 +146,6 @@ def view_archive_search(self, request, form):
         'layout': layout,
         'form': form,
         'form_method': 'GET',
-        'archive_items': archive_items
+        'archive_items': grouped_results,
+        'item_count': item_count
     }
