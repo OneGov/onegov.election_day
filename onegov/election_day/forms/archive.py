@@ -40,7 +40,11 @@ class ArchiveSearchForm(Form):
     type_ = MultiCheckboxField(
         label=_("Type"),
         render_kw={'size': 4, 'clear': False},
-        choices=ArchivedResult.types_of_results
+        choices=ArchivedResult.types_of_results,
+        description=_(
+            "Compound of elections field summarizes all related elections"
+            " in one. To display all elections,"
+            " uncheck 'Compound of Elections'")
     )
 
     domain = MultiCheckboxField(
