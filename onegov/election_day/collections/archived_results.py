@@ -325,6 +325,7 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
         together with their positions in the document. The document is
         processed according to the specified or default text search
         configuration. """
+
         mapping = {'de_CH': 'german', 'fr_CH': 'french', 'it_CH': 'italian'}
         return SearchableArchivedResultCollection.match_term(
             column, mapping.get(locale, 'english'), term
@@ -336,9 +337,12 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
         assert self.locale
         term = SearchableArchivedResultCollection.term_to_tsquery_string(
             self.term)
+        # The title is a translations hybrid, .title is a shorthand
         return [
             SearchableArchivedResultCollection.filter_text_by_locale(
-                ArchivedResult.shortcode, term)
+                ArchivedResult.shortcode, term, self.locale),
+            SearchableArchivedResultCollection.filter_text_by_locale(
+                ArchivedResult.title, term, self.locale)
         ]
 
     def query(self):

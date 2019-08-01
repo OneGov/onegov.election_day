@@ -136,6 +136,7 @@ def view_archive_search(self, request, form):
     """
 
     layout = DefaultLayout(self, request)
+    self.locale = request.locale
     results = self.query().all()
     item_count, grouped_results = self.group_items(results, request)
 
