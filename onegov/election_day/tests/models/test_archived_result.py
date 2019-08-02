@@ -219,4 +219,4 @@ def test_archived_result_local_results(session):
 def test_domain_types():
     domain_entries = [d[0] for d in ArchivedResult.types_of_domains]
     assert sorted(domain_entries) == \
-        sorted(DomainOfInfluenceMixin.allowed_domains)
+        ['canton', 'federation', 'municipality', 'region']
