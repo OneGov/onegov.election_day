@@ -1,7 +1,9 @@
 from datetime import date
 
 from onegov.ballot import Vote
+from onegov.election_day.collections import SearchableArchivedResultCollection
 from onegov.election_day.models import ArchivedResult
+from onegov.election_day.tests.common import DummyRequest
 
 
 class TestSearchableCollection:
@@ -44,6 +46,7 @@ class TestSearchableCollection:
         assert not archive.from_date
         assert 'WHERE archived_results.date' not in str(archive.query())
 
+        # TODO: what to do with when dastes are switched?
         # Test if from_date > to_date
         # archive.from_date = date(2019, 1, 1)
         # archive.to_date = date(2018, 1, 1)
@@ -130,6 +133,43 @@ class TestSearchableCollection:
         assert 'archived_results.type IN' in sql_query
         assert 'archived_results.date >= %(date_1)s AND' \
                ' archived_results.date <= %(date_2)s' in sql_query
-        # test for the term that looks in title_translations
+        # test for the term that looks in title_tranTslations
         assert "archived_results.title_translations -> 'de_CH'" in sql_query
         assert "archived_results.shortcode) @@ to_tsquery" in sql_query
+
+    def test_query_term_only_on_locale(
+            self, election_day_app):
+
+        session = election_day_app.session_manager.session()
+        vote = Vote(
+                title="Vote {}".format(2012),
+                domain='federation',
+                date=date(2012, 1, 1),
+            )
+        vote.title_translations['de_CH'] = 'Election (de)'
+        vote.title_translations['fr_CH'] = 'Election (fr)'
+        vote.title_translations['it_CH'] = 'Election (it)'
+        vote.title_translations['rm_CH'] = 'Election (rm)'
+        session.add(vote)
+        session.flush()
+
+        archive = SearchableArchivedResultCollection(session)
+        request = DummyRequest(
+            locale='de_CH',
+            app=election_day_app,
+            session=session)
+
+        archive.update_all(request)
+        item = archive.query().first()
+        assert item.title == 'Election (de)'
+
+        # test for different locales
+
+        for locale in ('de_CH', 'fr_CH', 'it_CH', 'rm_CH'):
+            archive.locale = locale
+            election_day_app.session_manager.current_locale = locale
+            archive.term = locale[0:2]
+            sql_query = str(archive.query())
+            print(sql_query)
+            assert archive.query().count() == 1
+            assert f"archived_results.title_translations -> '{locale}'" in sql_query
