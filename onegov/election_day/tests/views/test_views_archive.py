@@ -173,3 +173,15 @@ def test_view_update_results(election_day_app):
 
     results = archive.query().count() == 2
     assert len(client.get('/json').json['results']) == 2
+
+
+def test_view_filter_archive(election_day_app, searchable_archive):
+    client = Client(election_day_app)
+    client.get('/locale/de_CH').follow()
+    new = client.get('/archive-search')
+    assert new.form
+    assert new.form.method =='GET'
+    resp = new.form.submit()
+    assert resp.status_code == 200
+
+
