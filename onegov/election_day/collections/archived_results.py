@@ -338,7 +338,8 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
         processed according to the specified or default text search
         configuration. """
 
-        mapping = {'de_CH': 'german', 'fr_CH': 'french', 'it_CH': 'italian'}
+        mapping = {'de_CH': 'german', 'fr_CH': 'french', 'it_CH': 'italian',
+                   'rm_CH': 'english'}
         return SearchableArchivedResultCollection.match_term(
             column, mapping.get(locale, 'english'), term
         )
