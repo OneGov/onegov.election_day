@@ -37,7 +37,8 @@ class TestSearchableCollection:
         assert 'archived_results.date >= %(date_1)s AND' \
                ' archived_results.date <= %(date_2)s' not in sql_query
         # test for the term that looks in title_translations
-        assert "archived_results.title_translations -> 'de_CH'" not in sql_query
+        assert "archived_results.title_translations -> 'de_CH'"\
+               not in sql_query
         assert "archived_results.shortcode) @@ to_tsquery" not in sql_query
 
     def test_from_date_to_date(self, searchable_archive):
@@ -141,11 +142,8 @@ class TestSearchableCollection:
             self, election_day_app):
 
         session = election_day_app.session_manager.session()
-        vote = Vote(
-                title="Vote {}".format(2012),
-                domain='federation',
-                date=date(2012, 1, 1),
-            )
+        vote = Vote(title="Vote {}".format(2012), domain='federation',
+                    date=date(2012, 1, 1))
         vote.title_translations['de_CH'] = 'Election (de)'
         vote.title_translations['fr_CH'] = 'Election (fr)'
         vote.title_translations['it_CH'] = 'Election (it)'
@@ -172,4 +170,5 @@ class TestSearchableCollection:
             sql_query = str(archive.query())
             print(sql_query)
             assert archive.query().count() == 1
-            assert f"archived_results.title_translations -> '{locale}'" in sql_query
+            assert f"archived_results.title_translations -> '{locale}'" \
+                   in sql_query

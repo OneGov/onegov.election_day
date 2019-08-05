@@ -2,7 +2,6 @@ from datetime import date
 from datetime import datetime
 from datetime import timezone
 
-from onegov.ballot.models.mixins import DomainOfInfluenceMixin
 from onegov.election_day.models import ArchivedResult
 from onegov.election_day.tests.common import DummyRequest
 
