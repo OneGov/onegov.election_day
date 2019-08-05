@@ -29,7 +29,14 @@ class TestSearchableCollection:
         archive.term = ''
 
         sql_query = str(archive.query())
-        assert 'WHERE archived_results.date' not in sql_query
+        assert 'archived_results.domain IN' not in sql_query
+        assert 'archived_results.date >=' not in sql_query
+        assert 'archived_results.type IN' not in sql_query
+        assert 'archived_results.date >= %(date_1)s AND' \
+               ' archived_results.date <= %(date_2)s' not in sql_query
+        # test for the term that looks in title_translations
+        assert "archived_results.title_translations -> 'de_CH'" not in sql_query
+        assert "archived_results.shortcode) @@ to_tsquery" not in sql_query
 
     def test_from_date_to_date(self, searchable_archive):
         archive = searchable_archive
@@ -85,5 +92,22 @@ class TestSearchableCollection:
 
 
 
-    def test_with_with_all_params(self):
-        pass
+        archive.domain = ['federation']   # filter to 9
+        archive.type = ['election']       # filters to 6
+        archive.answer = self.available_answers     # no filter
+        archive.from_date = date(2009, 1, 1)
+        archive.to_date = date(2009, 1, 2)
+        archive.term = 'Election 2009'
+        assert archive.locale == 'de_CH'
+        result = archive.query().all()
+        assert len(result) == 1
+
+        sql_query = str(archive.query())
+        assert 'archived_results.domain IN' in sql_query
+        assert 'archived_results.date >=' in sql_query
+        assert 'archived_results.type IN' in sql_query
+        assert 'archived_results.date >= %(date_1)s AND' \
+               ' archived_results.date <= %(date_2)s' in sql_query
+        # test for the term that looks in title_translations
+        assert "archived_results.title_translations -> 'de_CH'" in sql_query
+        assert "archived_results.shortcode) @@ to_tsquery" in sql_query

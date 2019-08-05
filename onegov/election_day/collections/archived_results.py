@@ -276,6 +276,18 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
             answer=None,
             locale='de_CH'
     ):
+        """
+
+        :param session:
+        :param date_: see parent class
+        :param from_date: datetime.date
+        :param to_date: datetime.date
+        :param type_: list of types (election, vote...)
+        :param domain: list of domains
+        :param term: query string from form
+        :param answer: list of answers
+        :param locale: locale from request.locale
+        """
         super().__init__(session, date_=date_)
         self.from_date = from_date
         self.to_date = to_date or date.today()
