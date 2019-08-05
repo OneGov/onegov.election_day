@@ -27,7 +27,7 @@ class ArchiveSearchForm(Form):
         render_kw={'size': 4, 'clear': False}
     )
 
-    result = MultiCheckboxField(
+    answer = MultiCheckboxField(
         label=_("Voting result"),
         choices=ArchivedResult.types_of_answers,
         render_kw={'size': 4},
@@ -68,10 +68,10 @@ class ArchiveSearchForm(Form):
         self.term.data = model.term
         self.from_date.data = model.from_date
         self.to_date.data = model.to_date
-        self.result.data = model.answer
+        self.answer.data = model.answer
         self.type_.data = model.type
         self.domain.data = model.domain
 
         self.select_all('domain')
         self.select_all('type_')
-        self.select_all('result')
+        self.select_all('answer')
