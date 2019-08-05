@@ -1,4 +1,6 @@
 from datetime import date
+
+from onegov.ballot import Vote
 from onegov.election_day.models import ArchivedResult
 
 
@@ -70,8 +72,18 @@ class TestSearchableCollection:
         archive.domain = ['municipality']
         assert len(archive.query().all()) == 1
 
-    def test_query_with_voting_result(self, searchable_archive):
-        pass
+    def test_query_with_voting_result(self, session, searchable_archive):
+        query = session.query(ArchivedResult)
+        results = query.all()
+        count = query.count()
+        print(count)
+        for item in results:
+            assert not item.answer
+            item.answer = 'accepted'
+            # assert item.answer is None      # fails since it has also ''
+            print(f'{item.id} - answer: {item.answer}')
+
+
 
     def test_with_with_all_params(self):
         pass
