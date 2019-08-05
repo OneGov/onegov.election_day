@@ -8,7 +8,7 @@ class TestSearchableCollection:
 
     available_types = [t[0] for t in ArchivedResult.types_of_results]
     available_domains = [d[0] for d in ArchivedResult.types_of_domains]
-    available_answers = [0, 1]
+    available_answers = ['accepted', 'rejected', 'counter_proposal']
 
     def test_initial_config(self, searchable_archive):
         # Test to_date is always filled in and is type date
@@ -54,6 +54,12 @@ class TestSearchableCollection:
         assert 'WHERE archived_results.date' in str(archive.query())
         assert len(archive.query().all()) == 11
 
+        # get the 2009 election
+        archive.reset_query_params()
+        archive.from_date = date(2008, 1, 1)
+        archive.to_date = date(2008, 1, 2)
+        assert archive.query().count() == 1
+
     def test_query_with_types(self, searchable_archive):
         # Check if type is queried correctly
         searchable_archive.type = ['vote']
@@ -80,17 +86,33 @@ class TestSearchableCollection:
         assert len(archive.query().all()) == 1
 
     def test_query_with_voting_result(self, session, searchable_archive):
-        query = session.query(ArchivedResult)
-        results = query.all()
-        count = query.count()
-        print(count)
+        results = session.query(ArchivedResult).all()
+        archive = searchable_archive
         for item in results:
             assert not item.answer
             item.answer = 'accepted'
+            item.type = 'vote'
             # assert item.answer is None      # fails since it has also ''
-            print(f'{item.id} - answer: {item.answer}')
+        for item in session.query(ArchivedResult).all():
+            assert item.answer == 'accepted'
 
+        archive.type = ['vote', 'election']
+        archive.answer = ['accepted']
+        assert archive.query().count() == len(results)
 
+    def test_with_term(self, searchable_archive):
+        # want to find the 2008 election
+        archive = searchable_archive
+        searchable_archive.term = 'election 2009'
+        assert archive.query().count() == 1
+
+    def test_with_all_params_non_default(self, searchable_archive):
+        # Want to receive 2009 election
+        archive = searchable_archive
+        all_items = archive.query().all()
+        # set the answers
+        for item in all_items:
+            item.answer = 'rejected'
 
         archive.domain = ['federation']   # filter to 9
         archive.type = ['election']       # filters to 6
