@@ -28,7 +28,10 @@ def view_archive(self, request):
     layout = DefaultLayout(self, request)
     results, last_modified = self.by_date()
     results = self.group_items(results, request)
-    archive_link = request.class_link(SearchableArchivedResultCollection)
+    archive_link = request.class_link(
+        SearchableArchivedResultCollection,
+        variables={'item_type': 'vote'}
+    )
 
     return {
         'layout': layout,
