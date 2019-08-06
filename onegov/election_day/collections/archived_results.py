@@ -270,7 +270,7 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
             date_=None,
             from_date=None,
             to_date=None,
-            type_=None,
+            types=None,
             domain=None,
             term=None,
             answer=None,
@@ -282,7 +282,7 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
         :param date_: see parent class
         :param from_date: datetime.date
         :param to_date: datetime.date
-        :param type_: list of types (election, vote...)
+        :param types: list of types (election, vote...)
         :param domain: list of domains
         :param term: query string from form
         :param answer: list of answers
@@ -291,7 +291,7 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
         super().__init__(session, date_=date_)
         self.from_date = from_date
         self.to_date = to_date or date.today()
-        self.type = type_
+        self.types = types
         self.domain = domain
         self.term = term
         self.answer = answer
@@ -372,10 +372,10 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
             query = query.filter(ArchivedResult.date >= self.from_date)
         if self.to_date != date.today():
             query = query.filter(ArchivedResult.date <= self.to_date)
-        if self.type and len(self.type) != len(allowed_types):
-            query = query.filter(ArchivedResult.type.in_(self.type))
+        if self.types and len(self.types) != len(allowed_types):
+            query = query.filter(ArchivedResult.types.in_(self.types))
         if (self.answer and len(self.answer) != len(allowed_answers)
-                and 'vote' in self.type):
+                and 'vote' in self.types):
             vote_answer = ArchivedResult.meta['answer'].astext
             query = query.filter(
                 ArchivedResult.type == 'vote',
@@ -388,7 +388,7 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
     def reset_query_params(self):
         self.from_date = None
         self.to_date = date.today()
-        self.type = None
+        self.types = None
         self.domain = None
         self.term = None
         self.answer = None

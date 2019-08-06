@@ -152,29 +152,27 @@ def get_archive_by_year(app, date):
     converters=dict(
         from_date=extended_date_converter,
         to_date=extended_date_converter,
-        type_=[str],
+        types=[str],
         domain=[str],
         result=[str]
     )
 )
 def get_archive_search(
         app,
-        date_=None,
         from_date=None,
         to_date=None,
         answer=None,
-        type_=None,
+        types=None,
         domain=None,
         term=None
 ):
 
     return SearchableArchivedResultCollection(
         app.session(),
-        date_=date_,
         to_date=to_date,
         from_date=from_date,
         answer=answer,
-        type=type_,
+        types=types,
         domain=domain,
         term=term
     )
