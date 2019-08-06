@@ -138,6 +138,8 @@ def get_list_id_from_knr(line):
     col = 'knr'
     if not hasattr(line, col):
         raise ValueError(_('Missing column: ${col}', mapping={'col', col}))
+    if line.knr.startswith('0'):
+        return line.knr[1:-2]
     if '.' in line.knr:
         return line.knr.split('.')[0]
     return line.knr[0:-2]

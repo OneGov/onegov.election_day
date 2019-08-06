@@ -373,7 +373,7 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
         if self.to_date != date.today():
             query = query.filter(ArchivedResult.date <= self.to_date)
         if self.types and len(self.types) != len(allowed_types):
-            query = query.filter(ArchivedResult.types.in_(self.types))
+            query = query.filter(ArchivedResult.type.in_(self.types))
         if (self.answer and len(self.answer) != len(allowed_answers)
                 and 'vote' in self.types):
             vote_answer = ArchivedResult.meta['answer'].astext
