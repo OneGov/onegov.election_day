@@ -162,7 +162,7 @@ def get_archive_search(
         date_=None,
         from_date=None,
         to_date=None,
-        result=None,
+        answer=None,
         type_=None,
         domain=None,
         term=None
@@ -173,7 +173,7 @@ def get_archive_search(
         date_=date_,
         to_date=to_date,
         from_date=from_date,
-        answer=result,
+        answer=answer,
         type_=type_,
         domain=domain,
         term=term
