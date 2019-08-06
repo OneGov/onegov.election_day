@@ -17,6 +17,7 @@ from sqlalchemy import Integer
 from sqlalchemy import or_
 from time import mktime
 from time import strptime
+from onegov.core.collection import Pagination
 
 
 def groupbydict(items, keyfunc, sortfunc=None):
@@ -262,7 +263,8 @@ class ArchivedResultCollection(object):
         self.session.flush()
 
 
-class SearchableArchivedResultCollection(ArchivedResultCollection):
+class SearchableArchivedResultCollection(
+    ArchivedResultCollection, Pagination):
 
     def __init__(
             self,
@@ -271,6 +273,7 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
             from_date=None,
             to_date=None,
             types=None,
+            item_type=None,
             domain=None,
             term=None,
             answer=None,
@@ -282,7 +285,9 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
         :param date_: see parent class
         :param from_date: datetime.date
         :param to_date: datetime.date
-        :param types: list of types (election, vote...)
+        :param types: types as list, to search all the types
+                    neglected if item_type is set
+        :param item_type: type from url path (used in tab_menu)
         :param domain: list of domains
         :param term: query string from form
         :param answer: list of answers
@@ -292,6 +297,7 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
         self.from_date = from_date
         self.to_date = to_date or date.today()
         self.types = types
+        self.item_type = item_type
         self.domain = domain
         self.term = term
         self.answer = answer
@@ -366,14 +372,18 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
 
         query = self.session.query(ArchivedResult)
 
+        if self.item_type:
+            query.filter(ArchivedResult.type == self.item_type)
+        elif self.types:
+            query = query.filter(ArchivedResult.type.in_(self.types))
+
         if self.domain and (len(self.domain) != len(allowed_domains)):
             query = query.filter(ArchivedResult.domain.in_(self.domain))
         if self.from_date:
             query = query.filter(ArchivedResult.date >= self.from_date)
         if self.to_date != date.today():
             query = query.filter(ArchivedResult.date <= self.to_date)
-        if self.types and len(self.types) != len(allowed_types):
-            query = query.filter(ArchivedResult.type.in_(self.types))
+
         if (self.answer and len(self.answer) != len(allowed_answers)
                 and 'vote' in self.types):
             vote_answer = ArchivedResult.meta['answer'].astext
@@ -382,6 +392,12 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
                 vote_answer.in_(self.answer))
         if self.term:
             query = query.filter(or_(*self.term_filter))
+
+        query.group_by(
+            ArchivedResult.type,
+            ArchivedResult.date,
+            ArchivedResult.domain
+        )
 
         return query
 
@@ -395,4 +411,7 @@ class SearchableArchivedResultCollection(ArchivedResultCollection):
         self.locale = 'de_CH'
 
     def group_items(self, items, request):
+        order = ('federation', 'canton', 'region', 'municipality')
+        if request.app.principal.domain == 'municipality':
+            order = ('municipality', 'federation', 'canton', 'region')
         return len(items), super().group_items(items, request)

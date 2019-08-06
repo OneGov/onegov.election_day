@@ -6,6 +6,7 @@ from onegov.election_day.collections.archived_results import (
 )
 from onegov.election_day.forms.archive import ArchiveSearchForm
 from onegov.election_day.layouts import DefaultLayout
+from onegov.election_day.layouts.archive import ArchiveLayout
 from onegov.election_day.models import Principal
 from onegov.election_day.utils import add_cors_header
 from onegov.election_day.utils import add_last_modified_header
@@ -84,7 +85,10 @@ def view_principal(self, request):
     archive = ArchivedResultCollection(request.session)
     latest, last_modified = archive.latest()
     latest = archive.group_items(latest, request)
-    archive_link = request.class_link(SearchableArchivedResultCollection)
+    archive_link = request.class_link(
+        SearchableArchivedResultCollection,
+        variables={'item_type': 'vote'}
+    )
 
     return {
         'layout': layout,
@@ -139,7 +143,8 @@ def view_archive_search(self, request, form):
 
     """
 
-    layout = DefaultLayout(self, request)
+    # layout = DefaultLayout(self, request)
+    layout = ArchiveLayout(self, request)
     self.locale = request.locale
     results = self.query().all()
     item_count, grouped_results = self.group_items(results, request)

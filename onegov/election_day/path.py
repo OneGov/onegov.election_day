@@ -148,7 +148,7 @@ def get_archive_by_year(app, date):
 
 @ElectionDayApp.path(
     model=SearchableArchivedResultCollection,
-    path='archive-search',
+    path='archive-search/{item_type}',
     converters=dict(
         from_date=extended_date_converter,
         to_date=extended_date_converter,
@@ -163,6 +163,7 @@ def get_archive_search(
         to_date=None,
         answer=None,
         types=None,
+        item_type=None,
         domain=None,
         term=None
 ):
@@ -173,6 +174,7 @@ def get_archive_search(
         from_date=from_date,
         answer=answer,
         types=types,
+        item_type=item_type,
         domain=domain,
         term=term
     )
