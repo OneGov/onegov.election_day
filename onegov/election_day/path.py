@@ -174,7 +174,7 @@ def get_archive_search(
         to_date=to_date,
         from_date=from_date,
         answer=answer,
-        type_=type_,
+        type=type_,
         domain=domain,
         term=term
     )
