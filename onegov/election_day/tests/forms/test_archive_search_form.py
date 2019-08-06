@@ -1,7 +1,7 @@
 from onegov.election_day.collections import SearchableArchivedResultCollection
 from onegov.election_day.forms import ArchiveSearchForm
-from onegov.election_day.tests.common import DummyRequest
 from datetime import date
+
 
 def test_apply_model_archive_search_form(session):
     archive = SearchableArchivedResultCollection(session)
@@ -21,4 +21,3 @@ def test_apply_model_archive_search_form(session):
     assert form.answer.data == archive.answer
     assert form.type.data == archive.type
     assert form.domain == archive.domain
-
