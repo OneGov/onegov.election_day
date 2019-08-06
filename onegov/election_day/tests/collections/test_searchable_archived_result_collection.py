@@ -172,3 +172,12 @@ class TestSearchableCollection:
             assert archive.query().count() == 1
             assert f"archived_results.title_translations -> '{locale}'" \
                    in sql_query
+
+    def test_group_items_for_archive(
+            self, searchable_archive, election_day_app):
+        items = searchable_archive.query().all()
+        request = DummyRequest(app=election_day_app)
+        assert request.app.principal.domain, 'DummyRequest should domain'
+        grouped_items = searchable_archive.group_items(items, request)
+        print(grouped_items)
+        pass
