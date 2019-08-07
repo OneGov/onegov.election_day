@@ -37,6 +37,7 @@ class ArchiveSearchForm(Form):
 
     )
 
+    # Is always hidden since item_type in url will filter the types
     types = MultiCheckboxField(
         label=_("Type"),
         render_kw={'size': 4, 'clear': False, 'hidden': True},
@@ -63,6 +64,16 @@ class ArchiveSearchForm(Form):
         if not field.data:
             field.data = list(next(zip(*field.choices)))
 
+    def toggle_hidden_fields(self, model):
+        """ Hides answer field for election view and move the field to
+        the right side with render_kw. """
+        if model.item_type in ('election', 'election_compound'):
+            self.answer.render_kw['hidden'] = True
+            self.domain.render_kw['size'] = 12
+        else:
+            self.domain.render_kw['size'] = 8
+            self.answer.render_kw['hidden'] = False
+
     def apply_model(self, model):
 
         self.term.data = model.term
@@ -75,3 +86,5 @@ class ArchiveSearchForm(Form):
         self.select_all('domain')
         self.select_all('types')
         self.select_all('answer')
+        self.toggle_hidden_fields(model)
+
