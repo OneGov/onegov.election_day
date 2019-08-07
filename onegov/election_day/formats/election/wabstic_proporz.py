@@ -520,7 +520,12 @@ def import_election_wabstic_proporz(
                       mapping={'name': candidate_id}))
 
             if list_id not in added_lists:
-                line_errors.append(_("Unknown derived list id"))
+                line_errors.append(
+                    _("Derived list_id from KNR ${list_id} is not valid",
+                        mapping={
+                            'list_id': list_id
+                        })
+                )
 
         # Pass the errors and continue to next line
         if line_errors:
