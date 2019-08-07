@@ -12,9 +12,10 @@ class ArchiveLayout(DefaultLayout):
 
     @cached_property
     def menu(self):
+
         return [
             (label, self.link_for(abbrev), self.model.item_type == abbrev)
-            for abbrev, label in ArchivedResult.types_of_results
+            for abbrev, label in ArchivedResult.types_of_results[0:1]
         ]
 
     @cached_property
