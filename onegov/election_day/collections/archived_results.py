@@ -303,6 +303,7 @@ class SearchableArchivedResultCollection(
         self.term = term
         self.answer = answer
         self.locale = locale
+        self.app_principal_domain = None
 
     def group_items(self, items, request):
         order = ('federation', 'canton', 'region', 'municipality')
@@ -397,6 +398,8 @@ class SearchableArchivedResultCollection(
         allowed_types = [t[0] for t in ArchivedResult.types_of_results]
         allowed_answers = [a[0] for a in ArchivedResult.types_of_answers]
         order = ('federation', 'canton', 'region', 'municipality')
+        if self.app_principal_domain == 'municipality':
+            order = ('municipality', 'federation', 'canton', 'region')
 
         def generate_cases():
             return tuple(
@@ -451,7 +454,3 @@ class SearchableArchivedResultCollection(
         self.answer = None
         self.locale = 'de_CH'
 
-    def sum_election_compounds(self, items):
-        compounded = [
-            id_ for item in items for id_ in getattr(item, 'elections', [])
-        ]
