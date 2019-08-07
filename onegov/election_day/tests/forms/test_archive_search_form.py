@@ -9,7 +9,7 @@ def test_apply_model_archive_search_form(session):
     archive.from_date = date(2222, 1, 1)
     archive.to_date = date(2222, 1, 1)
     archive.answer = ['accepted']
-    archive.type = ['election', 'vote']
+    archive.types = ['election', 'vote']
     archive.domain = ['region', 'municipality']
 
     form = ArchiveSearchForm()
@@ -19,5 +19,5 @@ def test_apply_model_archive_search_form(session):
     assert form.from_date.data == archive.from_date
     assert form.to_date.data == archive.to_date
     assert form.answer.data == archive.answer
-    assert form.type.data == archive.type
-    assert form.domain == archive.domain
+    assert form.types.data == archive.types
+    assert form.domain.data == archive.domain

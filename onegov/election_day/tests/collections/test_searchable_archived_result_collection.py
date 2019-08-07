@@ -26,7 +26,7 @@ class TestSearchableCollection:
         # Set values like you would when going to search form first time
         archive = searchable_archive
         archive.domain = self.available_domains
-        archive.type = self.available_types
+        archive.types = self.available_types
         archive.answer = self.available_answers
         archive.term = ''
 
@@ -100,7 +100,7 @@ class TestSearchableCollection:
         for item in session.query(ArchivedResult).all():
             assert item.answer == 'accepted'
 
-        archive.type = ['vote', 'election']
+        archive.types = ['vote', 'election']
         archive.answer = ['accepted']
         assert archive.query().count() == len(results)
 
@@ -118,8 +118,8 @@ class TestSearchableCollection:
         for item in all_items:
             item.answer = 'rejected'
 
-        archive.domain = ['federation']   # filter to 9
-        archive.type = ['election']       # filters to 6
+        archive.domain = ['federation']   # filter to 10
+        archive.types = ['election']       # filters to 6
         archive.answer = self.available_answers     # no filter
         archive.from_date = date(2009, 1, 1)
         archive.to_date = date(2009, 1, 2)
