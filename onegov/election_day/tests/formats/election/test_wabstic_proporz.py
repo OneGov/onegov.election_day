@@ -7,6 +7,8 @@ from onegov.ballot import ProporzElection
 from onegov.ballot import List
 from onegov.core.utils import module_path
 from onegov.election_day.formats import import_election_wabstic_proporz
+from onegov.election_day.formats.election.wabstic_proporz import \
+    get_list_id_from_knr
 from onegov.election_day.models import Canton
 from pytest import mark
 
@@ -21,6 +23,16 @@ def help_print_errors(errors_list, max=20):
             i += 1
         except Exception:
             break
+
+
+def test_get_list_id_from_knr():
+
+    class DummyLine:
+        def __init__(self, knr):
+            self.knr = knr
+
+    assert get_list_id_from_knr(DummyLine('0101')) == '01'
+    assert get_list_id_from_knr(DummyLine('50.05')) == '50'
 
 
 @mark.parametrize("tar_file", [
