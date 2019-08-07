@@ -81,8 +81,11 @@ class TestSearchableCollection:
         searchable_archive.types = ['election']
         assert searchable_archive.query().count() == 6
         searchable_archive.reset_query_params()
+        # When used with item_type, compound elections are also returned
         searchable_archive.item_type = 'election'
-        assert searchable_archive.query().count() == 6
+        assert searchable_archive.query().count() == 9
+        searchable_archive.item_type = 'election_compound'
+        assert searchable_archive.query().count() == 9
 
         searchable_archive.reset_query_params()
         searchable_archive.types = ['vote', 'election', 'election_compound']
@@ -187,15 +190,15 @@ class TestSearchableCollection:
             assert f"archived_results.title_translations -> '{locale}'" \
                    in sql_query
 
-    # def test_group_items_for_archive(
-    #         self, searchable_archive, election_day_app):
-    #     items = searchable_archive.query().all()
-    #     request = DummyRequest(app=election_day_app)
-    #     assert request.app.principal.domain, 'DummyRequest should have domain'
-    #     count, g_items = searchable_archive.group_items(items, request)
-    #     votes = g_items.get('votes')
-    #     elections = g_items.get('elections')
-
+    def test_group_items_for_archive(
+            self, searchable_archive):
+        items = searchable_archive.query().all()
+        request = DummyRequest()
+        assert request.app.principal.domain, 'DummyRequest should have domain'
+        count, g_items = searchable_archive.group_items(items, request)
+        votes = g_items.get('votes')
+        elections = g_items.get('elections')
+        assert len(items) == len(votes) + len(elections)
 
     def test_query_ordering(self, searchable_archive):
 
