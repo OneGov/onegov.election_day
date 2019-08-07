@@ -306,13 +306,15 @@ class SearchableArchivedResultCollection(
         self.app_principal_domain = None
 
     def group_items(self, items, request):
-        order = ('federation', 'canton', 'region', 'municipality')
-        if request.app.principal.domain == 'municipality':
-            order = ('municipality', 'federation', 'canton', 'region')
+        compounded = [
+            id_ for item in items for id_ in getattr(item, 'elections', [])
+        ]
+
         items = dict(
             votes=[v for v in items if v.type == 'vote'],
             elections=[
                 e for e in items if e.type in ['election', 'election_compound']
+                                    if e.url not in compounded
             ]
         )
 
