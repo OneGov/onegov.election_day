@@ -15,7 +15,7 @@ class ArchiveLayout(DefaultLayout):
 
         return [
             (label, self.link_for(abbrev), self.model.item_type == abbrev)
-            for abbrev, label in ArchivedResult.types_of_results[0:1]
+            for abbrev, label in ArchivedResult.types_of_results[0:2]
         ]
 
     @cached_property
