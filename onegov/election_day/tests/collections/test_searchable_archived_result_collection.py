@@ -20,17 +20,18 @@ class TestSearchableCollection:
 
     def test_initial_query(self, searchable_archive):
         # Test initial query without params
-        assert len(searchable_archive.query().all()) == 12
+        assert searchable_archive.query().count() == 12
 
     def test_default_values_of_form(self, searchable_archive):
         # Set values like you would when going to search form first time
+
         archive = searchable_archive
         archive.domain = self.available_domains
         archive.types = self.available_types
         archive.answer = self.available_answers
         archive.term = ''
-
-        sql_query = str(archive.query())
+        assert not searchable_archive.item_type
+        sql_query = str(archive.query(sort=False))
         assert 'archived_results.domain IN' not in sql_query
         assert 'archived_results.date >=' not in sql_query
         assert 'archived_results.type IN' not in sql_query
@@ -45,18 +46,14 @@ class TestSearchableCollection:
         archive = searchable_archive
         # Test to_date is neglected if from_date is not given
         assert not archive.from_date
-        assert 'WHERE archived_results.date' not in str(archive.query())
-
-        # TODO: what to do with when dastes are switched?
-        # Test if from_date > to_date
-        # archive.from_date = date(2019, 1, 1)
-        # archive.to_date = date(2018, 1, 1)
-        # assert len(archive.query().all()) == 0
+        assert 'WHERE archived_results.date' \
+               not in str(archive.query())
 
         # Test query and results with a value of to_date and from_date
         archive.from_date = date(2009, 1, 1)
-        assert 'WHERE archived_results.date' in str(archive.query())
-        assert len(archive.query().all()) == 11
+        assert 'WHERE archived_results.date' \
+               in str(archive.query())
+        assert archive.query().count() == 11
 
         # get the 2009 election
         archive.reset_query_params()
@@ -64,30 +61,46 @@ class TestSearchableCollection:
         archive.to_date = date(2008, 1, 2)
         assert archive.query().count() == 1
 
-    def test_query_with_types(self, searchable_archive):
-        # Check if type is queried correctly
-        searchable_archive.type = ['vote']
-        assert len(searchable_archive.query().all()) == 3
+    def test_ignore_types_with_item_type(self, searchable_archive):
+        # Test if types is ignored when item_type is set
+        searchable_archive.item_type = 'election'
+        searchable_archive.types = ['vote']
+        assert searchable_archive.query().count() != 3
 
-        searchable_archive.type = ['election']
-        assert len(searchable_archive.query().all()) == 6
+    def test_query_with_types_and_type(self, searchable_archive):
+        # Check if types is queried correctly
+        assert searchable_archive.item_type is None
+        searchable_archive.types = ['vote']
+        assert searchable_archive.query().count() == 3
+        searchable_archive.reset_query_params()
+        searchable_archive.item_type = 'vote'
+        assert searchable_archive.query().count() == 3
 
-        searchable_archive.type = ['vote', 'election', 'election_compound']
-        assert len(searchable_archive.query().all()) == 12
+        searchable_archive.reset_query_params()
+
+        searchable_archive.types = ['election']
+        assert searchable_archive.query().count() == 6
+        searchable_archive.reset_query_params()
+        searchable_archive.item_type = 'election'
+        assert searchable_archive.query().count() == 6
+
+        searchable_archive.reset_query_params()
+        searchable_archive.types = ['vote', 'election', 'election_compound']
+        assert searchable_archive.query().count() == 12
 
     def test_query_with_domains(self, searchable_archive):
         archive = searchable_archive
         archive.domain = ['federation']
-        assert len(archive.query().all()) == 9
+        assert archive.query().count() == 9
 
         archive.domain = ['canton']
-        assert len(archive.query().all()) == 1
+        assert archive.query().count() == 1
 
         archive.domain = ['region']
-        assert len(archive.query().all()) == 1
+        assert archive.query().count() == 1
 
         archive.domain = ['municipality']
-        assert len(archive.query().all()) == 1
+        assert archive.query().count() == 1
 
     def test_query_with_voting_result(self, session, searchable_archive):
         results = session.query(ArchivedResult).all()
@@ -113,6 +126,7 @@ class TestSearchableCollection:
     def test_with_all_params_non_default(self, searchable_archive):
         # Want to receive 2009 election
         archive = searchable_archive
+        assert not archive.item_type
         all_items = archive.query().all()
         # set the answers
         for item in all_items:
@@ -125,10 +139,10 @@ class TestSearchableCollection:
         archive.to_date = date(2009, 1, 2)
         archive.term = 'Election 2009'
         assert archive.locale == 'de_CH'
-        result = archive.query().all()
-        assert len(result) == 1
+        assert archive.query().count() == 1
 
         sql_query = str(archive.query())
+        print(sql_query)
         assert 'archived_results.domain IN' in sql_query
         assert 'archived_results.date >=' in sql_query
         assert 'archived_results.type IN' in sql_query
@@ -173,11 +187,54 @@ class TestSearchableCollection:
             assert f"archived_results.title_translations -> '{locale}'" \
                    in sql_query
 
-    def test_group_items_for_archive(
-            self, searchable_archive, election_day_app):
+    # def test_group_items_for_archive(
+    #         self, searchable_archive, election_day_app):
+    #     items = searchable_archive.query().all()
+    #     request = DummyRequest(app=election_day_app)
+    #     assert request.app.principal.domain, 'DummyRequest should have domain'
+    #     count, g_items = searchable_archive.group_items(items, request)
+    #     votes = g_items.get('votes')
+    #     elections = g_items.get('elections')
+
+
+    def test_query_ordering(self, searchable_archive):
+
         items = searchable_archive.query().all()
-        request = DummyRequest(app=election_day_app)
-        assert request.app.principal.domain, 'DummyRequest should domain'
-        grouped_items = searchable_archive.group_items(items, request)
-        print(grouped_items)
-        pass
+        # test ordered by date descending
+        assert items[0].date == date(2019, 1, 1)
+        assert items[-1].date == date(2008, 1, 1)
+
+        # subset with different domains
+        searchable_archive.from_date = date(2019, 1, 1)
+        searchable_archive.to_date = date(2019, 1, 1)
+        items_one_date = searchable_archive.query().all()
+        assert items_one_date[0].domain == 'canton'
+        assert items_one_date[1].domain == 'region'
+        assert items_one_date[2].domain == 'municipality'
+
+    def test_check_from_date_to_date(self, searchable_archive):
+        # check_from_date_to_date is triggered in the query function
+
+        archive = searchable_archive
+
+        assert archive.to_date == date.today()
+        # both are not set
+        archive.check_from_date_to_date()
+        assert archive.from_date is None, 'Should not modify anything'
+        assert archive.to_date == date.today()
+
+        # from_date bigger than to_date
+        archive.from_date = date(2019, 1, 1)
+        archive.to_date = date(2018, 1, 1)
+        assert archive.from_date
+        assert archive.to_date
+
+        archive.check_from_date_to_date()
+        assert archive.from_date
+        assert archive.to_date
+
+        assert archive.from_date == archive.to_date
+
+        archive.to_date = date(2300, 1, 1)
+        archive.check_from_date_to_date()
+        assert archive.to_date == date.today()

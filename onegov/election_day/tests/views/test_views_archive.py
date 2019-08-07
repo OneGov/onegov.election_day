@@ -178,8 +178,13 @@ def test_view_update_results(election_day_app):
 def test_view_filter_archive(election_day_app, searchable_archive):
     client = Client(election_day_app)
     client.get('/locale/de_CH').follow()
-    new = client.get('/archive-search')
-    assert new.form
-    assert new.form.method == 'GET'
-    resp = new.form.submit()
-    assert resp.status_code == 200
+    for url in ('', '/vote', '/election', 'election_compound'):
+
+        new = client.get(f'/archive-search{url}')
+        assert new.form
+        assert new.form.method == 'GET'
+        resp = new.form.submit()
+        if url == '':
+            assert resp.status_code == 404
+        else:
+            assert resp.status_code == 200
