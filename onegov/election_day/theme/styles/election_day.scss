@@ -180,6 +180,11 @@ table {
         &.left-aligned {
             text-align: left;
         }
+
+      &.top-aligned {
+        vertical-align: top;
+      }
+
     }
 
     &.tablesaw thead th.right-aligned {
