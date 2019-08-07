@@ -474,8 +474,9 @@ def test_import_wabstic_proporz_invalid_values(session):
         ('wp_listengde', 2, 'Invalid integer: stimmentotal'),
         ('wp_wahl', 2, 'Value ausmittlungsstand is not between 0 and 3'),
         ('wpstatic_gemeinden', 2, '100 is unknown'),
-        ('wpstatic_kandidaten', 2, 'Invalid candidate values'),
-        ('wpstatic_kandidaten', 2, 'Unknown derived list id')
+        ('wpstatic_kandidaten', 2, 'Derived list_id has not been found'
+                                   ' in list numbers'),
+        ('wpstatic_kandidaten', 2, 'Invalid candidate values')
     ]
 
 
