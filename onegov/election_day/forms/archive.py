@@ -30,11 +30,7 @@ class ArchiveSearchForm(Form):
     answer = MultiCheckboxField(
         label=_("Voting result"),
         choices=ArchivedResult.types_of_answers,
-        render_kw={'size': 4},
-        description=_(
-            "Has effect if votes is checked."
-        ),
-
+        render_kw={'size': 4}
     )
 
     # Is always hidden since item_type in url will filter the types
