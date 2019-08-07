@@ -1,3 +1,4 @@
+import pytest
 import transaction
 
 from datetime import date
@@ -175,16 +176,12 @@ def test_view_update_results(election_day_app):
     assert len(client.get('/json').json['results']) == 2
 
 
-def test_view_filter_archive(election_day_app, searchable_archive):
+@pytest.mark.parametrize("url", ['vote', 'election', 'election_compound'])
+def test_view_filter_archive(url, election_day_app):
     client = Client(election_day_app)
     client.get('/locale/de_CH').follow()
-    for url in ('', '/vote', '/election', 'election_compound'):
-
-        new = client.get(f'/archive-search{url}')
-        assert new.form
-        assert new.form.method == 'GET'
-        resp = new.form.submit()
-        if url == '':
-            assert resp.status_code == 404
-        else:
-            assert resp.status_code == 200
+    new = client.get(f'/archive-search/{url}')
+    assert new.form
+    assert new.form.method == 'GET'
+    resp = new.form.submit()
+    assert resp.status_code == 200
