@@ -222,7 +222,6 @@ class TestSearchableCollection:
         assert items_one_date[1].domain == 'canton'
         assert items_one_date[2].domain == 'region'
 
-
     def test_check_from_date_to_date(self, searchable_archive):
         # check_from_date_to_date is triggered in the query function
 

@@ -265,7 +265,7 @@ class ArchivedResultCollection(object):
 
 
 class SearchableArchivedResultCollection(
-    ArchivedResultCollection, Pagination):
+        ArchivedResultCollection, Pagination):
 
     def __init__(
             self,
@@ -314,7 +314,7 @@ class SearchableArchivedResultCollection(
             votes=[v for v in items if v.type == 'vote'],
             elections=[
                 e for e in items if e.type in ['election', 'election_compound']
-                                    if e.url not in compounded
+                if e.url not in compounded
             ]
         )
 
@@ -405,7 +405,7 @@ class SearchableArchivedResultCollection(
 
         def generate_cases():
             return tuple(
-                (ArchivedResult.domain == opt, ind+1) for
+                (ArchivedResult.domain == opt, ind + 1) for
                 ind, opt in enumerate(order)
             )
 
@@ -429,9 +429,13 @@ class SearchableArchivedResultCollection(
         if self.to_date != date.today():
             query = query.filter(ArchivedResult.date <= self.to_date)
 
-        if (self.answer and len(self.answer) != len(allowed_answers)
-                and (self.item_type == 'vote' or
-                     (self.types and 'vote' in self.types))):
+        is_vote = (self.item_type == 'vote'
+                   or (self.types and 'vote' in self.types))
+
+        answer_matters = (
+            self.answer and len(self.answer) != len(allowed_answers))
+
+        if answer_matters and is_vote:
             vote_answer = ArchivedResult.meta['answer'].astext
             query = query.filter(
                 ArchivedResult.type == 'vote',
@@ -455,4 +459,3 @@ class SearchableArchivedResultCollection(
         self.term = None
         self.answer = None
         self.locale = 'de_CH'
-

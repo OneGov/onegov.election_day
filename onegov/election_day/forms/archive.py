@@ -83,4 +83,3 @@ class ArchiveSearchForm(Form):
         self.select_all('types')
         self.select_all('answer')
         self.toggle_hidden_fields(model)
-

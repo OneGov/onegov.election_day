@@ -1,7 +1,6 @@
 from onegov.election_day.collections import SearchableArchivedResultCollection
 from onegov.election_day.layouts import DefaultLayout
 from cached_property import cached_property
-from onegov.election_day import _
 from onegov.election_day.models import ArchivedResult
 
 
