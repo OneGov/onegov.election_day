@@ -49,7 +49,7 @@ class ArchiveSearchForm(Form):
 
     domain = MultiCheckboxField(
         label=_("Domain"),
-        render_kw={'size': 4, 'clear': False},
+        render_kw={'size': 8, 'clear': False},
         choices=ArchivedResult.types_of_domains
     )
 
