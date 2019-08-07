@@ -303,6 +303,19 @@ class SearchableArchivedResultCollection(
         self.answer = answer
         self.locale = locale
 
+    def group_items(self, items, request):
+        order = ('federation', 'canton', 'region', 'municipality')
+        if request.app.principal.domain == 'municipality':
+            order = ('municipality', 'federation', 'canton', 'region')
+        items = dict(
+            votes=[v for v in items if v.type == 'vote'],
+            elections=[
+                e for e in items if e.type in ['election', 'election_compound']
+            ]
+        )
+
+        return len(items['votes']) + len(items['elections']), items
+
     @staticmethod
     def term_to_tsquery_string(term):
         """ Returns the current search term transformed to use within
