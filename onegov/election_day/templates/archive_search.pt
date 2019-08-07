@@ -49,9 +49,8 @@
                             <th i18n:translate>Date</th>
                             <th i18n:translate>Domain</th>
                             <th i18n:translate>Result</th>
-                            <th i18n:translate>Shortcode</th>
-                            <th i18n:translate class="right-aligned">Yes %</th>
-                            <th i18n:translate class="right-aligned">No %</th>
+                            <th class="no-wrap" i18n:translate class="right-aligned">Yes %</th>
+                            <th class="no-wrap" i18n:translate class="right-aligned">No %</th>
                             <th i18n:translate class="right-aligned" tal:condition="not: communal_instance">Counted</th>
                             <th i18n:translate class="right-aligned">Updated</th>
                         </tr>
@@ -70,7 +69,6 @@
                                     <td>
                                         <div metal:use-macro="layout.macros['answer']" tal:define="answer vote.display_answer(request)" />
                                     </td>
-                                    <td>${vote.shortcode or ''}</td>
                                     <td class="right-aligned">
                                         <tal:block tal:condition="vote.progress[0]">
                                             ${layout.format_number(vote.display_yeas_percentage(request))}
@@ -101,7 +99,6 @@
                             <thead>
                                 <tr>
                                     <th i18n:translate="">Election</th>
-                                    <th i18n:translate="">Shortcode</th>
                                     <th i18n:translate="" class="right-aligned" tal:condition="not: communal_instance">Counted</th>
                                     <th i18n:translate="" class="right-aligned">Updated</th>
                                 </tr>
@@ -111,7 +108,6 @@
                                     <td tal:define="prefix election.title_prefix(request)">
                                         <a href="${election.url}"><span tal:condition="prefix">${prefix}: </span>${election.title}</a>
                                     </td>
-                                    <td>${election.shortcode or ''}</td>
                                     <td class="right-aligned" tal:condition="not: communal_instance">
                                         <div metal:use-macro="layout.macros['progress']" tal:define="progress election.progress" />
                                     </td>

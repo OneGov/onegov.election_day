@@ -12,7 +12,7 @@ class ArchiveSearchForm(Form):
         label=_("Text Retrieval"),
         render_kw={'size': 4, 'clear': True},
         description=_(
-            "Searches the title of the election/vote and the short code. "
+            "Searches the title of the election/vote. "
             "Use Wilcards (*) to find not exact results, e.g Nationalrat*."
         ),
     )
