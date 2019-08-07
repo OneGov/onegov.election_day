@@ -156,6 +156,7 @@ def view_archive_search(self, request, form):
         form.apply_model(self)
 
     return {
+        'item_type': self.item_type,
         'layout': layout,
         'form': form,
         'form_method': 'GET',
