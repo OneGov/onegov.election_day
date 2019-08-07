@@ -39,7 +39,7 @@ class ArchiveSearchForm(Form):
 
     types = MultiCheckboxField(
         label=_("Type"),
-        render_kw={'size': 4, 'clear': False},
+        render_kw={'size': 4, 'clear': False, 'hidden': True},
         choices=ArchivedResult.types_of_results,
         description=_(
             "Compound of elections field summarizes all related elections"
