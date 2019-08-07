@@ -407,7 +407,14 @@ class SearchableArchivedResultCollection(
         query = self.session.query(ArchivedResult)
 
         if self.item_type and self.item_type in allowed_types:
-            query = query.filter(ArchivedResult.type == self.item_type)
+            # Treat compound election as elections
+            if self.item_type == 'vote':
+                query = query.filter(ArchivedResult.type == self.item_type)
+            else:
+                query = query.filter(ArchivedResult.type.in_(
+                    ('election', 'election_compound')
+                ))
+
         elif self.types and len(self.types) != len(allowed_types):
             query = query.filter(ArchivedResult.type.in_(self.types))
         if self.domain and (len(self.domain) != len(allowed_domains)):
