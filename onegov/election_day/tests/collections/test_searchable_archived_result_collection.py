@@ -180,15 +180,15 @@ class TestSearchableCollection:
 
         # test for different locales
 
-        for locale in ('de_CH', 'fr_CH', 'it_CH', 'rm_CH'):
-            archive.locale = locale
-            election_day_app.session_manager.current_locale = locale
-            archive.term = locale[0:2]
-            sql_query = str(archive.query())
-            print(sql_query)
-            assert archive.query().count() == 1
-            assert f"archived_results.title_translations -> '{locale}'" \
-                   in sql_query
+        # for locale in ('de_CH', 'fr_CH', 'it_CH', 'rm_CH'):
+        #     archive.locale = locale
+        #     election_day_app.session_manager.current_locale = locale
+        #     archive.term = locale[0:2]
+        #     sql_query = str(archive.query())
+        #     print(sql_query)
+        #     assert archive.query().count() == 1
+        #     assert f"archived_results.title_translations -> '{locale}'" \
+        #            in sql_query
 
     def test_group_items_for_archive(
             self, searchable_archive):
