@@ -142,3 +142,43 @@ def load_csv(
         )
 
     return csv, error
+
+
+# Verification utils
+def line_is_relevant(line, number, district=None):
+    if district:
+        return line.sortwahlkreis == district and line.sortgeschaeft == number
+    return line.sortgeschaeft == number
+
+
+def validate_integer(line, col, treat_none_as_default=True, default=0):
+    """
+    Checks line of a csv file for a valid integer.
+
+    :param line: line object from csv reader
+    :param col: attribute of line object
+    :param default: default to return if line.col is None
+    :param treat_none_as_default: raises ValueError if line.col is None
+    :return: integer value of line.col
+    """
+    try:
+        if treat_none_as_default:
+            return int(getattr(line, col) or default)
+        else:
+            return int(getattr(line, col))
+    except ValueError:
+        raise ValueError(_('Invalid integer: ${col}',
+                           mapping={'col': col}))
+    except TypeError:
+        # raises error if none_be_zero=False and the integer is None
+        raise ValueError(_('Empty value: ${col}',
+                           mapping={'col': col}))
+
+
+# Helpers
+def print_errors(errors):
+    error_list = sorted([
+        (e.filename, e.line, e.error.interpolate()) for e in errors
+    ])
+    for fn, l, err in error_list:
+        print(f'{fn}:{l} {err}')

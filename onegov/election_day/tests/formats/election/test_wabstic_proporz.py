@@ -30,9 +30,12 @@ def test_get_list_id_from_knr():
     class DummyLine:
         def __init__(self, knr):
             self.knr = knr
-
+    # position on the list is always two numbers value
+    # 05a.01 and 0501 can never be in the same vote
     assert get_list_id_from_knr(DummyLine('0101')) == '01'
     assert get_list_id_from_knr(DummyLine('50.05')) == '50'
+    assert get_list_id_from_knr(DummyLine('05a.01')) == '05a'
+    assert get_list_id_from_knr(DummyLine('05a.1')) == '05a'
 
 
 @mark.parametrize("tar_file", [
@@ -284,7 +287,7 @@ def test_import_wabstic_proporz_missing_headers(session):
             '\n'.join((
                 ','.join((
                     'KNR',
-                    'Gewahlt',
+                    'Gewaehlt',
                 )),
             ))
         ).encode('utf-8')), 'text/plain',
@@ -437,12 +440,12 @@ def test_import_wabstic_proporz_invalid_values(session):
                 ','.join((
                     'SortGeschaeft',
                     'KNR',
-                    'Gewahlt',
+                    'Gewaehlt',
                 )),
                 ','.join((
                     '0',
                     'xxx',  # KNR
-                    'xxx',  # Gewahlt
+                    'xxx',  # Gewaehlt
                 )),
             ))
         ).encode('utf-8')), 'text/plain',
@@ -469,14 +472,15 @@ def test_import_wabstic_proporz_invalid_values(session):
         ('wp_gemeinden', 2, 'Invalid entity values'),
         ('wp_gemeinden', 2,
             'Invalid integer: stimmberechtigte'),
-        ('wp_kandidatengde', 2, 'Invalid candidate results'),
+        ('wp_kandidaten', 2, 'Candidate with id'
+                             ' xxx not in wpstatic_kandidaten'),
+        ('wp_kandidatengde', 2, 'Invalid integer: stimmen'),
         ('wp_listen', 2, 'Invalid integer: sitze'),
         ('wp_listengde', 2, 'Invalid integer: stimmentotal'),
         ('wp_wahl', 2, 'Value ausmittlungsstand is not between 0 and 3'),
         ('wpstatic_gemeinden', 2, '100 is unknown'),
-        ('wpstatic_kandidaten', 2, 'Derived list_id has not been found'
-                                   ' in list numbers'),
-        ('wpstatic_kandidaten', 2, 'Invalid candidate values')
+        ('wpstatic_kandidaten', 2, 'List_id x has not been found'
+                                   ' in list numbers')
     ]
 
 
@@ -603,12 +607,12 @@ def test_import_wabstic_proporz_expats(session):
                         ','.join((
                             'SortGeschaeft',
                             'KNR',
-                            'Gewahlt',
+                            'Gewaehlt',
                         )),
                         ','.join((
                             '0',
                             '101',  # KNR
-                            '',  # Gewahlt
+                            '',  # Gewaehlt
                         )),
                     ))
                 ).encode('utf-8')), 'text/plain',
@@ -777,12 +781,12 @@ def test_import_wabstic_proporz_temporary_results(session):
                 ','.join((
                     'SortGeschaeft',
                     'KNR',
-                    'Gewahlt',
+                    'Gewaehlt',
                 )),
                 ','.join((
                     '0',
                     '101',  # KNR
-                    '',  # Gewahlt
+                    '',  # Gewaehlt
                 )),
             ))
         ).encode('utf-8')), 'text/plain',
@@ -961,12 +965,12 @@ def test_import_wabstic_proporz_regional(session):
                     ','.join((
                         'SortGeschaeft',
                         'KNR',
-                        'Gewahlt',
+                        'Gewaehlt',
                     )),
                     ','.join((
                         '0',
                         '101',  # KNR
-                        '',  # Gewahlt
+                        '',  # Gewaehlt
                     )),
                 ))
             ).encode('utf-8')), 'text/plain',
@@ -1119,12 +1123,12 @@ def test_import_wabstic_proporz_regional(session):
                     ','.join((
                         'SortGeschaeft',
                         'KNR',
-                        'Gewahlt',
+                        'Gewaehlt',
                     )),
                     ','.join((
                         '0',
                         '101',  # KNR
-                        '',  # Gewahlt
+                        '',  # Gewaehlt
                     )),
                 ))
             ).encode('utf-8')), 'text/plain',
@@ -1259,12 +1263,12 @@ def test_import_wabstic_proporz_regional(session):
                 ','.join((
                     'SortGeschaeft',
                     'KNR',
-                    'Gewahlt',
+                    'Gewaehlt',
                 )),
                 ','.join((
                     '0',
                     '101',  # KNR
-                    '',  # Gewahlt
+                    '',  # Gewaehlt
                 )),
             ))
         ).encode('utf-8')), 'text/plain',
@@ -1397,12 +1401,12 @@ def test_import_wabstic_proporz_regional(session):
                     ','.join((
                         'SortGeschaeft',
                         'KNR',
-                        'Gewahlt',
+                        'Gewaehlt',
                     )),
                     ','.join((
                         '0',
                         '101',  # KNR
-                        '',  # Gewahlt
+                        '',  # Gewaehlt
                     )),
                 ))
             ).encode('utf-8')), 'text/plain',

@@ -2,7 +2,8 @@ from onegov.ballot import Candidate
 from onegov.ballot import CandidateResult
 from onegov.ballot import ElectionResult
 from onegov.election_day import _
-from onegov.election_day.formats.common import EXPATS
+from onegov.election_day.formats.common import EXPATS, \
+    validate_integer, line_is_relevant
 from onegov.election_day.formats.common import FileImportError
 from onegov.election_day.formats.common import load_csv
 from sqlalchemy.orm import object_session
@@ -46,15 +47,9 @@ HEADERS_WM_KANDIDATENGDE = (
 )
 
 
-def line_is_relevant(line, number, district=None):
-    if district:
-        return line.sortwahlkreis == district and line.sortgeschaeft == number
-    else:
-        return line.sortgeschaeft == number
-
-
-def get_entity_id(line, entities):
-    entity_id = int(line.bfsnrgemeinde or 0)
+def get_entity_id(line):
+    col = 'bfsnrgemeinde'
+    entity_id = validate_integer(line, col)
     return 0 if entity_id in EXPATS else entity_id
 
 
@@ -132,16 +127,24 @@ def import_election_wabstic_majorz(
         if not line_is_relevant(line, number):
             continue
 
-        # Parse the absolute majority
+        # Parse the absolute majority, if None, 0 will be returned
         try:
-            absolute_majority = int(line.absolutesmehr or 0)
-            complete = int(line.ausmittlungsstand or 0)
-            assert 0 <= complete <= 3
-        except (ValueError, AssertionError):
-            line_errors.append(_("Invalid values"))
+            absolute_majority = validate_integer(line, 'absolutesmehr')
+        except ValueError as e:
+            line_errors.append(e.args[0])
         else:
             if absolute_majority == -1:
                 absolute_majority = None
+
+        # Check if complete, if None, 0 will be returned
+        try:
+            complete = validate_integer(line, 'ausmittlungsstand')
+        except ValueError as e:
+            line_errors.append(e.args[0])
+
+        if not 0 <= complete <= 3:
+            line_errors.append(
+                _("Value of ausmittlungsstand not between 0 and 3"))
 
         # Pass the errors and continue to next line
         if line_errors:
@@ -163,9 +166,9 @@ def import_election_wabstic_majorz(
 
         # Parse the id of the entity
         try:
-            entity_id = get_entity_id(line, entities)
-        except ValueError:
-            line_errors.append(_("Invalid id"))
+            entity_id = get_entity_id(line)
+        except ValueError as e:
+            line_errors.append(e.args[0])
         else:
             if entity_id and entity_id not in entities:
                 line_errors.append(
@@ -174,16 +177,15 @@ def import_election_wabstic_majorz(
             if entity_id in added_entities:
                 line_errors.append(
                     _("${name} was found twice", mapping={'name': entity_id}))
+            # Skip expats if not enabled
+            if entity_id == 0 and not election.expats:
+                continue
 
         # Parse the eligible voters
         try:
-            eligible_voters = int(line.stimmberechtigte or 0)
-        except ValueError:
-            line_errors.append(_("Could not read the eligible voters"))
-
-        # Skip expats if not enabled
-        if entity_id == 0 and not election.expats:
-            continue
+            eligible_voters = validate_integer(line, 'stimmberechtigte')
+        except ValueError as e:
+            line_errors.append(e.args[0])
 
         # Pass the errors and continue to next line
         if line_errors:
@@ -208,9 +210,9 @@ def import_election_wabstic_majorz(
 
         # Parse the id of the entity
         try:
-            entity_id = get_entity_id(line, entities)
-        except ValueError:
-            line_errors.append(_("Invalid id"))
+            entity_id = get_entity_id(line)
+        except ValueError as e:
+            line_errors.append(e.args[0])
         else:
             if entity_id and entity_id not in entities:
                 line_errors.append(
@@ -225,15 +227,16 @@ def import_election_wabstic_majorz(
 
         # Check if the entity is counted
         try:
-            entity['counted'] = False if int(line.sperrung or 0) == 0 else True
-        except ValueError:
-            line_errors.append(_("Invalid entity values"))
+            entity['counted'] = False if validate_integer(
+                line, 'sperrung') == 0 else True
+        except ValueError as e:
+            line_errors.append(e.args[0])
 
         # Parse the eligible voters
         try:
-            eligible_voters = int(line.stimmberechtigte or 0)
-        except ValueError:
-            line_errors.append(_("Invalid entity values"))
+            eligible_voters = validate_integer(line, 'stimmberechtigte')
+        except ValueError as e:
+            line_errors.append(e.args[0])
         else:
             eligible_voters = (
                 eligible_voters
@@ -243,13 +246,13 @@ def import_election_wabstic_majorz(
 
         # Parse the ballots and votes
         try:
-            received_ballots = int(line.stmabgegeben or 0)
-            blank_ballots = int(line.stmleer or 0)
-            invalid_ballots = int(line.stmungueltig or 0)
-            blank_votes = int(line.stimmenleer or 0)
-            invalid_votes = int(line.stimmenungueltig or 0)
-        except ValueError:
-            line_errors.append(_("Invalid entity values"))
+            received_ballots = validate_integer(line, 'stmabgegeben')
+            blank_ballots = validate_integer(line, 'stmleer')
+            invalid_ballots = validate_integer(line, 'stmungueltig')
+            blank_votes = validate_integer(line, 'stimmenleer')
+            invalid_votes = validate_integer(line, 'stimmenungueltig')
+        except ValueError as e:
+            line_errors.append(e.args[0])
         else:
             entity['received_ballots'] = received_ballots
             entity['blank_ballots'] = blank_ballots
@@ -281,8 +284,8 @@ def import_election_wabstic_majorz(
             first_name = line.vorname
             elected = True if line.gewaehlt == '1' else False
             party = line.partei
-        except ValueError:
-            line_errors.append(_("Invalid candidate values"))
+        except ValueError as e:
+            line_errors.append(e.args[0])
         else:
             added_candidates[candidate_id] = dict(
                 id=uuid4(),
@@ -313,19 +316,24 @@ def import_election_wabstic_majorz(
             continue
 
         try:
-            entity_id = get_entity_id(line, entities)
+            entity_id = get_entity_id(line)
             candidate_id = line.knr
-            assert candidate_id in added_candidates
-            votes = int(line.stimmen) if line.stimmen else None
-        except (ValueError, AssertionError):
+            votes = validate_integer(line, 'stimmen', None)
+        except ValueError:
             line_errors.append(_("Invalid candidate results"))
         else:
+            if added_candidates and candidate_id not in added_candidates:
+                line_errors.append(
+                    _("Candidate with id ${id} not in wm_kandidaten",
+                      mapping={'id': candidate_id}))
             if entity_id == 0 and not election.expats:
                 # Skip expats if not enabled
                 continue
 
             if entity_id not in added_entities:
-                line_errors.append(_("Invalid entity values"))
+                line_errors.append(
+                    _("Entity with id ${id} not in wmstatic_gemeinden",
+                        mapping={'id': entity_id}))
 
         # Pass the errors and continue to next line
         if line_errors:

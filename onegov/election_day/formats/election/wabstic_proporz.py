@@ -5,7 +5,7 @@ from onegov.ballot import List
 from onegov.ballot import ListConnection
 from onegov.ballot import ListResult
 from onegov.election_day import _
-from onegov.election_day.formats.common import EXPATS
+from onegov.election_day.formats.common import EXPATS, line_is_relevant
 from onegov.election_day.formats.common import FileImportError
 from onegov.election_day.formats.common import load_csv
 from sqlalchemy.orm import object_session
@@ -53,20 +53,13 @@ HEADERS_WPSTATIC_KANDIDATEN = (
 HEADERS_WP_KANDIDATEN = (
     'sortgeschaeft',  # provides the link to the election
     'knr',  # candidate id
-    'gewahlt',  # elected
+    'gewaehlt',  # elected
 )
 HEADERS_WP_KANDIDATENGDE = (
     'bfsnrgemeinde',  # BFS
     'knr',  # candidate id
     'stimmen',  # votes
 )
-
-
-def line_is_relevant(line, number, district=None):
-    if district:
-        return line.sortwahlkreis == district and line.sortgeschaeft == number
-    else:
-        return line.sortgeschaeft == number
 
 
 def get_number_of_mandates(line):
@@ -127,6 +120,19 @@ def get_entity_id(line, expats):
             _('Invalid integer: ${col}'
               ' Can not extract entity_id.', mapping={'col': col}))
     return 0 if entity_id in expats else entity_id
+
+
+def get_votes(line):
+    col = 'stimmen'
+    if not hasattr(line, col):
+        raise ValueError(
+            _('Missing column: ${col}', mapping={'col': col}))
+    try:
+        return int(line.stimmen)
+    except ValueError:
+        raise ValueError(
+            _('Invalid integer: ${col}', mapping={'col': col})
+        )
 
 
 def get_list_id_from_knr(line):
@@ -248,6 +254,7 @@ def import_election_wabstic_proporz(
         return errors
 
     # Parse the election
+
     complete = 0
     for line in wp_wahl.lines:
         line_errors = []
@@ -272,6 +279,7 @@ def import_election_wabstic_proporz(
 
     # Parse the entities
     added_entities = {}
+
     for line in wpstatic_gemeinden.lines:
         line_errors = []
 
@@ -281,8 +289,6 @@ def import_election_wabstic_proporz(
         # Parse the id of the entity
         try:
             entity_id = get_entity_id(line, EXPATS)
-            if entity_id == 3251:
-                pass
         except ValueError as e:
             line_errors.append(e.args[0])
         else:
@@ -450,8 +456,10 @@ def import_election_wabstic_proporz(
         )
 
     # Parse the list results
+
     added_list_results = {}
     for line in wp_listengde.lines:
+
         line_errors = []
 
         try:
@@ -468,7 +476,9 @@ def import_election_wabstic_proporz(
                 continue
 
             if entity_id not in added_entities:
-                line_errors.append(_("Invalid entity values"))
+                line_errors.append(
+                    _("Entity with id ${id} not in added_entities",
+                      mapping={'id': entity_id}))
 
             if list_id in added_list_results.get(entity_id, {}):
                 line_errors.append(
@@ -497,6 +507,7 @@ def import_election_wabstic_proporz(
         added_list_results[entity_id][list_id] = votes
 
     # Parse the candidates
+
     added_candidates = {}
     for line in wpstatic_kandidaten.lines:
         line_errors = []
@@ -519,7 +530,7 @@ def import_election_wabstic_proporz(
 
             if list_id not in added_lists:
                 line_errors.append(
-                    _("Derived list_id has not been found in list numbers",
+                    _("List_id ${list_id} has not been found in list numbers",
                         mapping={
                             'list_id': list_id
                         })
@@ -554,9 +565,11 @@ def import_election_wabstic_proporz(
         try:
             candidate_id = line.knr
             assert candidate_id in added_candidates
-            elected = True if line.gewahlt == '1' else False
+            elected = True if line.gewaehlt == '1' else False
         except (ValueError, AssertionError):
-            line_errors.append(_("Invalid candidate values"))
+            line_errors.append(
+                _("Candidate with id ${id} not in wpstatic_kandidaten",
+                  mapping={'id': candidate_id}))
         else:
             added_candidates[candidate_id]['elected'] = elected
 
@@ -565,7 +578,7 @@ def import_election_wabstic_proporz(
             errors.extend(
                 FileImportError(
                     error=err, line=line.rownumber,
-                    filename='wpstatic_kandidaten'
+                    filename='wp_kandidaten'
                 )
                 for err in line_errors
             )
@@ -578,9 +591,9 @@ def import_election_wabstic_proporz(
         try:
             entity_id = get_entity_id(line, EXPATS)
             candidate_id = line.knr
-            votes = int(line.stimmen)
-        except ValueError:
-            line_errors.append(_("Invalid candidate results"))
+            votes = get_votes(line)
+        except ValueError as e:
+            line_errors.append(e.args[0])
         else:
             if (
                 entity_id not in added_entities
