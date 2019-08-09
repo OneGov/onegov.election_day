@@ -5,6 +5,7 @@ from io import BytesIO
 from onegov.ballot import Election
 from onegov.core.utils import module_path
 from onegov.election_day.formats import import_election_wabstic_majorz
+from onegov.election_day.formats.common import print_errors
 from onegov.election_day.models import Canton
 from pytest import mark
 
@@ -44,7 +45,7 @@ def test_import_wabstic_majorz(session, tar_file):
         BytesIO(wm_kandidaten), 'text/plain',
         BytesIO(wm_kandidatengde), 'text/plain',
     )
-
+    print_errors(errors)
     assert not errors
     assert election.completed
     assert election.progress == (78, 78)
@@ -115,7 +116,7 @@ def test_import_wabstic_majorz_missing_headers(session):
                 ','.join((
                     'SortGeschaeft',
                     'Nachname',
-                    'Gewahlt',
+                    'Gewaehlt',
                     'Partei',
                 )),
             ))
@@ -154,7 +155,7 @@ def test_import_wabstic_majorz_invalid_values(session):
 
     errors = import_election_wabstic_majorz(
         election, principal, '0', '0',
-        BytesIO((
+        BytesIO((       # wm_wahl
             '\n'.join((
                 ','.join((
                     'SortGeschaeft',
@@ -168,7 +169,7 @@ def test_import_wabstic_majorz_invalid_values(session):
                 )),
             ))
         ).encode('utf-8')), 'text/plain',
-        BytesIO((
+        BytesIO((       # wmstatic_gemeinden
             '\n'.join((
                 ','.join((
                     'SortWahlkreis',
@@ -196,7 +197,7 @@ def test_import_wabstic_majorz_invalid_values(session):
                 )),
             ))
         ).encode('utf-8')), 'text/plain',
-        BytesIO((
+        BytesIO((       # wm_gemeinden
             '\n'.join((
                 ','.join((
                     'BfsNrGemeinde',
@@ -220,14 +221,14 @@ def test_import_wabstic_majorz_invalid_values(session):
                 )),
             ))
         ).encode('utf-8')), 'text/plain',
-        BytesIO((
+        BytesIO((       # wm_kandidaten
             '\n'.join((
                 ','.join((
                     'SortGeschaeft',
                     'KNR',
                     'Nachname',
                     'Vorname',
-                    'Gewahlt',
+                    'Gewaehlt',
                     'Partei',
                 )),
                 ','.join((
@@ -235,12 +236,12 @@ def test_import_wabstic_majorz_invalid_values(session):
                     'xxx',  # KNR
                     'xxx',  # Nachname
                     'xxx',  # Vorname
-                    'xxx',  # Gewahlt
+                    'xxx',  # Gewaehlt
                     'xxx',  # Partei
                 )),
             ))
         ).encode('utf-8')), 'text/plain',
-        BytesIO((
+        BytesIO((       # wm_kandidatengde
             '\n'.join((
                 ','.join((
                     'SortGeschaeft',
@@ -264,18 +265,21 @@ def test_import_wabstic_majorz_invalid_values(session):
             ))
         ).encode('utf-8')), 'text/plain'
     )
-
+    print_errors(errors)
     assert sorted([
         (e.filename, e.line, e.error.interpolate()) for e in errors
     ]) == [
-        ('wm_gemeinden', 2, 'Invalid entity values'),
-        ('wm_gemeinden', 2, 'Invalid entity values'),
-        ('wm_gemeinden', 2, 'Invalid entity values'),
+        ('wm_gemeinden', 2, 'Invalid integer: sperrung'),
+        ('wm_gemeinden', 2, 'Invalid integer: stimmberechtigte'),
+        ('wm_gemeinden', 2, 'Invalid integer: stmabgegeben'),
         ('wm_kandidatengde', 2, 'Invalid candidate results'),
-        ('wm_kandidatengde', 3, 'Invalid candidate results'),
-        ('wm_wahl', 2, 'Invalid values'),
+        ('wm_kandidatengde', 3, 'Candidate with id 100 not in wm_kandidaten'),
+        ('wm_kandidatengde', 3,
+            'Entity with id 3256 not in wmstatic_gemeinden'),
+        ('wm_wahl', 2, 'Invalid integer: absolutesmehr'),
+        ('wm_wahl', 2, 'Value of ausmittlungsstand not between 0 and 3'),
         ('wmstatic_gemeinden', 2, '100 is unknown'),
-        ('wmstatic_gemeinden', 2, 'Could not read the eligible voters'),
+        ('wmstatic_gemeinden', 2, 'Invalid integer: stimmberechtigte'),
         ('wmstatic_gemeinden', 4, '3215 was found twice')
     ]
 
@@ -359,7 +363,7 @@ def test_import_wabstic_majorz_expats(session):
                             'KNR',
                             'Nachname',
                             'Vorname',
-                            'Gewahlt',
+                            'Gewaehlt',
                             'Partei',
                         )),
                         ','.join((
@@ -367,7 +371,7 @@ def test_import_wabstic_majorz_expats(session):
                             '1',  # KNR
                             'xxx',  # Nachname
                             'xxx',  # Vorname
-                            '',  # Gewahlt
+                            '',  # Gewaehlt
                             '',  # Partei
                         )),
                     ))
@@ -491,7 +495,7 @@ def test_import_wabstic_majorz_temporary_results(session):
                     'KNR',
                     'Nachname',
                     'Vorname',
-                    'Gewahlt',
+                    'Gewaehlt',
                     'Partei',
                 )),
                 ','.join((
@@ -499,7 +503,7 @@ def test_import_wabstic_majorz_temporary_results(session):
                     '1',  # KNR
                     'xxx',  # Nachname
                     'xxx',  # Vorname
-                    '',  # Gewahlt
+                    '',  # Gewaehlt
                     '',  # Partei
                 )),
             ))
@@ -527,7 +531,7 @@ def test_import_wabstic_majorz_temporary_results(session):
             ))
         ).encode('utf-8')), 'text/plain'
     )
-
+    print_errors(errors)
     assert not errors
 
     # 1 Counted, 1 Uncounted, 75 Missing
@@ -632,7 +636,7 @@ def test_import_wabstic_majorz_regional(session):
                         'KNR',
                         'Nachname',
                         'Vorname',
-                        'Gewahlt',
+                        'Gewaehlt',
                         'Partei',
                     )),
                     ','.join((
@@ -640,7 +644,7 @@ def test_import_wabstic_majorz_regional(session):
                         '1',  # KNR
                         'xxx',  # Nachname
                         'xxx',  # Vorname
-                        '',  # Gewahlt
+                        '',  # Gewaehlt
                         '',  # Partei
                     )),
                 ))
@@ -749,7 +753,7 @@ def test_import_wabstic_majorz_regional(session):
                         'KNR',
                         'Nachname',
                         'Vorname',
-                        'Gewahlt',
+                        'Gewaehlt',
                         'Partei',
                     )),
                     ','.join((
@@ -757,7 +761,7 @@ def test_import_wabstic_majorz_regional(session):
                         '1',  # KNR
                         'xxx',  # Nachname
                         'xxx',  # Vorname
-                        '',  # Gewahlt
+                        '',  # Gewaehlt
                         '',  # Partei
                     )),
                 ))
@@ -852,7 +856,7 @@ def test_import_wabstic_majorz_regional(session):
                     'KNR',
                     'Nachname',
                     'Vorname',
-                    'Gewahlt',
+                    'Gewaehlt',
                     'Partei',
                 )),
                 ','.join((
@@ -860,7 +864,7 @@ def test_import_wabstic_majorz_regional(session):
                     '1',  # KNR
                     'xxx',  # Nachname
                     'xxx',  # Vorname
-                    '',  # Gewahlt
+                    '',  # Gewaehlt
                     '',  # Partei
                 )),
             ))
@@ -952,7 +956,7 @@ def test_import_wabstic_majorz_regional(session):
                         'KNR',
                         'Nachname',
                         'Vorname',
-                        'Gewahlt',
+                        'Gewaehlt',
                         'Partei',
                     )),
                     ','.join((
@@ -960,7 +964,7 @@ def test_import_wabstic_majorz_regional(session):
                         '1',  # KNR
                         'xxx',  # Nachname
                         'xxx',  # Vorname
-                        '',  # Gewahlt
+                        '',  # Gewaehlt
                         '',  # Partei
                     )),
                 ))
