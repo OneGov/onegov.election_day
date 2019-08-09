@@ -278,7 +278,8 @@ class SearchableArchivedResultCollection(
             domain=None,
             term=None,
             answer=None,
-            locale='de_CH'
+            locale='de_CH',
+            page=0
     ):
         """
 
@@ -304,6 +305,32 @@ class SearchableArchivedResultCollection(
         self.answer = answer
         self.locale = locale
         self.app_principal_domain = None
+        self.page = page
+
+    def __eq__(self, other):
+        return self.page == other.page
+
+    def subset(self):
+        return self.query()
+
+    @property
+    def page_index(self):
+        return self.page
+
+    def page_by_index(self, index):
+        return self.__class__(
+            session=self.session,
+            date_=self.date,
+            from_date=self.from_date,
+            to_date=self.to_date,
+            types=self.types,
+            item_type=self.item_type,
+            domain=self.domain,
+            term=self.term,
+            answer=self.answer,
+            locale=self.locale,
+            page=index
+        )
 
     def group_items(self, items, request):
         compounded = [
@@ -318,7 +345,7 @@ class SearchableArchivedResultCollection(
             ]
         )
 
-        return len(items['votes']) + len(items['elections']), items
+        return items
 
     @staticmethod
     def term_to_tsquery_string(term):

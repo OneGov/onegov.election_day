@@ -165,7 +165,8 @@ def get_archive_search(
         types=None,
         item_type=None,
         domain=None,
-        term=None
+        term=None,
+        page=0
 ):
 
     return SearchableArchivedResultCollection(
@@ -176,7 +177,8 @@ def get_archive_search(
         types=types,
         item_type=item_type,
         domain=domain,
-        term=term
+        term=term,
+        page=page
     )
 
 

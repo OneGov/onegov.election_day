@@ -91,6 +91,9 @@
                         </tal:block>
                     </tbody>
                 </table>
+                    <div class="pagination-centered">
+                    <div metal:use-macro="layout.macros['pagination']" tal:define="collection layout.model; current_page layout.model;" />
+                </div>
                 </tal:block>
 
                 <tal:block tal:condition="item_type in ['election', 'election_compound']">

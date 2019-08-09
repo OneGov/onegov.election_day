@@ -195,10 +195,26 @@ class TestSearchableCollection:
         items = searchable_archive.query().all()
         request = DummyRequest()
         assert request.app.principal.domain, 'DummyRequest should have domain'
-        count, g_items = searchable_archive.group_items(items, request)
+        g_items = searchable_archive.group_items(items, request)
         votes = g_items.get('votes')
         elections = g_items.get('elections')
         assert len(items) == len(votes) + len(elections)
+
+    def test_pagination(self, searchable_archive):
+        # Tests methods that have to be implemented for pagination parent class
+        assert searchable_archive.batch_size == 10
+        assert len(searchable_archive.batch) == 10
+        assert searchable_archive.subset_count == 12
+        assert searchable_archive.page_index == 0
+        assert searchable_archive.pages_count == 2
+        next_ = searchable_archive.next
+        assert next_.page_index != searchable_archive.page_index
+        by_index = searchable_archive.page_by_index(2)
+
+        for key in searchable_archive.__dict__:
+            if key in ('page', 'cached_subset', 'batch'):
+                continue
+            assert getattr(searchable_archive, key) == getattr(by_index, key)
 
     def test_query_ordering(self, searchable_archive):
 
