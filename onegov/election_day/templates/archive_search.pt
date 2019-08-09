@@ -38,7 +38,7 @@
                         <div metal:use-macro="layout.macros['form']" tal:define="form_method 'GET';button_class 'right'"/>
                     </div>
                 </div>
-                <strong tal:condition="archive_items">Found ${item_count} items.</strong>
+                <strong tal:condition="archive_items" i18n:translate="">Found ${item_count} items.</strong>
                 <hr>
                 <!--? BEGIN VOTING TABLE   -->
                 <tal:block tal:condition="item_type == 'vote'">
