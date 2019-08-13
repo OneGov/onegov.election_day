@@ -211,8 +211,6 @@ class TestSearchableCollection:
         assert next_.page_index != searchable_archive.page_index
         by_index = searchable_archive.page_by_index(2)
 
-
-
         for key in searchable_archive.__dict__:
             if key in ('page', 'cached_subset', 'batch'):
                 continue
