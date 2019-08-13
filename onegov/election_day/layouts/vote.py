@@ -108,10 +108,11 @@ class VoteLayout(DetailLayout):
 
     @cached_property
     def table_link(self):
+        if self.tab == 'data':
+            return None
         scope = 'entities'
         if 'district' in self.tab:
             scope = 'districts'
-
         return self.request.link(
             self.model, f'{self.ballot.type}-by-{scope}-table'
         )
