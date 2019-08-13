@@ -12,6 +12,23 @@ class ElectionCompoundLayout(DetailLayout):
         super().__init__(model, request)
         self.tab = tab
 
+
+    @cached_property
+    def tabs_with_embedded_tables(self):
+        return (
+            'districts',
+            'candidates',
+            'party-strengths',
+        )
+
+    @cached_property
+    def table_link(self):
+        if not self.tab in self.tabs_with_embedded_tables:
+            return None
+        return self.request.link(
+            self.model, f'{self.tab}-table'
+        )
+
     @cached_property
     def all_tabs(self):
         return (
@@ -146,15 +163,3 @@ class ElectionCompoundLayout(DetailLayout):
             )
         )
 
-    @cached_property
-    def table_link(self):
-        if self.tab in (
-                'mandate-allocation',
-                'parties-panachage',
-                'data'
-        ):
-            return None
-
-        return self.request.link(
-            self.model, f'{self.tab}-table'
-        )

@@ -13,6 +13,21 @@ class ElectionLayout(DetailLayout):
         self.tab = tab
 
     @cached_property
+    def tabs_with_embedded_tables(self):
+        return (
+            'lists',
+            'candidates',
+            'party-strengths',
+            'statistics',
+        )
+
+    @cached_property
+    def table_link(self):
+        if not self.tab in self.tabs_with_embedded_tables:
+            return None
+        return self.request.link(self.model, f'{self.tab}-table')
+
+    @cached_property
     def all_tabs(self):
         return (
             'lists',
@@ -240,23 +255,6 @@ class ElectionLayout(DetailLayout):
 
         return self.request.link(self.model, name='{}-svg'.format(self.tab))
 
-    @cached_property
-    def table_link(self):
-        if self.tab in (
-                'list-by-entity',
-                'list-by-district',
-                'connections',
-                'lists-panachage',
-                'candidate-by-entity',
-                'candidate-by-district',
-                'parties-panachage',
-                'data'
-        ):
-            return None
-
-        return self.request.link(
-            self.model, f'{self.tab}-table'
-        )
 
     @cached_property
     def svg_name(self):
