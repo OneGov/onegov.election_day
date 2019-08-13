@@ -145,3 +145,16 @@ class ElectionCompoundLayout(DetailLayout):
                 )
             )
         )
+
+    @cached_property
+    def table_link(self):
+        if self.tab in (
+                'mandate-allocation',
+                'parties-panachage',
+                'data'
+        ):
+            return None
+
+        return self.request.link(
+            self.model, f'{self.tab}-table'
+        )

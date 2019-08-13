@@ -241,6 +241,24 @@ class ElectionLayout(DetailLayout):
         return self.request.link(self.model, name='{}-svg'.format(self.tab))
 
     @cached_property
+    def table_link(self):
+        if self.tab in (
+                'list-by-entity',
+                'list-by-district',
+                'connections',
+                'lists-panachage',
+                'candidate-by-entity',
+                'candidate-by-district',
+                'parties-panachage',
+                'data'
+        ):
+            return None
+
+        return self.request.link(
+            self.model, f'{self.tab}-table'
+        )
+
+    @cached_property
     def svg_name(self):
         """ Returns a nice to read SVG filename. """
 

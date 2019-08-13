@@ -1,4 +1,6 @@
 from datetime import date
+
+import pytest
 from freezegun import freeze_time
 from onegov.ballot import Election
 from onegov.ballot import ElectionCompound
@@ -223,3 +225,19 @@ def test_election_compound_layout_menu_proporz(session):
         ('Panachage', 'ElectionCompound/parties-panachage', False, []),
         ('Downloads', 'ElectionCompound/data', False, [])
     ]
+
+
+@pytest.mark.parametrize('tab,expected', [
+    ('districts', 'ElectionCompound/districts-table'),
+    ('candidates', 'ElectionCompound/candidates-table'),
+    ('mandate-allocation', None),
+    ('party-strengths', 'ElectionCompound/party-strengths-table'),
+    ('parties-panachage', None),
+    ('data', None)
+
+])
+def test_election_compound_layout_table_links(tab, expected):
+    # Test link depending on tab
+    election = ElectionCompound(date=date(2100, 1, 1), domain='federation')
+    layout = ElectionCompoundLayout(election, DummyRequest(), tab=tab)
+    assert expected == layout.table_link
