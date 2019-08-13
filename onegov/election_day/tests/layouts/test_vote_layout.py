@@ -241,7 +241,8 @@ def test_vote_layout_menu_complex(session):
     ('tie-breaker-districts', 'Vote/proposal-by-districts-table'),
     ('data', None)
 ])
-def test_vote_layout_table_links(session, tab, expected):
+def test_vote_layout_table_links(tab, expected):
+    # Check if test contains all tabs
     # Test link depending on tab
     vote = Vote(date=date(2000, 1, 1), domain='federation')
     assert vote.ballot
