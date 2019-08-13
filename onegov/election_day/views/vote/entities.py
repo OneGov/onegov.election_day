@@ -212,7 +212,7 @@ def view_ballot_as_table(self, request):
     return {
         'ballot': self,
         'layout': DefaultLayout(self, request),
-        'type': 'table',
+        'type': 'ballot-table',
         'year': self.vote.date.year,
         'scope': 'entities',
     }
