@@ -5,6 +5,15 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal">
 <body>
 
+<metal:embedded_table define-macro="embedded_table" i18n:domain="onegov.election_day">
+    <div tal:condition="layout.table_link|False" class="embedded-table"
+        data-embed-link="Embed"
+        data-embed-source="${layout.table_link}"
+        i18n:attributes="data-embed-source; data-embed-link"
+        >
+    </div>
+</metal:embedded_table>
+
 <metal:answer define-macro="answer" i18n:domain="onegov.election_day">
     <span tal:condition="answer == 'accepted'" class="answer accepted" i18n:translate="">
         Accepted
@@ -413,7 +422,7 @@
             </li>
         </ul>
     </div>
-</metal:upload_errors>
+</metal:upload_errors
 
 <metal:tablesaw_translations define-macro="tablesaw_translations" i18n:domain="onegov.election_day">
     <script>
