@@ -1,7 +1,12 @@
 from datetime import date
+
+import pytest
 from freezegun import freeze_time
 from math import isclose
-from onegov.election_day.tests.common import login
+
+from onegov.ballot import Election
+from onegov.election_day.layouts import ElectionLayout
+from onegov.election_day.tests.common import login, DummyRequest
 from onegov.election_day.tests.common import MAJORZ_HEADER
 from onegov.election_day.tests.common import upload_majorz_election
 from onegov.election_day.tests.common import upload_party_results
@@ -613,7 +618,6 @@ def test_view_election_relations(election_day_app_gr):
     client.get('/locale/de_CH').follow()
 
     login(client)
-    upload_majorz_election
 
     new = client.get('/manage/elections/new-election')
     new.form['election_de'] = 'First Election'
@@ -656,3 +660,19 @@ def test_view_election_relations(election_day_app_gr):
         assert '<h2>Zugehörige Wahlen</h2>' in result
         assert 'http://localhost/election/first-election' in result
         assert 'First Election' in result
+
+
+# def test_elections_embbeded_table_redirects(election_day_app_gr):
+#     client = Client(election_day_app_gr)
+#     client.get('/locale/de_CH').follow()
+#     session = election_day_app_gr.session_manager.session()
+#     login(client)
+#     upload_majorz_election(client)
+#     election = session.query(Election).filter(
+#         Election.title == 'Major Election')
+#     assert election
+#     layout = ElectionLayout(election, election_day_app_gr.request())
+#     for tab in layout.tabs_with_embedded_tables:
+#         resp = client.get(f'/election/majorz-election/{tab}')
+#         print(resp)
+#     assert False
