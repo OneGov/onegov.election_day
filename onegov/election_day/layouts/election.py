@@ -17,7 +17,6 @@ class ElectionLayout(DetailLayout):
         return (
             'lists',
             'candidates',
-            'party-strengths',
             'statistics',
         )
 

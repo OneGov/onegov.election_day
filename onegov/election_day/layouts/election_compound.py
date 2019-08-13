@@ -18,7 +18,6 @@ class ElectionCompoundLayout(DetailLayout):
         return (
             'districts',
             'candidates',
-            'party-strengths',
         )
 
     @cached_property
