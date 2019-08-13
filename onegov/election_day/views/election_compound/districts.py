@@ -14,9 +14,7 @@ def view_election_compound_districts(self, request):
 
     """" The districts view. """
 
-    layout = ElectionCompoundLayout(self, request, 'districts')
-
     return {
         'election_compound': self,
-        'layout': layout
+        'layout': ElectionCompoundLayout(self, request, 'districts')
     }
