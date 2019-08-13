@@ -134,5 +134,20 @@
                 </tfoot>
             </table>
         </tal:block>
+        <tal:block tal:condition="type == 'election-table' and scope == 'lists'">
+            <metal metal:use-macro="election-lists-table"></metal>
+        </tal:block>
+        <tal:block tal:condition="type == 'election-table' and scope == 'candidates'">
+            <tal:block metal:use-macro="layout.macros['election-candidates-table']"></tal:block>
+        </tal:block>
+        <tal:block tal:condition="type == 'election-table' and scope == 'statistics'">
+            <tal:block metal:use-macro="layout.macros['election-statistics-table']"></tal:block>
+        </tal:block>
+        <tal:block tal:condition="type == 'election-compound-table' and scope == 'districts'">
+            <tal:block metal:use-macro="layout.macros['election-compound-districts-table']"></tal:block>
+        </tal:block>
+        <tal:block tal:condition="type == 'election-compound-table' and scope == 'candidates'">
+            <tal:block metal:use-macro="layout.macros['election-compound-candidates-table']"></tal:block>
+        </tal:block>
     </body>
 </html>
