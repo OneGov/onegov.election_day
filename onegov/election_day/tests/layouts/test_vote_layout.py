@@ -8,6 +8,7 @@ from onegov.election_day.tests.common import DummyRequest
 from unittest.mock import Mock
 import pytest
 
+
 def test_vote_layout(session):
     layout = VoteLayout(Vote(), DummyRequest())
 

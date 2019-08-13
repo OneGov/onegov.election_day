@@ -22,7 +22,7 @@ class ElectionLayout(DetailLayout):
 
     @cached_property
     def table_link(self):
-        if not self.tab in self.tabs_with_embedded_tables:
+        if self.tab not in self.tabs_with_embedded_tables:
             return None
         return self.request.link(self.model, f'{self.tab}-table')
 
@@ -253,7 +253,6 @@ class ElectionLayout(DetailLayout):
         """ Returns a link to the SVG download view. """
 
         return self.request.link(self.model, name='{}-svg'.format(self.tab))
-
 
     @cached_property
     def svg_name(self):

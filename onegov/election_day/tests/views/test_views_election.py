@@ -1,12 +1,9 @@
 from datetime import date
 
-import pytest
 from freezegun import freeze_time
 from math import isclose
 
-from onegov.ballot import Election
-from onegov.election_day.layouts import ElectionLayout
-from onegov.election_day.tests.common import login, DummyRequest
+from onegov.election_day.tests.common import login
 from onegov.election_day.tests.common import MAJORZ_HEADER
 from onegov.election_day.tests.common import upload_majorz_election
 from onegov.election_day.tests.common import upload_party_results

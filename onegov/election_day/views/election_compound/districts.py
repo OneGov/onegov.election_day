@@ -36,5 +36,3 @@ def view_election_compound_districts_table(self, request):
         'type': 'election-compound-table',
         'scope': 'districts'
     }
-
-

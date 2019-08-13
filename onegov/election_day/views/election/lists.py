@@ -65,6 +65,7 @@ def view_election_lists_table(self, request):
         'scope': 'lists',
     }
 
+
 @ElectionDayApp.html(
     model=Election,
     name='lists',

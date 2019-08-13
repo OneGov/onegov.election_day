@@ -3,7 +3,6 @@ from onegov.core.security import Public
 from onegov.election_day import ElectionDayApp
 from onegov.election_day.layouts import ElectionCompoundLayout
 from onegov.election_day.utils.election import get_elected_candidates
-from onegov.core.cache import lru_cache
 
 
 def get_districts(model, request):
@@ -11,6 +10,7 @@ def get_districts(model, request):
         election.id: (election.district, request.link(election))
         for election in model.elections if election.results.first()
     }
+
 
 @ElectionDayApp.html(
     model=ElectionCompound,
@@ -21,8 +21,6 @@ def get_districts(model, request):
 def view_election_compound_candidates(self, request):
 
     """" The main view. """
-
-    layout = ElectionCompoundLayout(self, request, 'candidates')
 
     session = request.app.session()
 

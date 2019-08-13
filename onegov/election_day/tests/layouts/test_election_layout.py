@@ -13,6 +13,7 @@ from onegov.election_day.tests.common import DummyRequest
 from unittest.mock import Mock
 import pytest
 
+
 def test_election_layout(session):
     layout = ElectionLayout(None, DummyRequest())
 
