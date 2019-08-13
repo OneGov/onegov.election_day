@@ -5,6 +5,30 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal">
 <body>
 
+<metal:election-lists-table define-macro="election-lists-table">
+    <table
+                class="results tablesaw sortable"
+                data-tablesaw-mode="columntoggle"
+                data-tablesaw-mode-switch="" data-tablesaw-mode-exclude="swipe"
+                data-tablesaw-minimap=""
+                >
+                <thead>
+                    <tr>
+                        <th data-tablesaw-priority="persist" i18n:translate="">List</th>
+                        <th data-tablesaw-priority="1" i18n:translate="single_votes" class="right-aligned">Votes</th>
+                        <th data-tablesaw-priority="1" i18n:translate="" class="right-aligned">Mandates</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr tal:repeat="list lists">
+                        <td>${list[0]}</td>
+                        <td class="right-aligned" data-text="${list[1] or 0}">${layout.format_number(list[1] or 0)}</td>
+                        <td class="right-aligned">${list[3]}</td>
+                    </tr>
+                </tbody>
+            </table>
+</metal:election-lists-table>
+
 <metal:embedded_table define-macro="embedded_table" i18n:domain="onegov.election_day">
     <div tal:condition="layout.table_link|False" class="embedded-table"
         data-embed-link="Embed"
