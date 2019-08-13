@@ -131,15 +131,11 @@ class ElectionLayout(DetailLayout):
 
     @cached_property
     def majorz(self):
-        if self.model.type == 'majorz':
-            return True
-        return False
+        return self.model.type == 'majorz'
 
     @cached_property
     def proporz(self):
-        if self.model.type == 'proporz':
-            return True
-        return False
+        return self.model.type == 'proporz'
 
     @cached_property
     def tacit(self):
