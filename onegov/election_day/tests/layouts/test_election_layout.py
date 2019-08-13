@@ -379,7 +379,7 @@ def test_election_layout_menu_proporz(session):
     ('candidates', 'Election/candidates-table'),
     ('candidate-by-entity', None),
     ('candidate-by-district', None),
-    ('party-strengths', 'Election/party-strengths-table'),
+    ('party-strengths', None),
     ('parties-panachage', None),
     ('statistics', 'Election/statistics-table'),
     ('data', None)

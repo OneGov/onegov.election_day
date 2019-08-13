@@ -231,7 +231,7 @@ def test_election_compound_layout_menu_proporz(session):
     ('districts', 'ElectionCompound/districts-table'),
     ('candidates', 'ElectionCompound/candidates-table'),
     ('mandate-allocation', None),
-    ('party-strengths', 'ElectionCompound/party-strengths-table'),
+    ('party-strengths', None),
     ('parties-panachage', None),
     ('data', None)
 
