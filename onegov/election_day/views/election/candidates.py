@@ -58,11 +58,9 @@ def view_election_candidates(self, request):
 
     """" The main view. """
 
-    layout = ElectionLayout(self, request, 'candidates')
-
     return {
         'election': self,
-        'layout': layout,
+        'layout': ElectionLayout(self, request, 'candidates'),
         'candidates': get_candidates_results(self, object_session(self)).all()
     }
 
