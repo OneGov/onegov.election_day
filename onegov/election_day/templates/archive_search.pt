@@ -23,7 +23,7 @@
                                     <ul class="left">
 
                                         <tal:block repeat="(title, link, active) layout.menu">
-                                            <li tal:attributes="class 'active' if active else ''">
+                                            <li tal:attributes="class python: 'active' if active else ''">
                                                 <a href="${link}">${title}</a>
                                             </li>
                                         </tal:block>
@@ -34,11 +34,11 @@
                         </div>
                     </div>
                     <div class="columns small-12">
-                        <h3 i18n:translate>Search in ${layout.tab_menu_title}</h3>
+                        <h3 i18n:translate>Search in <tal:block i18n:name="title">${layout.tab_menu_title}</tal:block></h3>
                         <div metal:use-macro="layout.macros['form']" tal:define="form_method 'GET';button_class 'right'"/>
                     </div>
-                </div>
-                <strong tal:condition="archive_items" i18n:translate="">Found ${item_count} items.</strong>
+
+                <strong tal:condition="archive_items" i18n:translate="">Found <tal:block i18n:name="item_count">${item_count}</tal:block> items.</strong>
                 <hr>
                 <!--? BEGIN VOTING TABLE   -->
                 <tal:block tal:condition="item_type == 'vote'">
