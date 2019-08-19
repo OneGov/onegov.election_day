@@ -5,7 +5,8 @@ from onegov.ballot import List
 from onegov.ballot import ListConnection
 from onegov.ballot import ListResult
 from onegov.election_day import _
-from onegov.election_day.formats.common import EXPATS, line_is_relevant
+from onegov.election_day.formats.common import EXPATS, line_is_relevant, \
+    validate_integer
 from onegov.election_day.formats.common import FileImportError
 from onegov.election_day.formats.common import load_csv
 from sqlalchemy.orm import object_session
@@ -62,77 +63,10 @@ HEADERS_WP_KANDIDATENGDE = (
 )
 
 
-def get_number_of_mandates(line):
-    col = 'sitze'
-    if not hasattr(line, col):
-        raise ValueError(_('Missing column: ${col}', mapping={'col': col}))
-    try:
-        return int(line.sitze or 0)
-    except ValueError:
-        raise ValueError(
-            _('Invalid integer: ${col}', mapping={'col': col}))
-
-
-def get_ausmittlungsstand(line):
-    col = 'ausmittlungsstand'
-    try:
-        result = int(line.ausmittlungsstand or 0)
-
-    except ValueError:
-        raise ValueError(
-            _('Invalid integer: ${col}', mapping={'col': col}))
-    if not (0 <= result <= 3):
-        raise ValueError(
-            _('Value ${col} is not between 0 and 3', mapping={'col': col}))
-    return result
-
-
-def get_stimmberechtigte(line):
-    col = 'stimmberechtigte'
-    if not hasattr(line, col):
-        raise ValueError(_('Missing column: ${col}', mapping={'col': col}))
-    try:
-        return int(line.stimmberechtigte or 0)
-    except ValueError:
-        raise ValueError(
-            _('Invalid integer: ${col}', mapping={'col': col}))
-
-
-def get_stimmentotal(line):
-    col = 'stimmentotal'
-    if not hasattr(line, col):
-        raise ValueError(_('Missing column: ${col}', mapping={'col': col}))
-    try:
-        return int(line.stimmentotal)
-    except ValueError:
-        raise ValueError(_('Invalid integer: ${col}', mapping={'col': col}))
-
-
 def get_entity_id(line, expats):
     col = 'bfsnrgemeinde'
-    if not hasattr(line, col):
-        raise ValueError(
-            _('Missing column: ${col}', mapping={'col': col}))
-    try:
-        entity_id = int(line.bfsnrgemeinde or 0)
-    except ValueError:
-        raise ValueError(
-            _('Invalid integer: ${col}'
-              ' Can not extract entity_id.', mapping={'col': col}))
+    entity_id = validate_integer(line, col)
     return 0 if entity_id in expats else entity_id
-
-
-def get_votes(line):
-    col = 'stimmen'
-    if not hasattr(line, col):
-        raise ValueError(
-            _('Missing column: ${col}', mapping={'col': col}))
-    try:
-        return int(line.stimmen)
-    except ValueError:
-        raise ValueError(
-            _('Invalid integer: ${col}', mapping={'col': col})
-        )
 
 
 def get_list_id_from_knr(line):
@@ -141,18 +75,12 @@ def get_list_id_from_knr(line):
     returns the derived listnr for this candidate. Will also handle the new
     WabstiC Standard 2018.
     """
-    col = 'knr'
-    if not hasattr(line, col):
-        raise ValueError(_('Missing column: ${col}', mapping={'col', col}))
     if '.' in line.knr:
         return line.knr.split('.')[0]
     return line.knr[0:-2]
 
 
 def get_list_id(line):
-    col = 'listnr'
-    if not hasattr(line, col):
-        raise ValueError(_('Missing column: ${col}', mapping={'col': col}))
     number = line.listnr or '0'
     # wabstiC 99 is blank list that maps to 999 see open_data_de.md
     number = '999' if number == '99' else number
@@ -263,9 +191,14 @@ def import_election_wabstic_proporz(
             continue
 
         try:
-            complete = get_ausmittlungsstand(line)
-        except (ValueError, AssertionError) as e:
+            complete = validate_integer(line, 'ausmittlungsstand')
+        except ValueError as e:
             line_errors.append(e.args[0])
+        else:
+            if not (0 <= complete <= 3):
+                line_errors.append(
+                    _('Value ${col} is not between 0 and 3',
+                      mapping={'col': 'ausmittlungsstand'}))
 
         # Pass the errors and continue to next line
         if line_errors:
@@ -302,7 +235,7 @@ def import_election_wabstic_proporz(
 
         # Parse the eligible voters
         try:
-            eligible_voters = get_stimmberechtigte(line)
+            eligible_voters = validate_integer(line, 'stimmberechtigte')
         except ValueError as e:
             line_errors.append(e.args[0])
 
@@ -356,7 +289,7 @@ def import_election_wabstic_proporz(
 
         # Parse the eligible voters
         try:
-            eligible_voters = get_stimmberechtigte(line)
+            eligible_voters = validate_integer(line, 'stimmberechtigte')
         except ValueError as e:
             line_errors.append(e.args[0])
         else:
@@ -368,11 +301,11 @@ def import_election_wabstic_proporz(
 
         # Parse the ballots and votes
         try:
-            received_ballots = int(line.stmabgegeben or 0)
-            blank_ballots = int(line.stmleer or 0)
-            invalid_ballots = int(line.stmungueltig or 0)
-        except ValueError:
-            line_errors.append(_("Invalid entity values"))
+            received_ballots = validate_integer(line, 'stmabgegeben')
+            blank_ballots = validate_integer(line, 'stmleer')
+            invalid_ballots = validate_integer(line, 'stmungueltig')
+        except ValueError as e:
+            line_errors.append(e.args[0])
         else:
             entity['received_ballots'] = received_ballots
             entity['blank_ballots'] = blank_ballots
@@ -401,7 +334,7 @@ def import_election_wabstic_proporz(
         try:
             list_id = get_list_id(line)
             name = line.listcode
-            number_of_mandates = get_number_of_mandates(line)
+            number_of_mandates = validate_integer(line, 'sitze')
             connection = line.listverb or None
             subconnection = line.listuntverb or None
             if subconnection:
@@ -465,7 +398,7 @@ def import_election_wabstic_proporz(
         try:
             entity_id = get_entity_id(line, EXPATS)
             list_id = get_list_id(line)
-            votes = get_stimmentotal(line)
+            votes = validate_integer(line, 'stimmentotal')
         except ValueError as e:
             line_errors.append(e.args[0])
         else:
@@ -520,7 +453,7 @@ def import_election_wabstic_proporz(
             list_id = get_list_id_from_knr(line)
             family_name = line.nachname
             first_name = line.vorname
-        except ValueError:
+        except TypeError:
             line_errors.append(_("Invalid candidate values"))
         else:
             if candidate_id in added_candidates:
@@ -564,13 +497,16 @@ def import_election_wabstic_proporz(
 
         try:
             candidate_id = line.knr
-            assert candidate_id in added_candidates
-            elected = True if line.gewaehlt == '1' else False
-        except (ValueError, AssertionError):
-            line_errors.append(
-                _("Candidate with id ${id} not in wpstatic_kandidaten",
-                  mapping={'id': candidate_id}))
+            gewaehlt = validate_integer(line, 'gewaehlt')
+            elected = True if gewaehlt == 1 else False
+        except ValueError as e:
+            line_errors.append(e.args[0])
+
         else:
+            if candidate_id not in added_candidates:
+                line_errors.append(
+                    _("Candidate with id ${id} not in wpstatic_kandidaten",
+                      mapping={'id': candidate_id}))
             added_candidates[candidate_id]['elected'] = elected
 
         # Pass the errors and continue to next line
@@ -591,7 +527,7 @@ def import_election_wabstic_proporz(
         try:
             entity_id = get_entity_id(line, EXPATS)
             candidate_id = line.knr
-            votes = get_votes(line)
+            votes = validate_integer(line, 'stimmen')
         except ValueError as e:
             line_errors.append(e.args[0])
         else:
