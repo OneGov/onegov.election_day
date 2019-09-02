@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-25 11:09+0200\n"
-"PO-Revision-Date: 2019-07-25 11:13+0200\n"
+"POT-Creation-Date: 2019-08-14 10:29+0200\n"
+"PO-Revision-Date: 2019-08-14 10:42+0200\n"
 "Last-Translator: Marc Sommerhalder <marc.sommerhalder@seantis.ch>\n"
 "Language-Team: German\n"
 "Language: de_CH\n"
@@ -289,6 +289,14 @@ msgstr "Die CSV/XLS/XLSX Date ist leer."
 msgid "The file contains an empty line."
 msgstr "Die Datei enthält eine leere Zeile."
 
+#, python-format
+msgid "Invalid integer: ${col}"
+msgstr "Ungültige Ganzzahl: ${col}"
+
+#, python-format
+msgid "Empty value: ${col}"
+msgstr "Leerer Wert: ${col}"
+
 msgid "Not a valid xls/xlsx file."
 msgstr "Keine gültige XLS/XLSX Datei."
 
@@ -302,10 +310,6 @@ msgstr "Fehlende Spalte: ${col}"
 #, python-format
 msgid "Value ${col} is not between 0 and 3"
 msgstr "Wert ${col} ist nicht zwischen 0 und 3"
-
-#, python-format
-msgid "Invalid integer: ${col}"
-msgstr "Ungültige Ganzzahl: ${col}"
 
 #, python-format
 msgid "Invalid integer: ${col} Can not extract entity_id."
@@ -326,14 +330,20 @@ msgstr "${name} kommt zweimal vor"
 msgid "Invalid entity values"
 msgstr "Ungültige Daten"
 
+#, python-format
+msgid "Entity with id ${id} not in added_entities"
+msgstr "Wahl mit id ${id} nicht in added_entities"
+
 msgid "Invalid candidate values"
 msgstr "Ungültige Kandidierendendaten"
 
-msgid "Unknown derived list id"
-msgstr "Unbekannte abgeleitete list id"
+#, python-format
+msgid "List_id ${list_id} has not been found in list numbers"
+msgstr "List_id ${list_id} nicht gefunden in list numbers"
 
-msgid "Invalid candidate results"
-msgstr "Ungültige Kandidierendenresultate"
+#, python-format
+msgid "Candidate with id ${id} not in wpstatic_kandidaten"
+msgstr "Kandidat mit id ${id} nicht in wpstatic_kandidaten"
 
 msgid "No clear district"
 msgstr "Kein eindeutiger Wahlkreis"
@@ -347,17 +357,22 @@ msgstr "Ungültiger Status"
 msgid "Invalid election values"
 msgstr "Ungültige Wahldaten"
 
+msgid "Invalid candidate results"
+msgstr "Ungültige Kandidierendenresultate"
+
 msgid "No data found"
 msgstr "Keine Daten gefunden"
 
-msgid "Invalid values"
-msgstr "Ungültige Werte"
+msgid "Value of ausmittlungsstand not between 0 and 3"
+msgstr "Wert von ausmittlungsstand nicht zwischen 0 and 3"
 
-msgid "Invalid id"
-msgstr "Ungültige ID"
+#, python-format
+msgid "Candidate with id ${id} not in wm_kandidaten"
+msgstr "Kandidat mit id ${id} nicht in wm_kandidaten"
 
-msgid "Could not read the eligible voters"
-msgstr "Konnte 'Stimmberechtigte' nicht lesen"
+#, python-format
+msgid "Entity with id ${id} not in wmstatic_gemeinden"
+msgstr "Gemeinde mit id ${id} nicht in wmstatic_gemeinden"
 
 msgid "Invalid list values"
 msgstr "Ungültige Listendaten"
@@ -368,6 +383,9 @@ msgstr "Ungültige Listenresultate"
 msgid "Invalid list connection values"
 msgstr "Ungültige Listenverbindungsdaten"
 
+msgid "Invalid values"
+msgstr "Ungültige Werte"
+
 msgid "Elected Candidates"
 msgstr "Gewählte Kandidierende"
 
@@ -377,11 +395,17 @@ msgstr "Unbekannter Kandidierender"
 msgid "Invalid ballot type"
 msgstr "Ungültige Abstimmungsart"
 
+msgid "Invalid id"
+msgstr "Ungültige ID"
+
 msgid "Could not read yeas"
 msgstr "Konnte 'Ja Stimmen' nicht lesen"
 
 msgid "Could not read nays"
 msgstr "Konnte 'Nein Stimmen' nicht lesen"
+
+msgid "Could not read the eligible voters"
+msgstr "Konnte 'Stimmberechtigte' nicht lesen"
 
 msgid "Could not read the empty votes"
 msgstr "Konnte 'Leere Stimmzettel' nicht lesen"
@@ -577,6 +601,36 @@ msgstr "Bitte verwenden Sie das folgende Format:"
 msgid "Unsubscribe"
 msgstr "Abmelden"
 
+msgid "Search in ${title}"
+msgstr "Suche in ${title}"
+
+msgid "Found ${item_count} items."
+msgstr "${item_count} Einträge gefunden."
+
+msgid "Vote"
+msgstr "Abstimmung"
+
+msgid "Date"
+msgstr "Datum"
+
+msgid "Domain"
+msgstr "Ebene"
+
+msgid "Updated"
+msgstr "Aktualisiert"
+
+msgid "Federal"
+msgstr "National"
+
+msgid "Regional"
+msgstr "Regional"
+
+msgid "Cantonal"
+msgstr "Kantonal"
+
+msgid "Communal"
+msgstr "Kommunal"
+
 msgid ""
 "Successfully subscribed to the email service. You will receive an email "
 "every time new results are published."
@@ -615,14 +669,11 @@ msgstr "Kantonale Abstimmungen"
 msgid "Communal Votes"
 msgstr "Kommunale Abstimmungen"
 
-msgid "Updated"
-msgstr "Aktualisiert"
-
-msgid "Vote"
-msgstr "Abstimmung"
-
 msgid "Archive"
 msgstr "Archiv"
+
+msgid "Archive Search"
+msgstr "Archive-Suche"
 
 msgid "Login"
 msgstr "Anmelden"
@@ -713,23 +764,8 @@ msgstr "Titel"
 msgid "Shortcode"
 msgstr "Kürzel"
 
-msgid "Date"
-msgstr "Datum"
-
 msgid "Type"
 msgstr "Art"
-
-msgid "Federal"
-msgstr "National"
-
-msgid "Regional"
-msgstr "Regional"
-
-msgid "Cantonal"
-msgstr "Kantonal"
-
-msgid "Communal"
-msgstr "Kommunal"
 
 msgid "View"
 msgstr "Anzeigen"
@@ -1109,6 +1145,30 @@ msgstr "Ansichten"
 msgid "Select either majorz or proporz elections."
 msgstr "Wählen Sie entweder Majorz- oder Proporzwahlen."
 
+msgid "Text Retrieval"
+msgstr "Suchbegriff"
+
+msgid ""
+"Searches the title of the election/vote. Use Wilcards (*) to find more "
+"results, e.g Nationalrat*."
+msgstr ""
+"Durchsucht den Titel der Wahl/Abstimmung. Benutzen Sie Wildcards (*), um "
+"mehr Resultate zu finden, z.B. Nationalrat*."
+
+msgid "From date"
+msgstr "Von Datum"
+
+msgid "To date"
+msgstr "Bis Datum"
+
+msgid "Voting result"
+msgstr "Wahlresultat"
+
+msgid ""
+"Compound of elections field summarizes all related elections in one. To "
+"display all elections, uncheck 'Compound of Elections'"
+msgstr ""
+
 msgid "Title of the the vote/proposal"
 msgstr "Titel der Abstimmung/der Vorlage"
 
@@ -1196,3 +1256,15 @@ msgstr "Stadtteil"
 
 msgid "Quarters"
 msgstr "Stadtteile"
+
+#~ msgid "Found ${count} items."
+#~ msgstr "${count} Einträge gefunden."
+
+#~ msgid "Search in ${layout.tab_menu_title}"
+#~ msgstr "Suche in ${layout.tab_menu_title}"
+
+#~ msgid "Derived list_id has not been found in list numbers"
+#~ msgstr "Abgeleitete Listennr. unbekannt"
+
+#~ msgid "Unknown derived list id"
+#~ msgstr "Unbekannte abgeleitete list id"

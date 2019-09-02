@@ -14,8 +14,11 @@ from sqlalchemy import distinct
 from sqlalchemy import extract
 from sqlalchemy import func
 from sqlalchemy import Integer
+from sqlalchemy import or_
+from sqlalchemy.sql.expression import case
 from time import mktime
 from time import strptime
+from onegov.core.collection import Pagination
 
 
 def groupbydict(items, keyfunc, sortfunc=None):
@@ -30,12 +33,12 @@ def groupbydict(items, keyfunc, sortfunc=None):
 
 class ArchivedResultCollection(object):
 
-    def __init__(self, session, date=None):
+    def __init__(self, session, date_=None):
         self.session = session
-        self.date = date
+        self.date = date_
 
-    def for_date(self, date):
-        return self.__class__(self.session, date)
+    def for_date(self, date_):
+        return self.__class__(self.session, date_)
 
     def query(self):
         return self.session.query(ArchivedResult)
@@ -259,3 +262,227 @@ class ArchivedResultCollection(object):
 
         self.session.delete(item)
         self.session.flush()
+
+
+class SearchableArchivedResultCollection(
+        ArchivedResultCollection, Pagination):
+
+    def __init__(
+            self,
+            session,
+            date_=None,
+            from_date=None,
+            to_date=None,
+            types=None,
+            item_type=None,
+            domain=None,
+            term=None,
+            answer=None,
+            locale='de_CH',
+            page=0
+    ):
+        """
+
+        :param session:
+        :param date_: see parent class
+        :param from_date: datetime.date
+        :param to_date: datetime.date
+        :param types: types as list, to search all the types
+                    neglected if item_type is set
+        :param item_type: type from url path (used in tab_menu)
+        :param domain: list of domains
+        :param term: query string from form
+        :param answer: list of answers
+        :param locale: locale from request.locale
+        """
+        super().__init__(session, date_=date_)
+        self.from_date = from_date
+        self.to_date = to_date or date.today()
+        self.types = types
+        self.item_type = item_type
+        self.domain = domain
+        self.term = term
+        self.answer = answer
+        self.locale = locale
+        self.app_principal_domain = None
+        self.page = page
+
+    def __eq__(self, other):
+        return self.page == other.page
+
+    def subset(self):
+        return self.query()
+
+    @property
+    def page_index(self):
+        return self.page
+
+    def page_by_index(self, index):
+        return self.__class__(
+            session=self.session,
+            date_=self.date,
+            from_date=self.from_date,
+            to_date=self.to_date,
+            types=self.types,
+            item_type=self.item_type,
+            domain=self.domain,
+            term=self.term,
+            answer=self.answer,
+            locale=self.locale,
+            page=index
+        )
+
+    def group_items(self, items, request):
+        compounded = [
+            id_ for item in items for id_ in getattr(item, 'elections', [])
+        ]
+
+        items = dict(
+            votes=[v for v in items if v.type == 'vote'],
+            elections=[
+                e for e in items if e.type in ['election', 'election_compound']
+                if e.url not in compounded
+            ]
+        )
+
+        return items
+
+    @staticmethod
+    def term_to_tsquery_string(term):
+        """ Returns the current search term transformed to use within
+        Postgres ``to_tsquery`` function.
+
+        Removes all unwanted characters, replaces prefix matching, joins
+        word together using FOLLOWED BY.
+        """
+
+        def cleanup(word, whitelist_chars=',.-_'):
+            result = ''.join(
+                (c for c in word if c.isalnum() or c in whitelist_chars)
+            )
+            return f'{result}:*' if word.endswith('*') else result
+
+        parts = [cleanup(part) for part in (term or '').split()]
+        return ' <-> '.join([part for part in parts if part])
+
+    @staticmethod
+    def match_term(column, language, term):
+        """ Usage:
+         model.filter(match_term(model.col, 'german', 'my search term')) """
+        document_tsvector = func.to_tsvector(language, column)
+        ts_query_object = func.to_tsquery(language, term)
+        return document_tsvector.op('@@')(ts_query_object)
+
+    @staticmethod
+    def filter_text_by_locale(column, term, locale=None):
+        """ Returns an SqlAlchemy filter statement based on the search term.
+        If no locale is provided, it will use english as language.
+
+        ``to_tsquery`` creates a tsquery value from term, which must consist of
+         single tokens separated by the Boolean operators
+        & (AND), | (OR) and ! (NOT).
+
+        ``to_tsvector`` parses a textual document into tokens, reduces the
+        tokens to lexemes, and returns a tsvector which lists the lexemes
+        together with their positions in the document. The document is
+        processed according to the specified or default text search
+        configuration. """
+
+        mapping = {'de_CH': 'german', 'fr_CH': 'french', 'it_CH': 'italian',
+                   'rm_CH': 'english'}
+        return SearchableArchivedResultCollection.match_term(
+            column, mapping.get(locale, 'english'), term
+        )
+
+    @property
+    def term_filter(self):
+        assert self.term
+        assert self.locale
+        term = SearchableArchivedResultCollection.term_to_tsquery_string(
+            self.term)
+        # The title is a translations hybrid, .title is a shorthand
+        return [
+            SearchableArchivedResultCollection.filter_text_by_locale(
+                ArchivedResult.shortcode, term, self.locale),
+            SearchableArchivedResultCollection.filter_text_by_locale(
+                ArchivedResult.title, term, self.locale)
+        ]
+
+    def check_from_date_to_date(self):
+        if not self.to_date or not self.from_date:
+            return
+
+        if self.to_date > date.today():
+            self.to_date = date.today()
+        if self.from_date > self.to_date:
+            self.from_date = self.to_date
+
+    def query(self, no_filter=False, sort=True):
+        if no_filter:
+            return self.session.query(ArchivedResult)
+
+        self.check_from_date_to_date()
+        assert self.to_date, 'to_date must have a datetime.date value'
+        allowed_domains = [d[0] for d in ArchivedResult.types_of_domains]
+        allowed_types = [t[0] for t in ArchivedResult.types_of_results]
+        allowed_answers = [a[0] for a in ArchivedResult.types_of_answers]
+        order = ('federation', 'canton', 'region', 'municipality')
+        if self.app_principal_domain == 'municipality':
+            order = ('municipality', 'federation', 'canton', 'region')
+
+        def generate_cases():
+            return tuple(
+                (ArchivedResult.domain == opt, ind + 1) for
+                ind, opt in enumerate(order)
+            )
+
+        query = self.session.query(ArchivedResult)
+
+        if self.item_type and self.item_type in allowed_types:
+            # Treat compound election as elections
+            if self.item_type == 'vote':
+                query = query.filter(ArchivedResult.type == self.item_type)
+            else:
+                query = query.filter(ArchivedResult.type.in_(
+                    ('election', 'election_compound')
+                ))
+
+        elif self.types and len(self.types) != len(allowed_types):
+            query = query.filter(ArchivedResult.type.in_(self.types))
+        if self.domain and (len(self.domain) != len(allowed_domains)):
+            query = query.filter(ArchivedResult.domain.in_(self.domain))
+        if self.from_date:
+            query = query.filter(ArchivedResult.date >= self.from_date)
+        if self.to_date != date.today():
+            query = query.filter(ArchivedResult.date <= self.to_date)
+
+        is_vote = (self.item_type == 'vote'
+                   or (self.types and 'vote' in self.types))
+
+        answer_matters = (
+            self.answer and len(self.answer) != len(allowed_answers))
+
+        if answer_matters and is_vote:
+            vote_answer = ArchivedResult.meta['answer'].astext
+            query = query.filter(
+                ArchivedResult.type == 'vote',
+                vote_answer.in_(self.answer))
+        if self.term:
+            query = query.filter(or_(*self.term_filter))
+
+        if sort:
+            query = query.order_by(
+                ArchivedResult.date.desc(),
+                case(generate_cases())
+            )
+        return query
+
+    def reset_query_params(self):
+        self.from_date = None
+        self.to_date = date.today()
+        self.types = None
+        self.item_type = None
+        self.domain = None
+        self.term = None
+        self.answer = None
+        self.locale = 'de_CH'

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-25 11:09+0200\n"
+"POT-Creation-Date: 2019-08-14 10:29+0200\n"
 "PO-Revision-Date: 2019-07-25 11:28+0200\n"
 "Last-Translator: Marc Sommerhalder <marc.sommerhalder@seantis.ch>\n"
 "Language-Team: \n"
@@ -286,6 +286,14 @@ msgstr "Il file CSV/XLS/XLSX è vuoto."
 msgid "The file contains an empty line."
 msgstr "Il file contiene una riga vuota."
 
+#, python-format
+msgid "Invalid integer: ${col}"
+msgstr "numero intero non valido: ${col}"
+
+#, python-format
+msgid "Empty value: ${col}"
+msgstr ""
+
 msgid "Not a valid xls/xlsx file."
 msgstr "Nessun file XLS/XLSX valido."
 
@@ -299,10 +307,6 @@ msgstr "Colonna mancante: ${col}"
 #, python-format
 msgid "Value ${col} is not between 0 and 3"
 msgstr "valore ${col} non compreso tra 0 e 3"
-
-#, python-format
-msgid "Invalid integer: ${col}"
-msgstr "numero intero non valido: ${col}"
 
 #, python-format
 msgid "Invalid integer: ${col} Can not extract entity_id."
@@ -323,14 +327,20 @@ msgstr "${name} figura due volte"
 msgid "Invalid entity values"
 msgstr "Valori non validi"
 
+#, python-format
+msgid "Entity with id ${id} not in added_entities"
+msgstr ""
+
 msgid "Invalid candidate values"
 msgstr "Valori del candidato non validi"
 
-msgid "Unknown derived list id"
-msgstr "list id derivato sconosciuto"
+#, python-format
+msgid "List_id ${list_id} has not been found in list numbers"
+msgstr ""
 
-msgid "Invalid candidate results"
-msgstr "Risultati del candidato non validi"
+#, python-format
+msgid "Candidate with id ${id} not in wpstatic_kandidaten"
+msgstr ""
 
 msgid "No clear district"
 msgstr "Nessun distretto ben definito"
@@ -344,17 +354,22 @@ msgstr "Stato non valido"
 msgid "Invalid election values"
 msgstr "Valori dell'elezione non validi"
 
+msgid "Invalid candidate results"
+msgstr "Risultati del candidato non validi"
+
 msgid "No data found"
 msgstr "Nessun dato trovato"
 
-msgid "Invalid values"
-msgstr "Valori non validi"
+msgid "Value of ausmittlungsstand not between 0 and 3"
+msgstr ""
 
-msgid "Invalid id"
-msgstr "ID non valido"
+#, python-format
+msgid "Candidate with id ${id} not in wm_kandidaten"
+msgstr ""
 
-msgid "Could not read the eligible voters"
-msgstr "Impossibile leggere 'Aventi diritto di voto'"
+#, python-format
+msgid "Entity with id ${id} not in wmstatic_gemeinden"
+msgstr ""
 
 msgid "Invalid list values"
 msgstr "Valori della lista non validi"
@@ -365,6 +380,9 @@ msgstr "Risultati della lista non validi"
 msgid "Invalid list connection values"
 msgstr "Valori della lista delle connessioni non validi"
 
+msgid "Invalid values"
+msgstr "Valori non validi"
+
 msgid "Elected Candidates"
 msgstr "Candidati eletti"
 
@@ -374,11 +392,17 @@ msgstr "Candidato non conosciuto"
 msgid "Invalid ballot type"
 msgstr "Tipo di scheda non valido"
 
+msgid "Invalid id"
+msgstr "ID non valido"
+
 msgid "Could not read yeas"
 msgstr "Impossibile leggere 'SÌ'"
 
 msgid "Could not read nays"
 msgstr "Impossibile leggere 'NO'"
+
+msgid "Could not read the eligible voters"
+msgstr "Impossibile leggere 'Aventi diritto di voto'"
 
 msgid "Could not read the empty votes"
 msgstr "Impossibile leggere 'Schede bianche'"
@@ -575,6 +599,36 @@ msgstr "Utilizzi per favore il formato seguente:"
 msgid "Unsubscribe"
 msgstr "Annulla iscrizione"
 
+msgid "Search in ${title}"
+msgstr ""
+
+msgid "Found ${item_count} items."
+msgstr ""
+
+msgid "Vote"
+msgstr "Votazione"
+
+msgid "Date"
+msgstr "Data"
+
+msgid "Domain"
+msgstr ""
+
+msgid "Updated"
+msgstr "Aggiornato"
+
+msgid "Federal"
+msgstr "Nazionale"
+
+msgid "Regional"
+msgstr "Regionale"
+
+msgid "Cantonal"
+msgstr "Cantonale"
+
+msgid "Communal"
+msgstr "Comunale"
+
 msgid ""
 "Successfully subscribed to the email service. You will receive an email "
 "every time new results are published."
@@ -613,14 +667,11 @@ msgstr "Votazioni cantonali"
 msgid "Communal Votes"
 msgstr "Votazioni commuali"
 
-msgid "Updated"
-msgstr "Aggiornato"
-
-msgid "Vote"
-msgstr "Votazione"
-
 msgid "Archive"
 msgstr "Archivio"
+
+msgid "Archive Search"
+msgstr ""
 
 msgid "Login"
 msgstr "Login"
@@ -709,23 +760,8 @@ msgstr "Titolo"
 msgid "Shortcode"
 msgstr "Abbreviazione"
 
-msgid "Date"
-msgstr "Data"
-
 msgid "Type"
 msgstr "Tipo"
-
-msgid "Federal"
-msgstr "Nazionale"
-
-msgid "Regional"
-msgstr "Regionale"
-
-msgid "Cantonal"
-msgstr "Cantonale"
-
-msgid "Communal"
-msgstr "Comunale"
 
 msgid "View"
 msgstr "Mostrare"
@@ -1111,6 +1147,28 @@ msgstr "Visualizzazioni"
 msgid "Select either majorz or proporz elections."
 msgstr "Seleziona o elezioni maggioritarie o proporzionali."
 
+msgid "Text Retrieval"
+msgstr ""
+
+msgid ""
+"Searches the title of the election/vote. Use Wilcards (*) to find more "
+"results, e.g Nationalrat*."
+msgstr ""
+
+msgid "From date"
+msgstr ""
+
+msgid "To date"
+msgstr ""
+
+msgid "Voting result"
+msgstr ""
+
+msgid ""
+"Compound of elections field summarizes all related elections in one. To "
+"display all elections, uncheck 'Compound of Elections'"
+msgstr ""
+
 msgid "Title of the the vote/proposal"
 msgstr "Titolo del voto/iniziativa"
 
@@ -1198,3 +1256,6 @@ msgstr "Quartiere"
 
 msgid "Quarters"
 msgstr "Quartieri"
+
+#~ msgid "Unknown derived list id"
+#~ msgstr "list id derivato sconosciuto"

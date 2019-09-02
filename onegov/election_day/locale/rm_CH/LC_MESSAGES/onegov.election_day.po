@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-22 13:32+0200\n"
+"POT-Creation-Date: 2019-08-14 10:29+0200\n"
 "PO-Revision-Date: 2018-11-05 12:07+0100\n"
 "Last-Translator: Marc Sommerhalder <marc.sommerhalder@seantis.ch>\n"
 "Language-Team: \n"
@@ -289,6 +289,14 @@ msgstr "La datoteca CSV/XLS/XLSX è vida."
 msgid "The file contains an empty line."
 msgstr "La datoteca cuntegna ina lingia vida."
 
+#, python-format
+msgid "Invalid integer: ${col}"
+msgstr ""
+
+#, python-format
+msgid "Empty value: ${col}"
+msgstr ""
+
 msgid "Not a valid xls/xlsx file."
 msgstr "Nagina datoteca XLS/XLSX valaivla."
 
@@ -301,10 +309,6 @@ msgstr ""
 
 #, python-format
 msgid "Value ${col} is not between 0 and 3"
-msgstr ""
-
-#, python-format
-msgid "Invalid integer: ${col}"
 msgstr ""
 
 #, python-format
@@ -326,14 +330,20 @@ msgstr "${name} è avant maun duas giadas"
 msgid "Invalid entity values"
 msgstr "Datas nunvalaivlas"
 
+#, python-format
+msgid "Entity with id ${id} not in added_entities"
+msgstr ""
+
 msgid "Invalid candidate values"
 msgstr "Datas da candidat nunvalaivlas"
 
-msgid "Unknown derived list id"
+#, python-format
+msgid "List_id ${list_id} has not been found in list numbers"
 msgstr ""
 
-msgid "Invalid candidate results"
-msgstr "Resultats da candidat nunvalaivels"
+#, python-format
+msgid "Candidate with id ${id} not in wpstatic_kandidaten"
+msgstr ""
 
 msgid "No clear district"
 msgstr "Nagina clera regiun"
@@ -347,17 +357,22 @@ msgstr "Status nunvalaivel"
 msgid "Invalid election values"
 msgstr "Datas electoralas nunvalaivlas"
 
+msgid "Invalid candidate results"
+msgstr "Resultats da candidat nunvalaivels"
+
 msgid "No data found"
 msgstr "Chattà naginas datas"
 
-msgid "Invalid values"
-msgstr "Valurs nunvalaivlas"
+msgid "Value of ausmittlungsstand not between 0 and 3"
+msgstr ""
 
-msgid "Invalid id"
-msgstr "ID nunvalaivel"
+#, python-format
+msgid "Candidate with id ${id} not in wm_kandidaten"
+msgstr ""
 
-msgid "Could not read the eligible voters"
-msgstr "I n'è betg stà pussaivel da leger las persunas cun dretg da votar"
+#, python-format
+msgid "Entity with id ${id} not in wmstatic_gemeinden"
+msgstr ""
 
 msgid "Invalid list values"
 msgstr "Datas da glista nunvalaivlas"
@@ -368,6 +383,9 @@ msgstr "Resultats da glistas nunvalaivels"
 msgid "Invalid list connection values"
 msgstr "Datas nunvalaivlas da colliaziuns da glistas"
 
+msgid "Invalid values"
+msgstr "Valurs nunvalaivlas"
+
 msgid "Elected Candidates"
 msgstr "Candidat(a)s elegid(a)s"
 
@@ -377,11 +395,17 @@ msgstr "Candidat(a) nunenconuschent(a)"
 msgid "Invalid ballot type"
 msgstr "Tip da votaziun nunvalaivel"
 
+msgid "Invalid id"
+msgstr "ID nunvalaivel"
+
 msgid "Could not read yeas"
 msgstr "I n'è betg stà pussaivel da leger las vuschs affirmativas"
 
 msgid "Could not read nays"
 msgstr "I n'è betg stà pussaivel da leger las vuschs negativas"
+
+msgid "Could not read the eligible voters"
+msgstr "I n'è betg stà pussaivel da leger las persunas cun dretg da votar"
 
 msgid "Could not read the empty votes"
 msgstr "I n'è betg stà pussaivel da leger ils cedels da votar vids"
@@ -580,6 +604,36 @@ msgstr "Duvrai per plaschair il suandant format:"
 msgid "Unsubscribe"
 msgstr "Deconnectar"
 
+msgid "Search in ${title}"
+msgstr ""
+
+msgid "Found ${item_count} items."
+msgstr ""
+
+msgid "Vote"
+msgstr "Votaziun"
+
+msgid "Date"
+msgstr "Data"
+
+msgid "Domain"
+msgstr ""
+
+msgid "Updated"
+msgstr "Actualisà"
+
+msgid "Federal"
+msgstr "Sin plaun naziunal"
+
+msgid "Regional"
+msgstr "Sin plaun regiunal"
+
+msgid "Cantonal"
+msgstr "Sin plaun chantunal"
+
+msgid "Communal"
+msgstr "Sin plaun communal"
+
 msgid ""
 "Successfully subscribed to the email service. You will receive an email "
 "every time new results are published."
@@ -618,14 +672,11 @@ msgstr "Votaziuns chantunalas"
 msgid "Communal Votes"
 msgstr "Votaziuns communalas"
 
-msgid "Updated"
-msgstr "Actualisà"
-
-msgid "Vote"
-msgstr "Votaziun"
-
 msgid "Archive"
 msgstr "Archiv"
+
+msgid "Archive Search"
+msgstr ""
 
 msgid "Login"
 msgstr "Annunziar"
@@ -716,23 +767,8 @@ msgstr "Titel"
 msgid "Shortcode"
 msgstr "Scursanida"
 
-msgid "Date"
-msgstr "Data"
-
 msgid "Type"
 msgstr "Gener"
-
-msgid "Federal"
-msgstr "Sin plaun naziunal"
-
-msgid "Regional"
-msgstr "Sin plaun regiunal"
-
-msgid "Cantonal"
-msgstr "Sin plaun chantunal"
-
-msgid "Communal"
-msgstr "Sin plaun communal"
 
 msgid "View"
 msgstr "Mussar"
@@ -1083,6 +1119,21 @@ msgstr "Talian"
 msgid "Romansh"
 msgstr "Rumantsch"
 
+msgid "Link"
+msgstr ""
+
+msgid "Link label german"
+msgstr ""
+
+msgid "Link label french"
+msgstr ""
+
+msgid "Link label italian"
+msgstr ""
+
+msgid "Link label romansh"
+msgstr ""
+
 msgid "Absolute"
 msgstr "Absolut"
 
@@ -1103,6 +1154,28 @@ msgstr "Vistas"
 
 msgid "Select either majorz or proporz elections."
 msgstr "Tscherni u las elecziuns da maiorz u las elecziuns da proporz."
+
+msgid "Text Retrieval"
+msgstr ""
+
+msgid ""
+"Searches the title of the election/vote. Use Wilcards (*) to find more "
+"results, e.g Nationalrat*."
+msgstr ""
+
+msgid "From date"
+msgstr ""
+
+msgid "To date"
+msgstr ""
+
+msgid "Voting result"
+msgstr ""
+
+msgid ""
+"Compound of elections field summarizes all related elections in one. To "
+"display all elections, uncheck 'Compound of Elections'"
+msgstr ""
 
 msgid "Title of the the vote/proposal"
 msgstr "Titel da la votaziun / dal project"
